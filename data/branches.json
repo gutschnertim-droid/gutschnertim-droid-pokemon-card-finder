@@ -12,7 +12,7 @@
     "weitere Nicht-Supermarkt-Formate"
   ],
   "official_finder_matches": 682,
-  "regular_supermarkets": 668,
+  "regular_supermarkets": 669,
   "branches": [
     {
       "id": "bern-bachmaetteli",
@@ -631,15 +631,6 @@
       "official_url": "https://filialen.migros.ch/de/baar/"
     },
     {
-      "id": "migros-0034393",
-      "name": "Bad Zurzach",
-      "address": "Promenadenstrasse 10, 5330 Bad Zurzach",
-      "region": "weitere-schweiz",
-      "store_type": "MM",
-      "official_store_id": "0034393",
-      "official_url": "https://filialen.migros.ch/de/bad-zurzach/"
-    },
-    {
       "id": "migros-0034233",
       "name": "Baden - City",
       "address": "Bahnhofstrasse 40/42, 5400 Baden",
@@ -845,6 +836,15 @@
       "store_type": "MM",
       "official_store_id": "0124210",
       "official_url": "https://filialen.migros.ch/de/bellinzona-7/"
+    },
+    {
+      "id": "migros-0123870",
+      "name": "Bellinzona Nord",
+      "address": "Via San Gottardo 124, 6500 Bellinzona",
+      "region": "weitere-schweiz",
+      "store_type": "M",
+      "official_store_id": "0123870",
+      "official_url": "https://filialen.migros.ch/de/bellinzona-nord-2/"
     },
     {
       "id": "migros-0034540",
@@ -1250,6 +1250,15 @@
       "store_type": "MM",
       "official_store_id": "0044950",
       "official_url": "https://filialen.migros.ch/de/carouge-vibert/"
+    },
+    {
+      "id": "migros-0123880",
+      "name": "Caslano",
+      "address": "Via Stazione 80, 6987 Caslano",
+      "region": "weitere-schweiz",
+      "store_type": "M",
+      "official_store_id": "0123880",
+      "official_url": "https://filialen.migros.ch/de/caslano-2/"
     },
     {
       "id": "migros-0124290",
@@ -2665,15 +2674,6 @@
       "official_url": "https://filialen.migros.ch/de/horw/"
     },
     {
-      "id": "migros-0034400",
-      "name": "Huttwil",
-      "address": "Bernstrasse 6, 4950 Huttwil",
-      "region": "weitere-schweiz",
-      "store_type": "MM",
-      "official_store_id": "0034400",
-      "official_url": "https://filialen.migros.ch/de/huttwil/"
-    },
-    {
       "id": "migros-0084210",
       "name": "Hôpital",
       "address": "Rue de l'Hôpital 12, 2000 Neuchâtel",
@@ -3203,6 +3203,15 @@
       "store_type": "MM",
       "official_store_id": "0124240",
       "official_url": "https://filialen.migros.ch/de/locarno-5/"
+    },
+    {
+      "id": "migros-0123900",
+      "name": "Losone",
+      "address": "Via dei Pioppi 2, 6616 Losone",
+      "region": "weitere-schweiz",
+      "store_type": "M",
+      "official_store_id": "0123900",
+      "official_url": "https://filialen.migros.ch/de/losone-3/"
     },
     {
       "id": "migros-0033233",
@@ -3925,15 +3934,6 @@
       "official_url": "https://filialen.migros.ch/de/olten-hammer/"
     },
     {
-      "id": "migros-0034403",
-      "name": "Olten - Sälipark",
-      "address": "Louis Giroud-Strasse 20, 4600 Olten",
-      "region": "weitere-schweiz",
-      "store_type": "MM",
-      "official_store_id": "0034403",
-      "official_url": "https://filialen.migros.ch/de/olten-saelipark/"
-    },
-    {
       "id": "migros-0150154",
       "name": "Opfikon - Glattpark",
       "address": "Thurgauerstrasse 106, 8152 Opfikon",
@@ -4283,6 +4283,15 @@
       "store_type": "MM",
       "official_store_id": "0034293",
       "official_url": "https://filialen.migros.ch/de/rheinfelden/"
+    },
+    {
+      "id": "migros-0123890",
+      "name": "Riazzino",
+      "address": "Via Cantonale 40, 6595 Riazzino",
+      "region": "weitere-schweiz",
+      "store_type": "M",
+      "official_store_id": "0123890",
+      "official_url": "https://filialen.migros.ch/de/riazzino-2/"
     },
     {
       "id": "migros-0150158",
@@ -5401,6 +5410,15 @@
       "official_url": "https://filialen.migros.ch/de/wallisellen/"
     },
     {
+      "id": "migros-0150670",
+      "name": "Wallisellen - Glattzentrum",
+      "address": "Neue Winterthurerstrasse 99, 8304 Wallisellen",
+      "region": "weitere-schweiz",
+      "store_type": "MMM",
+      "official_store_id": "0150670",
+      "official_url": "https://filialen.migros.ch/de/wallisellen-glattzentrum/"
+    },
+    {
       "id": "migros-0090452",
       "name": "Wattwil",
       "address": "Bahnhofstrasse 19, 9630 Wattwil",
@@ -5786,15 +5804,6 @@
       "store_type": "M",
       "official_store_id": "0090391",
       "official_url": "https://filialen.migros.ch/de/zuzwil/"
-    },
-    {
-      "id": "migros-0034411",
-      "name": "Zweisimmen",
-      "address": "Thunstrasse 11, 3770 Zweisimmen",
-      "region": "weitere-schweiz",
-      "store_type": "M",
-      "official_store_id": "0034411",
-      "official_url": "https://filialen.migros.ch/de/zweisimmen-3/"
     },
     {
       "id": "migros-0150015",
