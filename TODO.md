@@ -55,7 +55,7 @@ ChatGPT selbst kann die lokale App-Datenbank eines ausgeschalteten/geschlossenen
 - [ ] Gezielte Abfrage für einen ausgewählten Artikel und eine Filiale ermöglichen
 - [ ] Unterbrochene lokale Abfragen fortsetzen können
 - [x] Offizielle Liste mit 669 normalen M/MM/MMM-Supermärkten einlesen und in 12 auswählbare Gebiete gruppieren (VOI und andere Formate ausgeschlossen)
-- [x] Fribourg aus dem Schweizer Filialbestand vervollständigen: 28 passende Filialadressen statt zuvor 10; PLZ-Prüfung grenzt Waadt-Filialen wie Oron korrekt aus
+- [x] Fribourg aus dem Schweizer Filialbestand vervollständigen: 30 passende Filialadressen statt zuvor 10; PLZ-Prüfung grenzt Waadt-Filialen wie Oron korrekt aus
 - [x] Regionsfilter zeigt Bern, Fribourg, Zürich, Ostschweiz/St. Gallen, Waadt/Lausanne, Basel, Genf, Neuenburg, Aare, Zentralschweiz, Tessin und Wallis
 - [ ] Kartenansicht eingebaut (OpenStreetMap, Bestandsfarben/-filter und Google-Wegbeschreibung); Koordinaten für alle 669 Filialen noch vervollständigen und Geräteansicht testen. Migros-Koordinaten werden bei Live-Abfragen lokal zwischengespeichert.
 - [ ] Favoriten, Kaufnotizen und CSV-Verlauf ergänzen
