@@ -18,6 +18,7 @@ from pathlib import Path
 from playwright.async_api import async_playwright
 
 START_URL = "https://filialen.migros.ch/de/"
+FILTERED_URL = "https://filialen.migros.ch/de/filter:markets-%5Bsuper.voi.mp%5D/center:46.8182,8.2275/zoom:8/"
 ALLOWED_TYPES = {"M", "MM", "MMM"}
 MIN_EXPECTED = 600
 
@@ -41,16 +42,11 @@ async def main(output: Path, baseline: Path) -> None:
         necessary_cookies = page.get_by_role("button", name=re.compile(r"nur notwendige cookies", re.I))
         if await necessary_cookies.count():
             await necessary_cookies.click()
-        filter_button = page.get_by_role("button", name=re.compile(r"filtern", re.I))
-        try:
-            await filter_button.wait_for(state="visible", timeout=20000)
-            await filter_button.click()
-        except Exception:
-            print(f"Migros-Filialfinder-Diagnose: URL={page.url!r}; Titel={await page.title()!r}; "
-                  f"Text={(await page.locator('body').inner_text())[:2500]!r}", flush=True)
-            raise
-        await page.get_by_role("link", name="Supermärkte & Fachmärkte").click()
-        await page.get_by_role("checkbox", name="SUPERMARKT", exact=True).check()
+            await page.wait_for_load_state("domcontentloaded", timeout=20000)
+        await page.wait_for_timeout(2500)
+        # This exact official route was captured after selecting "Supermarkt" in the Migros finder.
+        await page.goto(FILTERED_URL, wait_until="domcontentloaded", timeout=60000)
+        await page.wait_for_timeout(4000)
         count_button = page.get_by_role("button", name=re.compile(r"\d+\s+STANDORTE ANZEIGEN", re.I))
         await count_button.wait_for(state="visible", timeout=20000)
         filtered_count_match = re.search(r"(\d+)", await count_button.inner_text())
