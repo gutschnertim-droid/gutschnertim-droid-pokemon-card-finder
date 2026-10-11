@@ -4,7 +4,6 @@ on:
     branches: [main]
     paths:
       - 'android-local/**'
-      - 'scripts/update_migros_branches.py'
       - '.github/workflows/build-android-test.yml'
   workflow_dispatch:
 concurrency:
@@ -24,15 +23,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install branch finder browser
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install playwright
-          python -m playwright install --with-deps chromium
-      - name: Refresh official Migros supermarket roster
-        run: |
-          python scripts/update_migros_branches.py --output data/branches.json --baseline data/branches.json
-          cp data/branches.json android-local/app/src/main/assets/branches.json
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
