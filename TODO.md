@@ -19,7 +19,7 @@
 - [x] Projektdateien, Bestandsdaten und Workflow auf `main` veröffentlicht (Commit `2d4959c`)
 - [x] Täglichen GitHub-Actions-Workflow (01:15 UTC) und manuellen Start im Repository eingerichtet
 - [x] Vollständigen Abdeckungsbericht je Region im Actions-Lauf ergänzen; Feed muss 259/259 Kombinationen enthalten
-- [ ] Ersten erfolgreichen Actions-Lauf prüfen: Nach dem geplanten Lauf ist noch kein neuer Bestands-Commit sichtbar; den Lauf im Actions-Tab kontrollieren und bei Aufforderung aktivieren
+- [ ] Erfolgreichen Actions-Lauf verifizieren: Katalogfilter korrigiert (Commit `7c4bbed`); GitHub Actions erhält bei Migros wiederholt eine Wartungsseite statt der Produktseite. Der vorhandene Feed bleibt bei 259/259 geprüften Kombinationen vom 11.10.2026, bis Migros die Live-Abfrage vom Runner aus zulässt.
 - [x] Feed-URL im Frontend auf den öffentlichen GitHub-Feed gesetzt; Aktualisierung erfolgt beim Start und danach alle 15 Minuten
 - [ ] Private Site mit dem aktualisierten Frontend neu veröffentlichen (Quell-Sync aktuell nicht erreichbar)
 - [ ] Bei neuen Filialen Daten in `data/branches.json` ergänzen und Abdeckung im nächsten Lauf verifizieren
@@ -51,7 +51,8 @@
 - [ ] Abgleich der vier zusätzlichen offiziellen Fribourg-Standorte mit der App-Filialliste (Bestandsabdeckung gilt für alle 37 derzeit eingetragenen Filialen)
 - [x] Bestände für sieben Pokémon-Artikel in allen 27 erfassten Berner Filialen prüfen und in den Feed übernehmen (11.10.2026).
 - [x] UI-Collector erfasst alle Filialen aus `data/branches.json` für jeden Filialartikel; schreibt den Feed nur bei vollständiger Abdeckung (Playwright, ohne Login)
-- [x] Täglichen GitHub-Actions-Ablauf und manuellen Start im veröffentlichten Repository eingerichtet; erster Lauf noch zu prüfen
+- [x] Täglichen GitHub-Actions-Ablauf und manuellen Start im veröffentlichten Repository eingerichtet
+- [x] Fehlerdiagnose für den Collector ergänzt; GitHub-Runner protokolliert Migros-Seitentitel und sichtbaren Text bei Ladefehlern
 - [ ] Sortiment schweizweit gegen weitere Migros-Regionen prüfen; aktueller Katalogstand gilt für Region Neuenburg-Freiburg / PLZ 1700
 - [x] Filialbestand je Produkt erfassen, soweit die Migros-Produktseite dies öffentlich ausgibt
 - [x] Öffentliche Migros Search API-Dokumentation prüfen: Produkt- und Filialsuche vorhanden, aber kein Filialbestand; Doku nennt `key` und `apikey`
@@ -65,7 +66,8 @@
 - [ ] Datenmodell und Datenbank entwerfen
 - [x] „Zuletzt geprüft“-Zeitpunkt pro Produkt in der App anzeigen
 - [x] Gehostete App mit Feed-Poller und Statusanzeige ausgestattet (15-Minuten-Abstand)
-- [x] Collector und täglicher Job implementiert. Der Collector befragt die öffentliche Produktseite ohne Login und schreibt bei Erfolg `regions.<region>.branches` sowie `regions.<region>.products.<id>.branches.<branchId>`. Der Workflow ist auf GitHub veröffentlicht; erfolgreicher Lauf noch zu verifizieren.
+- [x] Collector und täglicher Job implementiert. Der Collector befragt die öffentliche Produktseite ohne Login und schreibt bei Erfolg `regions.<region>.branches` sowie `regions.<region>.products.<id>.branches.<branchId>`.
+- [ ] GitHub-Runner kann Migros zurzeit nicht automatisch erfassen: Zwei Läufe erhielten den Seitentitel `maintenance` („Migros Online Website ... vorübergehend ... geschlossen“). Nicht umgehen; nach Wiederherstellung erneut prüfen.
 - [ ] Alte Daten bei erfolgreichem/fehlgeschlagenem Feed klar als veraltet kennzeichnen
 - [ ] Fehlermeldungen und alte Daten sichtbar kennzeichnen
 - [ ] Private Käufe optional mit Datum, Menge und Filiale erfassen
