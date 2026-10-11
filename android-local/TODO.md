@@ -18,7 +18,7 @@
 - [x] Nach erfolgreichem Build einen stabilen Direktlink zur APK und zur ZIP-Datei mit der APK bereitstellen.
 - [x] Bestände automatisch alle vier Stunden neu abfragen, wenn die App geöffnet ist; eine fällige Prüfung beim Zurückkehren starten.
 - [x] Zwölf Gebiete auswählen und nur die darin enthaltenen Filialen abfragen; die Auswahl auf dem Gerät merken.
-- [x] Fribourg auf 28 Filialen anhand der offiziellen Migros-Filialliste und PLZ erweitern.
+- [x] Fribourg auf 30 Filialen anhand der offiziellen Migros-Filialliste und PLZ erweitern.
 - [x] Regionstitel für Bern, Fribourg, Zürich, Ostschweiz/St. Gallen, Waadt/Lausanne, Basel, Genf, Neuenburg, Aare, Zentralschweiz, Tessin und Wallis anzeigen.
 - [x] Alte Auswahl „Weitere Schweiz“ beim Start in alle neuen übrigen Gebiete übernehmen.
 
@@ -39,4 +39,4 @@
 
 ## Umfangshinweis
 
-Der aktuelle Katalog enthält sieben im bisherigen Datensatz erfasste Artikel und ist keine vollständige schweizweite Migros-Sortimentserhebung. Die offizielle Migros-Liste enthält 669 normale M/MM/MMM-Supermärkte. Die App stellt dafür zwölf auswählbare Gebiete bereit; Fribourg umfasst derzeit 28 anhand der Postleitzahl zugeordnete Filialen. Die tägliche Prüfung im Hintergrund ist noch offen und muss auf einem Galaxy-Gerät getestet werden. Migros weist im Geschäftsbericht 2025 insgesamt 659 M-, MM- und MMM-Supermärkte aus. Andere Verkaufsformate, darunter VOI, sind nicht Teil dieser Zahl.
+Der aktuelle Katalog enthält sieben im bisherigen Datensatz erfasste Artikel und ist keine vollständige schweizweite Migros-Sortimentserhebung. Die offizielle Migros-Liste enthält 669 normale M/MM/MMM-Supermärkte. Die App stellt dafür zwölf auswählbare Gebiete bereit; Fribourg umfasst derzeit 30 anhand der Postleitzahl zugeordnete Filialen. Die tägliche Prüfung im Hintergrund ist noch offen und muss auf einem Galaxy-Gerät getestet werden. Migros weist im Geschäftsbericht 2025 insgesamt 659 M-, MM- und MMM-Supermärkte aus. Andere Verkaufsformate, darunter VOI, sind nicht Teil dieser Zahl.
