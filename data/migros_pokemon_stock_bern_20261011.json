@@ -1,0 +1,1139 @@
+{
+  "query_centers": [
+    "3011 Bern",
+    "3072 Ostermundigen",
+    "3027 Bern",
+    "3052 Zollikofen",
+    "3084 Wabern"
+  ],
+  "checked_on": "2026-10-11",
+  "checked_at_local_approx": "2026-10-11T01:00:00+02:00",
+  "capture_method": "Öffentliche Migros-Produktseite > Verfügbarkeit in Filialen prüfen > fünf PLZ-/Ortsabfragen; ohne Login.",
+  "source_notice": "Migros zeigt im Dialog an, dass Verfügbarkeiten einmal täglich aktualisiert werden und ohne Gewähr sind. Mengen mit „Ca.“ oder „Nur ca.“ sind Schätzwerte.",
+  "branches": [
+    {
+      "id": "bern-marktgasse",
+      "name": "Bern - Marktgasse",
+      "address": "Marktgasse 46, 3011 Bern"
+    },
+    {
+      "id": "bern-bahnhof",
+      "name": "Bern - Bahnhof",
+      "address": "Bahnhofplatz 10, 3011 Bern"
+    },
+    {
+      "id": "bern-christoffel",
+      "name": "Bern - Christoffel",
+      "address": "Christoffelunterführung, 3011 Bern"
+    },
+    {
+      "id": "bern-bubenberg",
+      "name": "Bern - Bubenberg",
+      "address": "Bubenbergplatz 8, 3011 Bern"
+    },
+    {
+      "id": "bern-kirchenfeld",
+      "name": "Bern - Kirchenfeld",
+      "address": "Thunstrasse 18, 3005 Bern"
+    },
+    {
+      "id": "bern-welle-7",
+      "name": "Bern - Welle 7",
+      "address": "Schanzenstrasse 5, 3000 Bern"
+    },
+    {
+      "id": "bern-lorraine",
+      "name": "Bern - Lorraine",
+      "address": "Dammweg 9, 3013 Bern"
+    },
+    {
+      "id": "bern-breitenrain",
+      "name": "Bern - Breitenrain",
+      "address": "Breitenrainstrasse 11, 3013 Bern"
+    },
+    {
+      "id": "bern-zaehringer",
+      "name": "Bern - Zähringer",
+      "address": "Zähringerstrasse 43, 3012 Bern"
+    },
+    {
+      "id": "bern-eigerplatz",
+      "name": "Bern - Eigerplatz",
+      "address": "Seftigenstrasse 1, 3007 Bern"
+    },
+    {
+      "id": "bern-burgernziel",
+      "name": "Bern Burgernziel",
+      "address": "Thunstrasse 110, 3006 Bern"
+    },
+    {
+      "id": "bern-freudenberg",
+      "name": "Bern - Freudenberg",
+      "address": "Giacomettistrasse 15, 3006 Bern"
+    },
+    {
+      "id": "bern-winkelried",
+      "name": "Bern - Winkelried",
+      "address": "Wankdorffeldstrasse 71, 3014 Bern"
+    },
+    {
+      "id": "bern-egghoelzli",
+      "name": "Bern - Egghölzli",
+      "address": "Egghölzlistrasse 1 / 1a, 3006 Bern"
+    },
+    {
+      "id": "ostermundigen-poststrasse",
+      "name": "Ostermundigen Poststrasse",
+      "address": "Poststr. 1, 3072 Ostermundigen"
+    },
+    {
+      "id": "wabern-chly-wabere",
+      "name": "Wabern - Chly Wabere",
+      "address": "Seftigenstrasse 368, 3084 Wabern"
+    },
+    {
+      "id": "bremgarten-kalchacker",
+      "name": "Bremgarten Kalchacker",
+      "address": "Kalchackerstrasse 9, 3047 Bremgarten b. Bern"
+    },
+    {
+      "id": "koeniz-blaeuacker",
+      "name": "Köniz - Bläuacker",
+      "address": "Bläuacker 10, 3098 Köniz"
+    },
+    {
+      "id": "ostermundigen",
+      "name": "Ostermundigen",
+      "address": "Bernstrasse 114, 3072 Ostermundigen"
+    },
+    {
+      "id": "bern-westfluegel",
+      "name": "Bern Westflügel",
+      "address": "Bethlehemstrasse 40, 3027 Bern"
+    },
+    {
+      "id": "ittigen",
+      "name": "Ittigen",
+      "address": "Talweg 6, 3063 Ittigen"
+    },
+    {
+      "id": "bern-bachmaetteli",
+      "name": "Bern - Bachmätteli",
+      "address": "Bottigenstrasse 7, 3018 Bern"
+    },
+    {
+      "id": "guemligen",
+      "name": "Gümligen",
+      "address": "Turbenweg 1, 3073 Gümligen"
+    },
+    {
+      "id": "bern-bethlehem",
+      "name": "Bern - Bethlehem",
+      "address": "Riedbachstrasse 10, 3027 Bern"
+    },
+    {
+      "id": "zollikofen",
+      "name": "Zollikofen",
+      "address": "Bernstrasse 103, 3052 Zollikofen"
+    },
+    {
+      "id": "bern-westside",
+      "name": "Bern - Westside",
+      "address": "Gilberte-de-Courgenay-Platz 4, 3027 Bern"
+    },
+    {
+      "id": "hinterkappelen-chappelemaerit",
+      "name": "Hinterkappelen - Chappelemärit",
+      "address": "Kappelenring 2, 3032 Hinterkappelen"
+    }
+  ],
+  "products": {
+    "746658000000": {
+      "name": "Pokémon Booster Blister · assortiert",
+      "checked_at_local_approx": "2026-10-11T01:00:00+02:00",
+      "branches": {
+        "bern-marktgasse": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bahnhof": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 60,
+          "source_text": "Ca. 60 auf Lager"
+        },
+        "bern-christoffel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bubenberg": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 15,
+          "source_text": "Ca. 15 auf Lager"
+        },
+        "bern-kirchenfeld": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-welle-7": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-lorraine": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-breitenrain": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 25,
+          "source_text": "Ca. 25 auf Lager"
+        },
+        "bern-zaehringer": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 21,
+          "source_text": "Ca. 21 auf Lager"
+        },
+        "bern-eigerplatz": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 13,
+          "source_text": "Ca. 13 auf Lager"
+        },
+        "bern-burgernziel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-freudenberg": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 14,
+          "source_text": "Ca. 14 auf Lager"
+        },
+        "bern-winkelried": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 7,
+          "source_text": "Ca. 7 auf Lager"
+        },
+        "bern-egghoelzli": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ostermundigen-poststrasse": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "wabern-chly-wabere": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 6,
+          "source_text": "Ca. 6 auf Lager"
+        },
+        "bremgarten-kalchacker": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 14,
+          "source_text": "Ca. 14 auf Lager"
+        },
+        "koeniz-blaeuacker": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 19,
+          "source_text": "Ca. 19 auf Lager"
+        },
+        "ostermundigen": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 68,
+          "source_text": "Ca. 68 auf Lager"
+        },
+        "bern-westfluegel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ittigen": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 17,
+          "source_text": "Ca. 17 auf Lager"
+        },
+        "bern-bachmaetteli": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 31,
+          "source_text": "Ca. 31 auf Lager"
+        },
+        "guemligen": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 10,
+          "source_text": "Ca. 10 auf Lager"
+        },
+        "bern-bethlehem": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 27,
+          "source_text": "Ca. 27 auf Lager"
+        },
+        "zollikofen": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 17,
+          "source_text": "Ca. 17 auf Lager"
+        },
+        "bern-westside": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 22,
+          "source_text": "Ca. 22 auf Lager"
+        },
+        "hinterkappelen-chappelemaerit": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 18,
+          "source_text": "Ca. 18 auf Lager"
+        }
+      }
+    },
+    "748680500000": {
+      "name": "Pokémon 4-Pocket Portfolios · assortiert",
+      "checked_at_local_approx": "2026-10-11T01:00:00+02:00",
+      "branches": {
+        "bern-marktgasse": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 4,
+          "source_text": "Nur ca. 4 auf Lager"
+        },
+        "bern-bahnhof": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-christoffel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bubenberg": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-kirchenfeld": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-welle-7": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-lorraine": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-breitenrain": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-zaehringer": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-eigerplatz": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-burgernziel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-freudenberg": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-winkelried": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-egghoelzli": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ostermundigen-poststrasse": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "wabern-chly-wabere": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bremgarten-kalchacker": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "koeniz-blaeuacker": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ostermundigen": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-westfluegel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ittigen": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bachmaetteli": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "guemligen": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bethlehem": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "zollikofen": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-westside": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "hinterkappelen-chappelemaerit": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        }
+      }
+    },
+    "748972100000": {
+      "name": "Pokémon Deck Protector Sleeves · assortiert",
+      "checked_at_local_approx": "2026-10-11T01:00:00+02:00",
+      "branches": {
+        "bern-marktgasse": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 16,
+          "source_text": "Ca. 16 auf Lager"
+        },
+        "bern-bahnhof": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-christoffel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bubenberg": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 13,
+          "source_text": "Ca. 13 auf Lager"
+        },
+        "bern-kirchenfeld": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-welle-7": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-lorraine": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-breitenrain": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 4,
+          "source_text": "Nur ca. 4 auf Lager"
+        },
+        "bern-zaehringer": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 14,
+          "source_text": "Ca. 14 auf Lager"
+        },
+        "bern-eigerplatz": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-burgernziel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-freudenberg": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-winkelried": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-egghoelzli": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ostermundigen-poststrasse": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "wabern-chly-wabere": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 16,
+          "source_text": "Ca. 16 auf Lager"
+        },
+        "bremgarten-kalchacker": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 2,
+          "source_text": "Nur ca. 2 auf Lager"
+        },
+        "koeniz-blaeuacker": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ostermundigen": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 15,
+          "source_text": "Ca. 15 auf Lager"
+        },
+        "bern-westfluegel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ittigen": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 5,
+          "source_text": "Nur ca. 5 auf Lager"
+        },
+        "bern-bachmaetteli": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 5,
+          "source_text": "Nur ca. 5 auf Lager"
+        },
+        "guemligen": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 23,
+          "source_text": "Ca. 23 auf Lager"
+        },
+        "bern-bethlehem": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 11,
+          "source_text": "Ca. 11 auf Lager"
+        },
+        "zollikofen": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 1,
+          "source_text": "Nur ca. 1 auf Lager"
+        },
+        "bern-westside": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 6,
+          "source_text": "Ca. 6 auf Lager"
+        },
+        "hinterkappelen-chappelemaerit": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 7,
+          "source_text": "Ca. 7 auf Lager"
+        }
+      }
+    },
+    "748680700000": {
+      "name": "Pokémon Deck Boxen · assortiert",
+      "checked_at_local_approx": "2026-10-11T01:00:00+02:00",
+      "branches": {
+        "bern-marktgasse": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 7,
+          "source_text": "Ca. 7 auf Lager"
+        },
+        "bern-bahnhof": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-christoffel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bubenberg": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 5,
+          "source_text": "Nur ca. 5 auf Lager"
+        },
+        "bern-kirchenfeld": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-welle-7": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-lorraine": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-breitenrain": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 2,
+          "source_text": "Nur ca. 2 auf Lager"
+        },
+        "bern-zaehringer": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 4,
+          "source_text": "Nur ca. 4 auf Lager"
+        },
+        "bern-eigerplatz": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-burgernziel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-freudenberg": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-winkelried": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-egghoelzli": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ostermundigen-poststrasse": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "wabern-chly-wabere": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 7,
+          "source_text": "Ca. 7 auf Lager"
+        },
+        "bremgarten-kalchacker": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "koeniz-blaeuacker": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 4,
+          "source_text": "Nur ca. 4 auf Lager"
+        },
+        "ostermundigen": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 3,
+          "source_text": "Nur ca. 3 auf Lager"
+        },
+        "bern-westfluegel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ittigen": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 4,
+          "source_text": "Nur ca. 4 auf Lager"
+        },
+        "bern-bachmaetteli": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 5,
+          "source_text": "Nur ca. 5 auf Lager"
+        },
+        "guemligen": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 5,
+          "source_text": "Ca. 5 auf Lager"
+        },
+        "bern-bethlehem": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 4,
+          "source_text": "Nur ca. 4 auf Lager"
+        },
+        "zollikofen": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-westside": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 5,
+          "source_text": "Ca. 5 auf Lager"
+        },
+        "hinterkappelen-chappelemaerit": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 7,
+          "source_text": "Ca. 7 auf Lager"
+        }
+      }
+    },
+    "749706600000": {
+      "name": "Pokémon Mini Tin · assortiert",
+      "checked_at_local_approx": "2026-10-11T01:00:00+02:00",
+      "branches": {
+        "bern-marktgasse": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 10,
+          "source_text": "Ca. 10 auf Lager"
+        },
+        "bern-bahnhof": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-christoffel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bubenberg": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 3,
+          "source_text": "Nur ca. 3 auf Lager"
+        },
+        "bern-kirchenfeld": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-welle-7": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-lorraine": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-breitenrain": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 4,
+          "source_text": "Nur ca. 4 auf Lager"
+        },
+        "bern-zaehringer": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 4,
+          "source_text": "Nur ca. 4 auf Lager"
+        },
+        "bern-eigerplatz": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-burgernziel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-freudenberg": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-winkelried": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-egghoelzli": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ostermundigen-poststrasse": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "wabern-chly-wabere": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bremgarten-kalchacker": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "koeniz-blaeuacker": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 10,
+          "source_text": "Ca. 10 auf Lager"
+        },
+        "ostermundigen": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-westfluegel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ittigen": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bachmaetteli": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 2,
+          "source_text": "Nur ca. 2 auf Lager"
+        },
+        "guemligen": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 2,
+          "source_text": "Ca. 2 auf Lager"
+        },
+        "bern-bethlehem": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 1,
+          "source_text": "Nur ca. 1 auf Lager"
+        },
+        "zollikofen": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-westside": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 2,
+          "source_text": "Nur ca. 2 auf Lager"
+        },
+        "hinterkappelen-chappelemaerit": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 3,
+          "source_text": "Nur ca. 3 auf Lager"
+        }
+      }
+    },
+    "740700300000": {
+      "name": "Pokémon EN 30th Anniversary Tech Sticker Collection",
+      "checked_at_local_approx": "2026-10-11T01:00:00+02:00",
+      "branches": {
+        "bern-marktgasse": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bahnhof": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-christoffel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bubenberg": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-kirchenfeld": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-welle-7": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-lorraine": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-breitenrain": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-zaehringer": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-eigerplatz": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-burgernziel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-freudenberg": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-winkelried": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-egghoelzli": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ostermundigen-poststrasse": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "wabern-chly-wabere": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bremgarten-kalchacker": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "koeniz-blaeuacker": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ostermundigen": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-westfluegel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ittigen": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bachmaetteli": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "guemligen": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bethlehem": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "zollikofen": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-westside": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 1,
+          "source_text": "Nur ca. 1 auf Lager"
+        },
+        "hinterkappelen-chappelemaerit": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 3,
+          "source_text": "Nur ca. 3 auf Lager"
+        }
+      }
+    },
+    "740700500000": {
+      "name": "Pokémon EN 30th Anniversary Poster C",
+      "checked_at_local_approx": "2026-10-11T01:00:00+02:00",
+      "branches": {
+        "bern-marktgasse": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bahnhof": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-christoffel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bubenberg": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-kirchenfeld": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-welle-7": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-lorraine": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-breitenrain": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-zaehringer": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-eigerplatz": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-burgernziel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-freudenberg": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-winkelried": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-egghoelzli": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ostermundigen-poststrasse": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "wabern-chly-wabere": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bremgarten-kalchacker": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "koeniz-blaeuacker": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ostermundigen": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 3,
+          "source_text": "Nur ca. 3 auf Lager"
+        },
+        "bern-westfluegel": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "ittigen": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bachmaetteli": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "guemligen": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-bethlehem": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "zollikofen": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "bern-westside": {
+          "status": "out_of_stock",
+          "approximate_quantity": null,
+          "source_text": "Nicht auf Lager"
+        },
+        "hinterkappelen-chappelemaerit": {
+          "status": "estimated_in_stock",
+          "approximate_quantity": 3,
+          "source_text": "Nur ca. 3 auf Lager"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1891 @@
+{
+  "retailer": "Migros",
+  "checked_on": "2026-10-11",
+  "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+  "source_url_pattern": "https://www.migros.ch/de/product/{product_id}",
+  "capture_method": "Öffentliche Migros-Produktseite > Verfügbarkeit in Filialen prüfen; Filialadressen gesucht; ohne Login. Vollständige Erfassung aller 37 App-Filialen für 7 Artikel.",
+  "source_notice": "Migros-Verfügbarkeitsdialog: Angaben einmal täglich aktualisiert und ohne Gewähr. Angezeigte Ca.-Mengen sind Schätzwerte.",
+  "quantity_precision": "Positive Mengen sind als Ca.-Schätzwerte markiert; Nicht auf Lager ist ein eigener geprüfter Status.",
+  "total_branches": 37,
+  "total_products": 7,
+  "checked_pairs": 259,
+  "regions": {
+    "fribourg": {
+      "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+      "branches": [
+        {
+          "id": "beauregard",
+          "name": "Beauregard",
+          "address": "Chemin de Béthléem 7",
+          "coordinates": [
+            46.800454,
+            7.144527
+          ]
+        },
+        {
+          "id": "marche",
+          "name": "Marché FR",
+          "address": "Rue St-Pierre 2",
+          "coordinates": [
+            46.803414,
+            7.154547
+          ]
+        },
+        {
+          "id": "perolles",
+          "name": "Pérolles Centre",
+          "address": "Boulevard de Pérolles 21 A",
+          "coordinates": [
+            46.79978,
+            7.152313
+          ]
+        },
+        {
+          "id": "schoenberg",
+          "name": "Schoenberg",
+          "address": "Chemin Cité-des-Jardins 13A",
+          "coordinates": [
+            46.8097786,
+            7.1723464
+          ]
+        },
+        {
+          "id": "ste-therese",
+          "name": "Ste-Thérèse",
+          "address": "Route de Sainte-Thérèse 2a",
+          "coordinates": [
+            46.8101267,
+            7.1490104
+          ]
+        },
+        {
+          "id": "gare",
+          "name": "Gare Fribourg",
+          "address": "Rue Louis-d'Affry 2",
+          "coordinates": [
+            46.803162,
+            7.150047
+          ]
+        },
+        {
+          "id": "agy",
+          "name": "Agy",
+          "address": "route d'Agy 2",
+          "coordinates": [
+            46.820916,
+            7.153915
+          ]
+        },
+        {
+          "id": "granges",
+          "name": "Granges - Paccot",
+          "address": "Route d'Englisberg 15b",
+          "coordinates": [
+            46.828877,
+            7.146965
+          ]
+        },
+        {
+          "id": "cormanon",
+          "name": "Cormanon",
+          "address": "Rue du centre 4",
+          "coordinates": [
+            46.793611,
+            7.133234
+          ]
+        },
+        {
+          "id": "marly",
+          "name": "Marly",
+          "address": "Route des Pralettes 1",
+          "coordinates": [
+            46.776065,
+            7.161175
+          ]
+        }
+      ],
+      "products": {
+        "740700500000": {
+          "name": "Pokémon EN 30th Anniversary Poster C",
+          "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+          "branches": {
+            "beauregard": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "marche": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "perolles": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "schoenberg": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ste-therese": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "gare": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "agy": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "granges": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "cormanon": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "marly": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            }
+          }
+        },
+        "740700300000": {
+          "name": "Pokémon EN 30th Anniversary Tech Sticker Collection",
+          "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+          "branches": {
+            "beauregard": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "marche": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "perolles": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "schoenberg": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ste-therese": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 6,
+              "source_text": "Ca. 6 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "gare": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "agy": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "granges": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "cormanon": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "marly": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 2,
+              "source_text": "Ca. 2 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            }
+          }
+        },
+        "746658000000": {
+          "name": "Pokémon Booster Blister · assortiert",
+          "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+          "branches": {
+            "beauregard": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 8,
+              "source_text": "Ca. 8 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "marche": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "perolles": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 26,
+              "source_text": "Ca. 26 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "schoenberg": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 24,
+              "source_text": "Ca. 24 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ste-therese": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 22,
+              "source_text": "Ca. 22 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "gare": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 23,
+              "source_text": "Ca. 23 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "agy": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 10,
+              "source_text": "Ca. 10 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "granges": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 23,
+              "source_text": "Ca. 23 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "cormanon": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 19,
+              "source_text": "Ca. 19 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "marly": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 38,
+              "source_text": "Ca. 38 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            }
+          }
+        },
+        "748680500000": {
+          "name": "Pokémon 4-Pocket Portfolios · assortiert",
+          "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+          "branches": {
+            "beauregard": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "marche": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "perolles": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 5,
+              "source_text": "Ca. 5 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "schoenberg": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ste-therese": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "gare": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "agy": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "granges": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "cormanon": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "marly": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            }
+          }
+        },
+        "748972100000": {
+          "name": "Pokémon Deck Protector Sleeves · assortiert",
+          "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+          "branches": {
+            "beauregard": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 8,
+              "source_text": "Ca. 8 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "marche": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "perolles": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 13,
+              "source_text": "Ca. 13 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "schoenberg": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ste-therese": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 11,
+              "source_text": "Ca. 11 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "gare": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "agy": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 14,
+              "source_text": "Ca. 14 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "granges": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 9,
+              "source_text": "Ca. 9 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "cormanon": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 7,
+              "source_text": "Ca. 7 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "marly": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 8,
+              "source_text": "Ca. 8 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            }
+          }
+        },
+        "748680700000": {
+          "name": "Pokémon Deck Boxen · assortiert",
+          "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+          "branches": {
+            "beauregard": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 4,
+              "source_text": "Ca. 4 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "marche": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "perolles": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 4,
+              "source_text": "Ca. 4 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "schoenberg": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ste-therese": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 6,
+              "source_text": "Ca. 6 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "gare": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "agy": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 4,
+              "source_text": "Ca. 4 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "granges": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "cormanon": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 6,
+              "source_text": "Ca. 6 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "marly": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 10,
+              "source_text": "Ca. 10 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            }
+          }
+        },
+        "749706600000": {
+          "name": "Pokémon Mini Tin · assortiert",
+          "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+          "branches": {
+            "beauregard": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 10,
+              "source_text": "Ca. 10 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "marche": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "perolles": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 13,
+              "source_text": "Ca. 13 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "schoenberg": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ste-therese": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 10,
+              "source_text": "Ca. 10 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "gare": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "agy": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 7,
+              "source_text": "Ca. 7 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "granges": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 10,
+              "source_text": "Ca. 10 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "cormanon": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 5,
+              "source_text": "Ca. 5 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "marly": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 1,
+              "source_text": "Ca. 1 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            }
+          }
+        }
+      }
+    },
+    "bern": {
+      "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+      "branches": [
+        {
+          "id": "bern-marktgasse",
+          "name": "Bern - Marktgasse",
+          "address": "Marktgasse 46, 3011 Bern"
+        },
+        {
+          "id": "bern-bahnhof",
+          "name": "Bern - Bahnhof",
+          "address": "Bahnhofplatz 10, 3011 Bern"
+        },
+        {
+          "id": "bern-christoffel",
+          "name": "Bern - Christoffel",
+          "address": "Christoffelunterführung, 3011 Bern"
+        },
+        {
+          "id": "bern-bubenberg",
+          "name": "Bern - Bubenberg",
+          "address": "Bubenbergplatz 8, 3011 Bern"
+        },
+        {
+          "id": "bern-kirchenfeld",
+          "name": "Bern - Kirchenfeld",
+          "address": "Thunstrasse 18, 3005 Bern"
+        },
+        {
+          "id": "bern-welle-7",
+          "name": "Bern - Welle 7",
+          "address": "Schanzenstrasse 5, 3000 Bern"
+        },
+        {
+          "id": "bern-lorraine",
+          "name": "Bern - Lorraine",
+          "address": "Dammweg 9, 3013 Bern"
+        },
+        {
+          "id": "bern-breitenrain",
+          "name": "Bern - Breitenrain",
+          "address": "Breitenrainstrasse 11, 3013 Bern"
+        },
+        {
+          "id": "bern-zaehringer",
+          "name": "Bern - Zähringer",
+          "address": "Zähringerstrasse 43, 3012 Bern"
+        },
+        {
+          "id": "bern-eigerplatz",
+          "name": "Bern - Eigerplatz",
+          "address": "Seftigenstrasse 1, 3007 Bern"
+        },
+        {
+          "id": "bern-burgernziel",
+          "name": "Bern Burgernziel",
+          "address": "Thunstrasse 110, 3006 Bern"
+        },
+        {
+          "id": "bern-freudenberg",
+          "name": "Bern - Freudenberg",
+          "address": "Giacomettistrasse 15, 3006 Bern"
+        },
+        {
+          "id": "bern-winkelried",
+          "name": "Bern - Winkelried",
+          "address": "Wankdorffeldstrasse 71, 3014 Bern"
+        },
+        {
+          "id": "bern-egghoelzli",
+          "name": "Bern - Egghölzli",
+          "address": "Egghölzlistrasse 1 / 1a, 3006 Bern"
+        },
+        {
+          "id": "ostermundigen-poststrasse",
+          "name": "Ostermundigen Poststrasse",
+          "address": "Poststr. 1, 3072 Ostermundigen"
+        },
+        {
+          "id": "wabern-chly-wabere",
+          "name": "Wabern - Chly Wabere",
+          "address": "Seftigenstrasse 368, 3084 Wabern"
+        },
+        {
+          "id": "bremgarten-kalchacker",
+          "name": "Bremgarten Kalchacker",
+          "address": "Kalchackerstrasse 9, 3047 Bremgarten b. Bern"
+        },
+        {
+          "id": "koeniz-blaeuacker",
+          "name": "Köniz - Bläuacker",
+          "address": "Bläuacker 10, 3098 Köniz"
+        },
+        {
+          "id": "ostermundigen",
+          "name": "Ostermundigen",
+          "address": "Bernstrasse 114, 3072 Ostermundigen"
+        },
+        {
+          "id": "bern-westfluegel",
+          "name": "Bern Westflügel",
+          "address": "Bethlehemstrasse 40, 3027 Bern"
+        },
+        {
+          "id": "ittigen",
+          "name": "Ittigen",
+          "address": "Talweg 6, 3063 Ittigen"
+        },
+        {
+          "id": "bern-bachmaetteli",
+          "name": "Bern - Bachmätteli",
+          "address": "Bottigenstrasse 7, 3018 Bern"
+        },
+        {
+          "id": "guemligen",
+          "name": "Gümligen",
+          "address": "Turbenweg 1, 3073 Gümligen"
+        },
+        {
+          "id": "bern-bethlehem",
+          "name": "Bern - Bethlehem",
+          "address": "Riedbachstrasse 10, 3027 Bern"
+        },
+        {
+          "id": "zollikofen",
+          "name": "Zollikofen",
+          "address": "Bernstrasse 103, 3052 Zollikofen"
+        },
+        {
+          "id": "bern-westside",
+          "name": "Bern - Westside",
+          "address": "Gilberte-de-Courgenay-Platz 4, 3027 Bern"
+        },
+        {
+          "id": "hinterkappelen-chappelemaerit",
+          "name": "Hinterkappelen - Chappelemärit",
+          "address": "Kappelenring 2, 3032 Hinterkappelen"
+        }
+      ],
+      "products": {
+        "740700500000": {
+          "name": "Pokémon EN 30th Anniversary Poster C",
+          "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+          "branches": {
+            "bern-marktgasse": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bahnhof": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-christoffel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bubenberg": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-kirchenfeld": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-welle-7": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-lorraine": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-breitenrain": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-zaehringer": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-eigerplatz": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-burgernziel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-freudenberg": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-winkelried": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-egghoelzli": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ostermundigen-poststrasse": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "wabern-chly-wabere": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bremgarten-kalchacker": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "koeniz-blaeuacker": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ostermundigen": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 3,
+              "source_text": "Ca. 3 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-westfluegel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ittigen": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bachmaetteli": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "guemligen": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bethlehem": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "zollikofen": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-westside": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "hinterkappelen-chappelemaerit": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 3,
+              "source_text": "Ca. 3 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            }
+          }
+        },
+        "740700300000": {
+          "name": "Pokémon EN 30th Anniversary Tech Sticker Collection",
+          "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+          "branches": {
+            "bern-marktgasse": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bahnhof": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-christoffel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bubenberg": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-kirchenfeld": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-welle-7": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-lorraine": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-breitenrain": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-zaehringer": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-eigerplatz": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-burgernziel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-freudenberg": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-winkelried": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-egghoelzli": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ostermundigen-poststrasse": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "wabern-chly-wabere": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bremgarten-kalchacker": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "koeniz-blaeuacker": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ostermundigen": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-westfluegel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ittigen": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bachmaetteli": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "guemligen": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bethlehem": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "zollikofen": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-westside": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 1,
+              "source_text": "Ca. 1 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "hinterkappelen-chappelemaerit": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 3,
+              "source_text": "Ca. 3 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            }
+          }
+        },
+        "746658000000": {
+          "name": "Pokémon Booster Blister · assortiert",
+          "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+          "branches": {
+            "bern-marktgasse": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bahnhof": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 60,
+              "source_text": "Ca. 60 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-christoffel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bubenberg": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 15,
+              "source_text": "Ca. 15 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-kirchenfeld": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-welle-7": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-lorraine": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-breitenrain": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 25,
+              "source_text": "Ca. 25 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-zaehringer": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 21,
+              "source_text": "Ca. 21 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-eigerplatz": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 13,
+              "source_text": "Ca. 13 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-burgernziel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-freudenberg": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 14,
+              "source_text": "Ca. 14 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-winkelried": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 7,
+              "source_text": "Ca. 7 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-egghoelzli": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ostermundigen-poststrasse": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "wabern-chly-wabere": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 6,
+              "source_text": "Ca. 6 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bremgarten-kalchacker": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 14,
+              "source_text": "Ca. 14 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "koeniz-blaeuacker": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 19,
+              "source_text": "Ca. 19 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ostermundigen": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 68,
+              "source_text": "Ca. 68 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-westfluegel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ittigen": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 17,
+              "source_text": "Ca. 17 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bachmaetteli": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 31,
+              "source_text": "Ca. 31 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "guemligen": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 10,
+              "source_text": "Ca. 10 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bethlehem": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 27,
+              "source_text": "Ca. 27 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "zollikofen": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 17,
+              "source_text": "Ca. 17 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-westside": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 22,
+              "source_text": "Ca. 22 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "hinterkappelen-chappelemaerit": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 18,
+              "source_text": "Ca. 18 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            }
+          }
+        },
+        "748680500000": {
+          "name": "Pokémon 4-Pocket Portfolios · assortiert",
+          "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+          "branches": {
+            "bern-marktgasse": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 4,
+              "source_text": "Ca. 4 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bahnhof": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-christoffel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bubenberg": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-kirchenfeld": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-welle-7": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-lorraine": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-breitenrain": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-zaehringer": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-eigerplatz": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-burgernziel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-freudenberg": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-winkelried": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-egghoelzli": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ostermundigen-poststrasse": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "wabern-chly-wabere": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bremgarten-kalchacker": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "koeniz-blaeuacker": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ostermundigen": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-westfluegel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ittigen": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bachmaetteli": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "guemligen": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bethlehem": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "zollikofen": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-westside": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "hinterkappelen-chappelemaerit": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            }
+          }
+        },
+        "748972100000": {
+          "name": "Pokémon Deck Protector Sleeves · assortiert",
+          "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+          "branches": {
+            "bern-marktgasse": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 16,
+              "source_text": "Ca. 16 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bahnhof": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-christoffel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bubenberg": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 13,
+              "source_text": "Ca. 13 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-kirchenfeld": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-welle-7": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-lorraine": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-breitenrain": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 4,
+              "source_text": "Ca. 4 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-zaehringer": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 14,
+              "source_text": "Ca. 14 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-eigerplatz": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-burgernziel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-freudenberg": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-winkelried": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-egghoelzli": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ostermundigen-poststrasse": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "wabern-chly-wabere": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 16,
+              "source_text": "Ca. 16 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bremgarten-kalchacker": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 2,
+              "source_text": "Ca. 2 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "koeniz-blaeuacker": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 10,
+              "source_text": "Ca. 10 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ostermundigen": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 15,
+              "source_text": "Ca. 15 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-westfluegel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ittigen": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 5,
+              "source_text": "Ca. 5 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bachmaetteli": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 5,
+              "source_text": "Ca. 5 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "guemligen": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 23,
+              "source_text": "Ca. 23 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bethlehem": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 11,
+              "source_text": "Ca. 11 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "zollikofen": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 1,
+              "source_text": "Ca. 1 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-westside": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 6,
+              "source_text": "Ca. 6 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "hinterkappelen-chappelemaerit": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 7,
+              "source_text": "Ca. 7 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            }
+          }
+        },
+        "748680700000": {
+          "name": "Pokémon Deck Boxen · assortiert",
+          "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+          "branches": {
+            "bern-marktgasse": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 7,
+              "source_text": "Ca. 7 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bahnhof": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-christoffel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bubenberg": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 5,
+              "source_text": "Ca. 5 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-kirchenfeld": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-welle-7": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-lorraine": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-breitenrain": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 2,
+              "source_text": "Ca. 2 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-zaehringer": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 4,
+              "source_text": "Ca. 4 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-eigerplatz": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-burgernziel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-freudenberg": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-winkelried": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-egghoelzli": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ostermundigen-poststrasse": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "wabern-chly-wabere": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 7,
+              "source_text": "Ca. 7 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bremgarten-kalchacker": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "koeniz-blaeuacker": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 4,
+              "source_text": "Ca. 4 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ostermundigen": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 3,
+              "source_text": "Ca. 3 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-westfluegel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ittigen": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 4,
+              "source_text": "Ca. 4 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bachmaetteli": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 5,
+              "source_text": "Ca. 5 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "guemligen": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 5,
+              "source_text": "Ca. 5 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bethlehem": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 4,
+              "source_text": "Ca. 4 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "zollikofen": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-westside": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 5,
+              "source_text": "Ca. 5 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "hinterkappelen-chappelemaerit": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 7,
+              "source_text": "Ca. 7 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            }
+          }
+        },
+        "749706600000": {
+          "name": "Pokémon Mini Tin · assortiert",
+          "checked_at_local_approx": "2026-10-11T01:23:18+02:00",
+          "branches": {
+            "bern-marktgasse": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 10,
+              "source_text": "Ca. 10 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bahnhof": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-christoffel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bubenberg": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 3,
+              "source_text": "Ca. 3 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-kirchenfeld": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-welle-7": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-lorraine": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-breitenrain": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 4,
+              "source_text": "Ca. 4 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-zaehringer": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 4,
+              "source_text": "Ca. 4 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-eigerplatz": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-burgernziel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-freudenberg": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-winkelried": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-egghoelzli": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ostermundigen-poststrasse": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "wabern-chly-wabere": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bremgarten-kalchacker": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "koeniz-blaeuacker": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 10,
+              "source_text": "Ca. 10 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ostermundigen": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-westfluegel": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "ittigen": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bachmaetteli": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 2,
+              "source_text": "Ca. 2 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "guemligen": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 2,
+              "source_text": "Ca. 2 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-bethlehem": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 1,
+              "source_text": "Ca. 1 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "zollikofen": {
+              "status": "out_of_stock",
+              "approximate_quantity": null,
+              "source_text": "Nicht auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "bern-westside": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 2,
+              "source_text": "Ca. 2 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            },
+            "hinterkappelen-chappelemaerit": {
+              "status": "estimated_in_stock",
+              "approximate_quantity": 3,
+              "source_text": "Ca. 3 auf Lager",
+              "checked_at_local_approx": "2026-10-11T01:23:18+02:00"
+            }
+          }
+        }
+      }
+    }
+  }
+}

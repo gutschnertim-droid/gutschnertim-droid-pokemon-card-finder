@@ -1,0 +1,198 @@
+{
+  "checked_on": "2026-10-11",
+  "source": "https://filialen.migros.ch/de/",
+  "method": "Offizielle Standortsuche, Filter Supermarkt; Suchort Bern, initiale Ergebnisliste vollständig bis zum Ende gescrollt.",
+  "scope_note": "Migros-Supermarktfilialen in Bern und Agglomeration: 27 gefilterte Treffer; alle 27 wurden für sieben Produkte abgefragt. Fribourg: offizieller Finder zeigt 14 Standorte, hiervon deckt die Bestandsmomentaufnahme zehn ab.",
+  "regions": {
+    "bern": {
+      "query": "Bern",
+      "official_count_unfiltered": 50,
+      "official_count_filtered": 27,
+      "filter": "Supermarkt",
+      "stores": [
+        {
+          "id": "bern-marktgasse",
+          "name": "Bern - Marktgasse",
+          "address": "Marktgasse 46, 3011 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-bahnhof",
+          "name": "Bern - Bahnhof",
+          "address": "Bahnhofplatz 10, 3011 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-christoffel",
+          "name": "Bern - Christoffel",
+          "address": "Christoffelunterführung, 3011 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-bubenberg",
+          "name": "Bern - Bubenberg",
+          "address": "Bubenbergplatz 8, 3011 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-kirchenfeld",
+          "name": "Bern - Kirchenfeld",
+          "address": "Thunstrasse 18, 3005 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-welle-7",
+          "name": "Bern - Welle 7",
+          "address": "Schanzenstrasse 5, 3000 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-lorraine",
+          "name": "Bern - Lorraine",
+          "address": "Dammweg 9, 3013 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-breitenrain",
+          "name": "Bern - Breitenrain",
+          "address": "Breitenrainstrasse 11, 3013 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-zaehringer",
+          "name": "Bern - Zähringer",
+          "address": "Zähringerstrasse 43, 3012 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-eigerplatz",
+          "name": "Bern - Eigerplatz",
+          "address": "Seftigenstrasse 1, 3007 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-burgernziel",
+          "name": "Bern Burgernziel",
+          "address": "Thunstrasse 110, 3006 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-freudenberg",
+          "name": "Bern - Freudenberg",
+          "address": "Giacomettistrasse 15, 3006 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-winkelried",
+          "name": "Bern - Winkelried",
+          "address": "Wankdorffeldstrasse 71, 3014 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-egghoelzli",
+          "name": "Bern - Egghölzli",
+          "address": "Egghölzlistrasse 1 / 1a, 3006 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "ostermundigen-poststrasse",
+          "name": "Ostermundigen Poststrasse",
+          "address": "Poststr. 1, 3072 Ostermundigen",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "wabern-chly-wabere",
+          "name": "Wabern - Chly Wabere",
+          "address": "Seftigenstrasse 368, 3084 Wabern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bremgarten-kalchacker",
+          "name": "Bremgarten Kalchacker",
+          "address": "Kalchackerstrasse 9, 3047 Bremgarten b. Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "koeniz-blaeuacker",
+          "name": "Köniz - Bläuacker",
+          "address": "Bläuacker 10, 3098 Köniz",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "ostermundigen",
+          "name": "Ostermundigen",
+          "address": "Bernstrasse 114, 3072 Ostermundigen",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-westfluegel",
+          "name": "Bern Westflügel",
+          "address": "Bethlehemstrasse 40, 3027 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "ittigen",
+          "name": "Ittigen",
+          "address": "Talweg 6, 3063 Ittigen",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-bachmaetteli",
+          "name": "Bern - Bachmätteli",
+          "address": "Bottigenstrasse 7, 3018 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "guemligen",
+          "name": "Gümligen",
+          "address": "Turbenweg 1, 3073 Gümligen",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-bethlehem",
+          "name": "Bern - Bethlehem",
+          "address": "Riedbachstrasse 10, 3027 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "zollikofen",
+          "name": "Zollikofen",
+          "address": "Bernstrasse 103, 3052 Zollikofen",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "bern-westside",
+          "name": "Bern - Westside",
+          "address": "Gilberte-de-Courgenay-Platz 4, 3027 Bern",
+          "stock_status": "checked_all_7_products"
+        },
+        {
+          "id": "hinterkappelen-chappelemaerit",
+          "name": "Hinterkappelen - Chappelemärit",
+          "address": "Kappelenring 2, 3032 Hinterkappelen",
+          "stock_status": "checked_all_7_products"
+        }
+      ],
+      "stock_checked_branches": 27,
+      "products_checked": 7,
+      "checked_at_local_approx": "2026-10-11T01:00:00+02:00",
+      "query_centers": [
+        "3011 Bern",
+        "3072 Ostermundigen",
+        "3027 Bern",
+        "3052 Zollikofen",
+        "3084 Wabern"
+      ],
+      "capture_method": "Öffentliche Migros-Produktseite > Verfügbarkeit in Filialen prüfen > fünf PLZ-/Ortsabfragen; ohne Login.",
+      "scope_note": "Alle 27 gefilterten Migros-Supermärkte aus der offiziellen Bern-Suche wurden für alle 7 gelisteten Produkte in der öffentlichen Migros-Verfügbarkeitsabfrage abgedeckt. Fünf Suchzentren; Überschneidungen zusammengeführt. Bestände und „Ca.“-Mengen sind Migros-Schätzwerte, täglich aktualisiert und ohne Gewähr."
+    },
+    "fribourg": {
+      "query": "Fribourg",
+      "filter": "Supermarkt",
+      "official_count": 14,
+      "visible_list_count_at_capture": 9,
+      "stock_checked_branches": 10,
+      "coverage_note": "Migros-Suche zeigt 14 Standorte; sichtbare Ergebnisliste bei Erfassung enthielt 9 Filialen und lud nicht alle 14 in einem Durchlauf. Die Bestandsmomentaufnahme deckt zehn vom Produktdialog gelieferte Filialen ab. Deshalb keine Vollständigkeit für Bestände behauptet."
+    }
+  }
+}

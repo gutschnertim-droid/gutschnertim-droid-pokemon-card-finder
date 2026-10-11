@@ -1,0 +1,26 @@
+{
+  "retailer": "Migros",
+  "product": {
+    "name": "Pokémon · Booster Blister · assortiert",
+    "product_id": "746658000000",
+    "url": "https://www.migros.ch/de/product/746658000000"
+  },
+  "location_query": "1700 Fribourg",
+  "observed_on": "2026-10-11",
+  "observed_at_local_approx": "2026-10-11T00:03:00+02:00",
+  "capture_method": "Public product page > Verfügbarkeit in Filialen prüfen > location search; no login",
+  "source_notice": "Migros states in this availability dialog that data are updated once daily and are without guarantee.",
+  "quantity_precision": "approximate where a value is shown; no exact unit counts promised",
+  "branches": [
+    {"name": "Beauregard", "address": "Chemin de Béthléem 7", "coordinates": [46.800454, 7.144527], "status": "estimated_in_stock", "approximate_quantity": 8, "source_text": "Ca. 8 auf Lager"},
+    {"name": "Marché FR", "address": "Rue St-Pierre 2", "coordinates": [46.803414, 7.154547], "status": "out_of_stock", "approximate_quantity": null, "source_text": "Nicht auf Lager"},
+    {"name": "Pérolles Centre", "address": "Boulevard de Pérolles 21 A", "coordinates": [46.79978, 7.152313], "status": "estimated_in_stock", "approximate_quantity": 26, "source_text": "Ca. 26 auf Lager"},
+    {"name": "Schoenberg", "address": "Chemin Cité-des-Jardins 13A", "coordinates": [46.8097786, 7.1723464], "status": "estimated_in_stock", "approximate_quantity": 24, "source_text": "Ca. 24 auf Lager"},
+    {"name": "Ste-Thérèse", "address": "Route de Sainte-Thérèse 2a", "coordinates": [46.8101267, 7.1490104], "status": "estimated_in_stock", "approximate_quantity": 22, "source_text": "Ca. 22 auf Lager"},
+    {"name": "Gare Fribourg", "address": "Rue Louis-d'Affry 2", "coordinates": [46.803162, 7.150047], "status": "estimated_in_stock", "approximate_quantity": 23, "source_text": "Ca. 23 auf Lager"},
+    {"name": "Agy", "address": "route d'Agy 2", "coordinates": [46.820916, 7.153915], "status": "estimated_in_stock", "approximate_quantity": 10, "source_text": "Ca. 10 auf Lager"},
+    {"name": "Granges - Paccot", "address": "Route d'Englisberg 15b", "coordinates": [46.828877, 7.146965], "status": "estimated_in_stock", "approximate_quantity": 23, "source_text": "Ca. 23 auf Lager"},
+    {"name": "Cormanon", "address": "Rue du centre 4", "coordinates": [46.793611, 7.133234], "status": "estimated_in_stock", "approximate_quantity": 19, "source_text": "Ca. 19 auf Lager"},
+    {"name": "Marly", "address": "Route des Pralettes 1", "coordinates": [46.776065, 7.161175], "status": "estimated_in_stock", "approximate_quantity": 38, "source_text": "Ca. 38 auf Lager"}
+  ]
+}
