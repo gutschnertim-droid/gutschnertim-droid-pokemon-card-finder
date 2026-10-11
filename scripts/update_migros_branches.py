@@ -155,7 +155,7 @@ async def main(output: Path, baseline: Path) -> None:
     print(
         f"Erfasst: {len(branches)} reguläre M/MM/MMM-Supermärkte "
         f"aus {filtered_count} offiziellen Finder-Treffern. "
-        f"Formate: {dict(Counter(item['store_type'] for item in branches))}"
+        f"Formate: {dict(Counter(item['store_type'] for item in branches))}; alle Finder-Typen: {dict(Counter(row['store_type'] for row in seen.values()))}"
     )
 
 
