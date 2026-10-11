@@ -20,7 +20,7 @@ from playwright.async_api import async_playwright
 START_URL = "https://filialen.migros.ch/de/"
 FILTERED_URL = "https://filialen.migros.ch/de/filter:markets-%5Bsuper.voi.mp%5D/center:46.8182,8.2275/zoom:8/"
 ALLOWED_TYPES = {"M", "MM", "MMM"}
-MIN_EXPECTED = 500
+MIN_EXPECTED = 650
 
 
 def norm(value: str) -> str:
@@ -105,7 +105,7 @@ async def main(output: Path, baseline: Path) -> None:
             if stagnant > 20:
                 break
             await page.mouse.wheel(0, 500)
-            await page.wait_for_timeout(100)
+            await page.wait_for_timeout(450)
         await browser.close()
 
     if len(seen) != filtered_count:
