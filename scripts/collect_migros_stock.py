@@ -9,7 +9,7 @@ import asyncio, json, os, re, sys, tempfile
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
-from playwright.async_api import async_playwright
+from playwright.async_api import TimeoutError as PlaywrightTimeoutError, async_playwright
 
 ROOT = Path(__file__).resolve().parents[1]
 BRANCH_FILE = ROOT / 'data/branches.json'
@@ -45,7 +45,15 @@ def parse_dialog(text: str, branch: dict) -> dict | None:
 async def capture_product(page, product, branches):
     await page.goto(BASE + product['id'], wait_until='domcontentloaded', timeout=60000)
     button = page.get_by_role('button', name='Verfügbarkeit in Filialen prüfen')
-    await button.wait_for(state='visible', timeout=30000)
+    try:
+        await button.wait_for(state='visible', timeout=30000)
+    except PlaywrightTimeoutError as exc:
+        # Migros may serve a changed page or an access notice to automated clients.
+        # Record enough public page context in Actions to diagnose it without guessing.
+        title = await page.title()
+        body = (await page.locator('body').inner_text(timeout=5000)).strip()
+        print(f'Migros-Seitendiagnose: URL={page.url!r}; Titel={title!r}; Text={body[:1800]!r}', flush=True)
+        raise RuntimeError('Migros-Verfügbarkeitsbutton nach Laden der Produktseite nicht gefunden.') from exc
     await button.click(timeout=20000)
     modal = page.locator('#bottomSmallModal')
     field = page.locator('#store-search-autocomplete-form-input')
