@@ -58,6 +58,7 @@ public class MainActivity extends Activity {
     private ProgressBar loadingSpinner;
     private Button refresh;
     private Button notificationSettings;
+    private Button regionPicker;
     private Spinner productPicker;
     private Spinner stockFilterPicker;
     private EditText branchSearch;
@@ -68,7 +69,9 @@ public class MainActivity extends Activity {
     private LinearLayout resultList;
     private WebView webView;
     private LinearLayout root;
-    private JSONArray branches, products;
+    private JSONArray allBranches, branches, products;
+    private final LinkedHashMap<String, String> regionNames = new LinkedHashMap<>();
+    private final java.util.LinkedHashSet<String> selectedRegions = new java.util.LinkedHashSet<>();
     private int selectedProductIndex = 0, activeProductIndex = 0;
     private final Map<String, Map<String, JSONObject>> recordsByProduct = new LinkedHashMap<>();
     private final Map<String, String> checkedByProduct = new LinkedHashMap<>();
@@ -83,9 +86,12 @@ public class MainActivity extends Activity {
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
         try {
-            branches = new JSONObject(readAsset("branches.json")).getJSONArray("branches");
+            allBranches = new JSONObject(readAsset("branches.json")).getJSONArray("branches");
             products = new JSONObject(readAsset(CATALOG_ASSET)).getJSONArray("products");
-        } catch (Exception ex) { branches = new JSONArray(); products = new JSONArray(); }
+        } catch (Exception ex) { allBranches = new JSONArray(); products = new JSONArray(); }
+        collectRegions();
+        restoreSelectedRegions();
+        applyRegionFilter();
         loadDiscoveredProducts();
         buildScreen();
         webView = new WebView(this);
@@ -110,6 +116,7 @@ public class MainActivity extends Activity {
         root.addView(webView, new LinearLayout.LayoutParams(1, 1));
         loadSavedRecords();
         refresh.setOnClickListener(v -> beginCheck(false));
+        regionPicker.setOnClickListener(v -> showRegionPicker());
         notificationSettings.setOnClickListener(v -> showNotificationSettings());
         autoRefreshToggle.setChecked(getPreferences(MODE_PRIVATE).getBoolean("auto_refresh_enabled", true));
         autoRefreshToggle.setOnCheckedChangeListener((button, enabled) -> {
@@ -154,6 +161,7 @@ public class MainActivity extends Activity {
         root=new LinearLayout(this); root.setOrientation(LinearLayout.VERTICAL); root.setPadding(dp(16),dp(18),dp(16),dp(12)); root.setBackgroundColor(Color.rgb(248,248,252));
         TextView title=new TextView(this); title.setText("Pokémon Card Finder"); title.setTextSize(22); title.setTextColor(Color.rgb(35,32,48)); title.setTypeface(null,1); root.addView(title);
         subtitle=new TextView(this); subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Migros-Filialen · Anfrage direkt vom Handy"); subtitle.setTextSize(12); subtitle.setTextColor(Color.DKGRAY); root.addView(subtitle,params(dp(4)));
+        regionPicker=new Button(this); regionPicker.setTextSize(11); root.addView(regionPicker,params(dp(4))); updateRegionUi();
         productPicker=new Spinner(this); root.addView(productPicker,params(dp(8)));
         LinearLayout card=new LinearLayout(this); card.setGravity(Gravity.CENTER_VERTICAL); card.setBackgroundColor(Color.WHITE); card.setPadding(dp(10),dp(8),dp(10),dp(8));
         productImage=new ImageView(this); productImage.setScaleType(ImageView.ScaleType.FIT_CENTER); card.addView(productImage,new LinearLayout.LayoutParams(dp(88),dp(78)));
@@ -161,7 +169,7 @@ public class MainActivity extends Activity {
         productTitle=new TextView(this); productTitle.setTextSize(14); productTitle.setTextColor(Color.rgb(35,32,48)); productTitle.setTypeface(null,1); details.addView(productTitle);
         productPrice=new TextView(this); productPrice.setTextSize(14); productPrice.setTextColor(Color.rgb(96,72,220)); details.addView(productPrice,params(dp(3)));
         root.addView(card,params(dp(8)));
-        refresh=new Button(this); refresh.setText("Alle Artikel in allen Filialen abfragen"); root.addView(refresh,params(dp(8)));
+        refresh=new Button(this); refresh.setText("Ausgewählte Filialen abfragen"); root.addView(refresh,params(dp(8)));
         LinearLayout progressLine=new LinearLayout(this); progressLine.setGravity(Gravity.CENTER_VERTICAL);
         loadingSpinner=new ProgressBar(this); loadingSpinner.setIndeterminate(true); loadingSpinner.setVisibility(View.GONE); progressLine.addView(loadingSpinner,new LinearLayout.LayoutParams(dp(22),dp(22)));
         status=new TextView(this); status.setText("Noch keine vollständige Live-Abfrage."); status.setTextSize(12); status.setTextColor(Color.DKGRAY); LinearLayout.LayoutParams sp=new LinearLayout.LayoutParams(0,-2,1);sp.leftMargin=dp(8);progressLine.addView(status,sp);root.addView(progressLine,params(dp(8)));
@@ -182,13 +190,13 @@ public class MainActivity extends Activity {
     }
 
     private void beginCheck(boolean automatic) {
-        if(products.length()==0||branches.length()==0){status.setText("Produkt- oder Filialliste fehlt.");return;}
+        if(products.length()==0||branches.length()==0){status.setText("Bitte mindestens eine Region mit erfassten Filialen auswählen.");return;}
         if(queryRunning)return;
         getPreferences(MODE_PRIVATE).edit().putLong("auto_refresh_anchor_ms",System.currentTimeMillis()).apply();updateAutoRefreshInfo();
         queryRunning=true;activeProductIndex=0;selectedProductIndex=0;productPicker.setSelection(0);getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         renderProduct();
-        refresh.setEnabled(false);loadingSpinner.setVisibility(View.VISIBLE);
-        discoveringProducts=true;waitingForPage=true;status.setText("Suche nach neuen Pokémon-Kartenartikeln im Migros-Sortiment …");
+        refresh.setEnabled(false);regionPicker.setEnabled(false);loadingSpinner.setVisibility(View.VISIBLE);
+        discoveringProducts=true;waitingForPage=true;status.setText("Suche nach neuen Pokémon-Kartenartikeln; danach prüfe ich "+branches.length()+" Filialen in "+selectedRegionDescription()+" …");
         webView.loadUrl("https://www.migros.ch/de/brand/pokemon");
     }
 
@@ -210,6 +218,66 @@ public class MainActivity extends Activity {
         productPicker.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,names));
         if(subtitle!=null)subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Migros-Filialen · Katalog wird bei Aktualisierung ergänzt");
         if(selectedProductIndex<names.size())productPicker.setSelection(selectedProductIndex);
+    }
+
+    private void collectRegions(){
+        regionNames.clear();
+        for(int i=0;i<allBranches.length();i++){
+            JSONObject branch=allBranches.optJSONObject(i);if(branch==null)continue;
+            String id=branch.optString("region").trim();if(id.isEmpty())id="weitere";
+            if(!regionNames.containsKey(id))regionNames.put(id,regionLabel(id));
+        }
+    }
+    private String regionLabel(String id){
+        if(id.equalsIgnoreCase("bern"))return "Bern";
+        if(id.equalsIgnoreCase("fribourg")||id.equalsIgnoreCase("freiburg"))return "Fribourg";
+        String label=id.replace('_',' ').replace('-',' ');return label.isEmpty()?"Weitere":label.substring(0,1).toUpperCase(java.util.Locale.ROOT)+label.substring(1);
+    }
+    private void restoreSelectedRegions(){
+        String saved=getPreferences(MODE_PRIVATE).getString("selected_regions","");
+        if(saved.trim().isEmpty()){selectedRegions.addAll(regionNames.keySet());return;}
+        for(String item:saved.split(","))if(regionNames.containsKey(item))selectedRegions.add(item);
+    }
+    private void applyRegionFilter(){
+        branches=new JSONArray();
+        for(int i=0;i<allBranches.length();i++){
+            JSONObject branch=allBranches.optJSONObject(i);if(branch==null)continue;
+            String id=branch.optString("region");if(selectedRegions.contains(id))branches.put(branch);
+        }
+        if(regionPicker!=null)updateRegionUi();
+        if(subtitle!=null)subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Migros-Filialen ausgewählt · Anfrage direkt vom Handy");
+        if(refresh!=null)refresh.setText("Ausgewählte Filialen abfragen ("+branches.length()+")");
+        renderRecords();
+    }
+    private String selectedRegionDescription(){
+        if(selectedRegions.size()==regionNames.size())return "allen erfassten Regionen";
+        ArrayList<String> names=new ArrayList<>();for(String id:regionNames.keySet())if(selectedRegions.contains(id))names.add(regionNames.get(id));
+        return names.isEmpty()?"keiner Region":android.text.TextUtils.join(", ",names);
+    }
+    private void updateRegionUi(){
+        if(regionPicker==null)return;
+        regionPicker.setText("Regionen: "+selectedRegionDescription()+" · "+branches.length()+" Filialen");
+        regionPicker.setEnabled(!queryRunning);
+    }
+    private void showRegionPicker(){
+        if(queryRunning)return;
+        ArrayList<String> ids=new ArrayList<>(regionNames.keySet());
+        java.util.LinkedHashSet<String> draft=new java.util.LinkedHashSet<>(selectedRegions);
+        CharSequence[] labels=new CharSequence[ids.size()+1];boolean[] checked=new boolean[ids.size()+1];
+        labels[0]="Alle Regionen";checked[0]=draft.size()==ids.size();
+        for(int i=0;i<ids.size();i++){labels[i+1]=regionNames.get(ids.get(i));checked[i+1]=draft.contains(ids.get(i));}
+        AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Migros-Regionen auswählen")
+            .setMultiChoiceItems(labels,checked,(d,which,isChecked)->{
+                if(which==0){draft.clear();if(isChecked)draft.addAll(ids);}
+                else{String id=ids.get(which-1);if(isChecked)draft.add(id);else draft.remove(id);}
+                android.widget.ListView list=((AlertDialog)d).getListView();
+                list.setItemChecked(0,draft.size()==ids.size());
+                for(int i=0;i<ids.size();i++)list.setItemChecked(i+1,draft.contains(ids.get(i)));
+            }).setNegativeButton("Abbrechen",null).setPositiveButton("Übernehmen",(d,w)->{
+                selectedRegions.clear();selectedRegions.addAll(draft);
+                getPreferences(MODE_PRIVATE).edit().putString("selected_regions",android.text.TextUtils.join(",",selectedRegions)).apply();
+                applyRegionFilter();status.setText(branches.length()+" Migros-Filialen ausgewählt. Die nächste Abfrage prüft nur diese Filialen.");
+            }).create();dialog.show();
     }
 
     private void saveDiscoveredProducts(){
@@ -275,9 +343,10 @@ public class MainActivity extends Activity {
         dialog.setOnShowListener(v->dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(button->{boolean any=false;android.content.SharedPreferences.Editor editor=getPreferences(MODE_PRIVATE).edit();for(int i=0;i<rows.length;i++){editor.putBoolean(rows[i][0],boxes[i].isChecked());any|=boxes[i].isChecked();}editor.apply();if(any&&Build.VERSION.SDK_INT>=33&&checkSelfPermission("android.permission.POST_NOTIFICATIONS")!=PackageManager.PERMISSION_GRANTED)requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"},41);dialog.dismiss();}));dialog.show();
     }
 
-    private void finishAll(){int total=0,unknown=0;for(Map<String,JSONObject> rows:recordsByProduct.values()){total+=rows.size();for(JSONObject row:rows.values())if(row.optString("status").equals("unknown"))unknown++;}status.setText("Abfrage fertig · "+total+" von "+(products.length()*branches.length())+" Artikel-Filial-Datensätzen · "+unknown+" ohne lesbaren Status");checkedAt.setText("Zuletzt geprüft: "+now()+" · Ergebnisse lokal gespeichert");finishBusy();renderProduct();updateAutoRefreshInfo();scheduleAutomaticRefresh(0);}
+    private void finishAll(){int total=0,unknown=0;for(Map<String,JSONObject> rows:recordsByProduct.values())for(String regionBranchId:selectedBranchIds())if(rows.containsKey(regionBranchId)){total++;if(rows.get(regionBranchId).optString("status").equals("unknown"))unknown++;}status.setText("Abfrage fertig · "+total+" von "+(products.length()*branches.length())+" ausgewählten Artikel-Filial-Datensätzen · "+unknown+" ohne lesbaren Status");checkedAt.setText("Zuletzt geprüft: "+now()+" · Ergebnisse lokal gespeichert");finishBusy();renderProduct();updateAutoRefreshInfo();scheduleAutomaticRefresh(0);}
     private void finishError(String message){status.setText(message+". Bisherige Ergebnisse bleiben lokal gespeichert.");finishBusy();updateAutoRefreshInfo();scheduleAutomaticRefresh(0);}
-    private void finishBusy(){queryRunning=false;getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);loadingSpinner.setVisibility(View.GONE);refresh.setEnabled(true);}
+    private void finishBusy(){queryRunning=false;getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);loadingSpinner.setVisibility(View.GONE);refresh.setEnabled(true);updateRegionUi();}
+    private java.util.Set<String> selectedBranchIds(){java.util.HashSet<String> ids=new java.util.HashSet<>();for(int i=0;i<branches.length();i++){JSONObject b=branches.optJSONObject(i);if(b!=null)ids.add(b.optString("id"));}return ids;}
     private void scheduleAutomaticRefresh(long delayOverride){autoRefreshHandler.removeCallbacks(autoRefreshRunnable);if(!activityResumed||autoRefreshToggle==null||!autoRefreshToggle.isChecked())return;long anchor=getPreferences(MODE_PRIVATE).getLong("auto_refresh_anchor_ms",0);long delay=delayOverride>0?delayOverride:(anchor==0?0:Math.max(0,anchor+AUTO_REFRESH_INTERVAL_MS-System.currentTimeMillis()));autoRefreshHandler.postDelayed(autoRefreshRunnable,delay);updateAutoRefreshInfo();}
     private void checkAutomaticRefresh(){if(!activityResumed||autoRefreshToggle==null||!autoRefreshToggle.isChecked())return;if(queryRunning){scheduleAutomaticRefresh(60_000);return;}long anchor=getPreferences(MODE_PRIVATE).getLong("auto_refresh_anchor_ms",0);if(anchor==0||System.currentTimeMillis()-anchor>=AUTO_REFRESH_INTERVAL_MS){status.setText("Automatische Live-Aktualisierung läuft …");beginCheck(true);}else scheduleAutomaticRefresh(0);}
     private void updateAutoRefreshInfo(){if(autoRefreshInfo==null)return;if(autoRefreshToggle==null||!autoRefreshToggle.isChecked()){autoRefreshInfo.setText("Automatische Aktualisierung ausgeschaltet.");return;}long anchor=getPreferences(MODE_PRIVATE).getLong("auto_refresh_anchor_ms",0);if(anchor==0){autoRefreshInfo.setText("Erste automatische Prüfung startet beim Öffnen der App. App geöffnet lassen.");return;}long next=anchor+AUTO_REFRESH_INTERVAL_MS;autoRefreshInfo.setText("Nächste Prüfung ab "+DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(next))+" · läuft bei geöffneter App; nach Rückkehr wird eine fällige Prüfung gestartet.");}
@@ -332,4 +401,3 @@ public class MainActivity extends Activity {
     private LinearLayout.LayoutParams params(int top){LinearLayout.LayoutParams p=new LinearLayout.LayoutParams(-1,-2);p.topMargin=top;return p;}
     private int dp(int value){return(int)(value*getResources().getDisplayMetrics().density+0.5f);}
 }
-
