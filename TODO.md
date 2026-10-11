@@ -19,9 +19,9 @@
 - [x] Projektdateien, Bestandsdaten und Workflow auf `main` veröffentlicht (Commit `2d4959c`)
 - [x] Täglichen GitHub-Actions-Workflow (01:15 UTC) und manuellen Start im Repository eingerichtet
 - [x] Vollständigen Abdeckungsbericht je Region im Actions-Lauf ergänzen; Feed muss 259/259 Kombinationen enthalten
-- [ ] Ersten erfolgreichen Actions-Lauf prüfen (Connector liefert hier keine Workflow-Laufliste; über Actions-Seite verifizieren)
+- [ ] Ersten erfolgreichen Actions-Lauf prüfen: Nach dem geplanten Lauf ist noch kein neuer Bestands-Commit sichtbar; den Lauf im Actions-Tab kontrollieren und bei Aufforderung aktivieren
 - [x] Feed-URL im Frontend auf den öffentlichen GitHub-Feed gesetzt; Aktualisierung erfolgt beim Start und danach alle 15 Minuten
-- [ ] Private Site mit dem aktualisierten Frontend neu veröffentlichen
+- [ ] Private Site mit dem aktualisierten Frontend neu veröffentlichen (Quell-Sync aktuell nicht erreichbar)
 - [ ] Bei neuen Filialen Daten in `data/branches.json` ergänzen und Abdeckung im nächsten Lauf verifizieren
 
 ## Android-Installation
