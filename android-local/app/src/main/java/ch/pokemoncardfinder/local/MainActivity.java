@@ -231,6 +231,7 @@ public class MainActivity extends Activity {
     private String regionLabel(String id){
         if(id.equalsIgnoreCase("bern"))return "Bern";
         if(id.equalsIgnoreCase("fribourg")||id.equalsIgnoreCase("freiburg"))return "Fribourg";
+        if(id.equalsIgnoreCase("weitere-schweiz"))return "Weitere Filialen Schweiz";
         String label=id.replace('_',' ').replace('-',' ');return label.isEmpty()?"Weitere":label.substring(0,1).toUpperCase(java.util.Locale.ROOT)+label.substring(1);
     }
     private void restoreSelectedRegions(){
