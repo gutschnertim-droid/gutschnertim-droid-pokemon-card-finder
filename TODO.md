@@ -22,7 +22,20 @@
 - [ ] GitHub-Datenlauf verifizieren: Der Runner erhielt auch beim erneuten Versuch am 11.10.2026 um 21:00 CEST die Migros-Wartungsseite. Der Feed bleibt ein Snapshot vom 11.10.2026, 01:23 CEST (37 Filialen × 7 Artikel = 259 Kombinationen). Die normale Migros-Seite und der Verfügbarkeitsdialog waren im Browser erreichbar; wahrscheinlich netzwerkabhängige Antwort für den GitHub-Runner.
 - [x] Feed-URL im Frontend auf den öffentlichen GitHub-Feed gesetzt; Aktualisierung erfolgt beim Start und danach alle 15 Minuten
 - [ ] Private Site mit dem aktualisierten Frontend neu veröffentlichen (Quell-Sync aktuell nicht erreichbar)
-- [ ] Bei neuen Filialen Daten in `data/branches.json` ergänzen und Abdeckung im nächsten Lauf verifizieren
+- [x] Landesweite Migros-Liste wird aus dem offiziellen Filialfinder aufgebaut; Regionen werden beim Einlesen automatisch zugewiesen und neue Filialen erscheinen ohne manuelle Regionsliste
+
+## Regelmässige Aktualisierung auf dem Handy (hohe Priorität)
+
+Für die persönliche, lokale App muss der tägliche Abruf nicht über GitHub laufen. Der nächste Umsetzungsschritt ist Android WorkManager: Die App plant auf dem Galaxy einen wiederkehrenden lokalen Auftrag, der die gewählten Regionen/Artikel in kleinen, fortsetzbaren Paketen direkt bei Migros prüft und Ergebnisse samt Zeitstempel lokal speichert. Android führt solche Aufträge im Hintergrund nach eigener Akku- und Netzplanung aus; die Ausführung kann deshalb später als exakt 24 Stunden erfolgen.
+
+- [ ] Täglichen WorkManager-Auftrag mit Netzwerkbedingung und lokaler Regions-/Artikelauswahl einrichten
+- [ ] Abfragen paketweise fortsetzen und Fortschritt pro Artikel/Filiale dauerhaft speichern, auch nach App-Neustart
+- [ ] Preise, Rabattkennzeichen, neue Produkte und Bestände im selben Auftrag aktualisieren; neue Artikel vor Aufnahme validieren
+- [ ] Bei Wartungsseite, blockierter Anfrage oder Netzfehler alte Werte behalten und deutlich als veraltet markieren; nicht als aktuelle Daten ausgeben
+- [ ] Benachrichtigung nach erfolgreichem Lauf oder bei längerem Fehlschlag anbieten
+- [ ] Auf dem Galaxy S24 Ultra mit geschlossener App, Neustart, Energiesparmodus und wechselnder Verbindung prüfen
+
+ChatGPT selbst kann die lokale App-Datenbank eines ausgeschalteten/geschlossenen Geräts nicht täglich befüllen. GitHub Actions kann einen zentralen Feed pflegen und den APK-Build verteilen, der Migros-Runner erhielt zuletzt jedoch wieder eine Wartungsseite. Für diesen Nur-ein-Gerät-Anwendungsfall ist daher der lokale Android-Auftrag der bevorzugte Weg; GitHub bleibt für Quellcode, APK und optionalen öffentlichen Feed.
 
 ## Android-Installation
 
@@ -38,14 +51,16 @@
 - [x] Bei Aktualisierungen neue passende Produkte auf Migros' öffentlicher Pokémon-Seite suchen, lokal in den Katalog aufnehmen und im selben Durchlauf prüfen
 - [x] Android-Build erfolgreich; aktueller Testbuild als APK und ZIP im GitHub-Release veröffentlicht
 - [x] Produktsuche bei Aktualisierung auf Migros-Pokémon-Markenübersicht und Kategorie Sammelkartenspiele ausweiten; neue Treffer lokal aufnehmen und mit den ausgewählten Filialen prüfen
-- [ ] Benachrichtigungen/Bestandsprüfung auch bei geschlossener App ermöglichen; aktuelle Live-Abfragen benötigen die geöffnete App
+- [ ] Tägliche Bestands-/Preisprüfung bei geschlossener App mit WorkManager umsetzen; der aktuelle Vier-Stunden-Lauf funktioniert nur, solange die App geöffnet ist
 - [ ] Gezielte Abfrage für einen ausgewählten Artikel und eine Filiale ermöglichen
 - [ ] Unterbrochene lokale Abfragen fortsetzen können
-- [x] Offizielle Migros-Liste normaler M/MM/MMM-Supermärkte im Build aktualisieren; neueste Erfassung: 669 Filialen
+- [x] Offizielle Liste mit 669 normalen M/MM/MMM-Supermärkten einlesen und in 12 auswählbare Gebiete gruppieren (VOI und andere Formate ausgeschlossen)
+- [x] Fribourg aus dem Schweizer Filialbestand vervollständigen: 28 passende Filialadressen statt zuvor 10; PLZ-Prüfung grenzt Waadt-Filialen wie Oron korrekt aus
+- [x] Regionsfilter zeigt Bern, Fribourg, Zürich, Ostschweiz/St. Gallen, Waadt/Lausanne, Basel, Genf, Neuenburg, Aare, Zentralschweiz, Tessin und Wallis
 - [ ] Kartenansicht eingebaut (OpenStreetMap, Bestandsfarben/-filter und Google-Wegbeschreibung); Koordinaten für alle 669 Filialen noch vervollständigen und Geräteansicht testen. Migros-Koordinaten werden bei Live-Abfragen lokal zwischengespeichert.
 - [ ] Favoriten, Kaufnotizen und CSV-Verlauf ergänzen
 - [ ] Signierte Android-Version mit verlässlichem Aktualisierungsweg bereitstellen
-- [ ] Bestandsabfrage auch bei vollständig geschlossener App zuverlässig im Hintergrund ermöglichen
+- [ ] Lokale Hintergrundabfrage nach Akkuoptimierung, App-Neustart und längerer Nichtnutzung auf dem Galaxy verifizieren (Android plant Zeitpunkt best effort)
 
 ## Datenzugriff
 
@@ -60,13 +75,13 @@
 - [x] Interaktive App mit Migros-Momentaufnahme, Suche, Statusfilter, Filialstandorten und lokalen Kaufnotizen bauen
 - [x] Schematische Grafik durch eine echte, zoombare Google-Maps-Karte ersetzen; Karte folgt der Filiale und allen Gebieten
 - [x] Button mit Ladeanzeige zum Prüfen und Laden der neuesten Feed-Datei ergänzen
-- [x] Alle 37 derzeit erfassten Fribourg- und Bern-Filialen gemeinsam in einer Liste anzeigen; Region optional filtern
+- [x] Alle erfassten Schweizer Filialen in einer gemeinsamen Karte/Liste anzeigen; 12 Gebiete optional einzeln oder mehrfach filtern
 - [x] Feed-Verarbeitung zeigt geprüfte Verfügbarkeit und Nichtverfügbarkeit; alle derzeit gelisteten Filialen werden abgedeckt
 - [ ] Kartenradius mit der App-Liste synchronisieren und Standortdaten für alle Filialen bereitstellen; Google Maps zeigt derzeit eine zoombare Migros-Suche
 - [x] Original-Migros-Link für eine manuelle aktuelle Prüfung integrieren
 - [x] Frontend auf Region Bern erweitern; offizielle Suche „Bern“ mit Supermarktfilter ergab 27 Treffer in Stadt und Agglomeration
 - [x] Gehostete App fragt `data/stock-latest.json` beim Öffnen und alle 15 Minuten ohne Cache ab
-- [ ] Abgleich der vier zusätzlichen offiziellen Fribourg-Standorte mit der App-Filialliste (Bestandsabdeckung gilt für alle 37 derzeit eingetragenen Filialen)
+- [x] Fribourg-Filialen im landesweiten M/MM/MMM-Roster anhand Adresse/PLZ neu abgeglichen; Abfrage kann ausgewähltes Gebiet übernehmen
 - [x] Bestände für sieben Pokémon-Artikel in allen 27 erfassten Berner Filialen prüfen und in den Feed übernehmen (11.10.2026).
 - [x] UI-Collector erfasst alle Filialen aus `data/branches.json` für jeden Filialartikel; schreibt den Feed nur bei vollständiger Abdeckung (Playwright, ohne Login)
 - [x] Täglichen GitHub-Actions-Ablauf und manuellen Start im veröffentlichten Repository eingerichtet
@@ -85,7 +100,7 @@
 - [x] „Zuletzt geprüft“-Zeitpunkt pro Produkt in der App anzeigen
 - [x] Gehostete App mit Feed-Poller und Statusanzeige ausgestattet (15-Minuten-Abstand)
 - [x] Collector und täglicher Job implementiert. Der Collector befragt die öffentliche Produktseite ohne Login und schreibt bei Erfolg `regions.<region>.branches` sowie `regions.<region>.products.<id>.branches.<branchId>`.
-- [ ] GitHub-Runner kann Migros zurzeit nicht automatisch erfassen: Zwei Läufe erhielten den Seitentitel `maintenance` („Migros Online Website ... vorübergehend ... geschlossen“). Nicht umgehen; nach Wiederherstellung erneut prüfen.
+- [ ] GitHub-Runner kann Migros zurzeit nicht zuverlässig erfassen: Zwei Läufe erhielten den Seitentitel `maintenance`; prüfen, ob ein neuer vollständiger Lauf wieder möglich ist. Den Feed bis dahin als veraltet kennzeichnen.
 - [ ] Alte Daten bei erfolgreichem/fehlgeschlagenem Feed klar als veraltet kennzeichnen
 - [ ] Fehlermeldungen und alte Daten sichtbar kennzeichnen
 - [ ] Private Käufe optional mit Datum, Menge und Filiale erfassen
