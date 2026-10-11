@@ -37,7 +37,15 @@ async def main(output: Path, baseline: Path) -> None:
         page = await browser.new_page(locale="de-CH")
         page.set_default_timeout(20000)
         await page.goto(START_URL, wait_until="domcontentloaded", timeout=60000)
-        await page.get_by_role("button", name="FILTERN", exact=True).click()
+        await page.wait_for_timeout(5000)
+        filter_button = page.get_by_role("button", name=re.compile(r"filtern", re.I))
+        try:
+            await filter_button.wait_for(state="visible", timeout=20000)
+            await filter_button.click()
+        except Exception:
+            print(f"Migros-Filialfinder-Diagnose: URL={page.url!r}; Titel={await page.title()!r}; "
+                  f"Text={(await page.locator('body').inner_text())[:2500]!r}", flush=True)
+            raise
         await page.get_by_role("link", name="Supermärkte & Fachmärkte").click()
         await page.get_by_role("checkbox", name="SUPERMARKT", exact=True).check()
         count_button = page.get_by_role("button", name=re.compile(r"\d+\s+STANDORTE ANZEIGEN", re.I))
