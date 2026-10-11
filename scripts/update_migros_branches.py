@@ -22,6 +22,45 @@ FILTERED_URL = "https://filialen.migros.ch/de/filter:markets-%5Bsuper.voi.mp%5D/
 ALLOWED_TYPES = {"M", "MM", "MMM"}
 EXCLUDED_NAME_RE = re.compile(r"\bdaily\b|\bm[\s-]?express\b|\bm[\s-]?outlet\b|\bvoi\b|\bteo\b|\bmigros partner\b", re.I)
 MIN_EXPECTED = 650
+MIN_FRIBOURG_EXPECTED = 25
+
+# The three digit prefix is Migros' official store/cooperative code. It gives
+# useful selectable areas across Switzerland; FR postal codes are reassigned
+# to Fribourg even when they belong to the neighbouring Vaud cooperative.
+REGION_BY_COOPERATIVE = {
+    "002": "basel",
+    "003": "aare",
+    "004": "geneve",
+    "006": "vaud-lausanne",
+    "007": "zentralschweiz",
+    "008": "neuchatel",
+    "009": "ostschweiz-st-gallen",
+    "012": "ticino",
+    "013": "wallis",
+    "015": "zuerich",
+}
+FRIBOURG_POSTCODE = re.compile(
+    r"^(?:147[0-9]|154[0-9]|156[0-9]|161[1456789]|16[2-9][0-9]|"
+    r"17(?:[0-8][0-9]|9[0-7])|3210|3280)$"
+)
+BERN_POSTCODE = re.compile(r"^(?:25[0-9]{2}|26[0-9]{2}|27[0-9]{2}|3[0-8][0-9]{2}|49[0-5][0-9])$")
+
+
+def region_for_branch(official_store_id: str, address: str, old_branch: dict | None) -> str:
+    old_region = (old_branch or {}).get("region", "").casefold()
+    if old_region in {"fribourg", "freiburg"}:
+        return "fribourg"
+    if old_region == "bern":
+        return "bern"
+
+    postcode_match = re.search(r",\s*(\d{4})\s+", address)
+    postcode = postcode_match.group(1) if postcode_match else ""
+    cooperative = official_store_id[:3]
+    if FRIBOURG_POSTCODE.fullmatch(postcode):
+        return "fribourg"
+    if cooperative == "003" and BERN_POSTCODE.fullmatch(postcode):
+        return "bern"
+    return REGION_BY_COOPERATIVE.get(cooperative, f"region-{cooperative or 'unbekannt'}")
 
 
 def norm(value: str) -> str:
@@ -123,7 +162,7 @@ async def main(output: Path, baseline: Path) -> None:
         old_branch = old_by_name.get(norm(row["name"])) or old_by_address.get(norm(row["address"].split(",")[0]))
         slug = row["slug"]
         branch_id = old_branch.get("id") if old_branch else f"migros-{row['official_store_id']}"
-        region = old_branch.get("region") if old_branch and old_branch.get("region") in {"bern", "fribourg", "freiburg"} else "weitere-schweiz"
+        region = region_for_branch(row["official_store_id"], row["address"], old_branch)
         branch = {
             "id": branch_id,
             "name": row["name"],
@@ -138,8 +177,14 @@ async def main(output: Path, baseline: Path) -> None:
         branches.append(branch)
 
     branches.sort(key=lambda item: (item["region"], item["name"].casefold(), item["official_store_id"]))
+    region_counts = Counter(item["region"] for item in branches)
     if len(branches) < MIN_EXPECTED or any(item["store_type"] not in ALLOWED_TYPES for item in branches):
         raise RuntimeError(f"Unplausible Migros-Supermarktliste: {len(branches)} reguläre Filialen.")
+    if region_counts.get("fribourg", 0) < MIN_FRIBOURG_EXPECTED:
+        raise RuntimeError(
+            f"Fribourg-Abdeckung unplausibel: nur {region_counts.get('fribourg', 0)} Filialen "
+            f"(mindestens {MIN_FRIBOURG_EXPECTED} erwartet)."
+        )
 
     payload = {
         "retailer": "Migros",
