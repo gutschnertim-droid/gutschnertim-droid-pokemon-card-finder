@@ -20,7 +20,7 @@ from playwright.async_api import async_playwright
 START_URL = "https://filialen.migros.ch/de/"
 FILTERED_URL = "https://filialen.migros.ch/de/filter:markets-%5Bsuper.voi.mp%5D/center:46.8182,8.2275/zoom:8/"
 ALLOWED_TYPES = {"M", "MM", "MMM"}
-EXCLUDED_NAME_RE = re.compile(r"\\bdaily\\b|\\bm[\\s-]?express\\b|\\bm[\\s-]?outlet\\b|\\bvoi\\b|\\bteo\\b|\\bmigros partner\\b", re.I)
+EXCLUDED_NAME_RE = re.compile(r"\bdaily\b|\bm[\s-]?express\b|\bm[\s-]?outlet\b|\bvoi\b|\bteo\b|\bmigros partner\b", re.I)
 MIN_EXPECTED = 650
 
 
