@@ -23,6 +23,7 @@
 - [x] Feed-URL im Frontend auf den öffentlichen GitHub-Feed gesetzt; Aktualisierung erfolgt beim Start und danach alle 15 Minuten
 - [ ] Private Site mit dem aktualisierten Frontend neu veröffentlichen (Quell-Sync aktuell nicht erreichbar)
 - [x] Landesweite Migros-Liste wird aus dem offiziellen Filialfinder aufgebaut; Regionen werden beim Einlesen automatisch zugewiesen und neue Filialen erscheinen ohne manuelle Regionsliste
+- [ ] Filial-Roster in einem separaten, einzelnen Monatslauf dauerhaft ins Repository zurückschreiben; APK-Builds lesen die offizielle Liste aktuell nur temporär ein, damit parallele Builds keine Git-Push-Konflikte erzeugen
 
 ## Regelmässige Aktualisierung auf dem Handy (hohe Priorität)
 
