@@ -1,0 +1,26 @@
+# Pokémon Card Finder – To-do
+
+## Erledigt
+
+- [x] Live-Abfrage direkt auf dem Android-Gerät; kein eigener Server und kein Migros-Login nötig.
+- [x] Pokémon-TCG-Katalog mit Produktfotos und Preisen in der App anzeigen.
+- [x] Die derzeit erfassten 37 Filialen für die Abfrage verwenden.
+- [x] Fortschritt während der Abfrage anzeigen und Ergebnisse lokal speichern.
+- [x] Unbekannten Bestand getrennt von „Nicht auf Lager“ darstellen.
+- [x] Filialen nach Name oder Ort suchen, Bestände filtern und Statussummen anzeigen.
+
+## Als Nächstes
+
+1. [ ] Abfrage für ein einzelnes Produkt und eine ausgewählte Filiale ermöglichen, damit gezielte Aktualisierungen schneller gehen.
+2. [ ] Unterbrochene Abfragen nach erneutem Öffnen der App fortsetzen können.
+3. [ ] Offizielle Migros-Filialliste gegen den lokalen Bestand abgleichen und fehlende Filialen ergänzen.
+4. [ ] Pokémon-TCG-Sortiment systematisch nach Regionen erfassen und neue Produkte nachvollziehbar in den Katalog aufnehmen.
+5. [ ] Kartenansicht mit Filialstatus, Bestandsfilter und Wegbeschreibung ergänzen.
+6. [ ] Favoriten und optionale Hinweise bei Bestandsänderungen hinzufügen.
+7. [ ] Letzte Käufe manuell erfassen sowie lokalen Bestandsverlauf und CSV-Export anbieten.
+8. [ ] Zeitstempel und Fehlermeldungen pro Filiale deutlicher machen, damit alte und nicht gelesene Daten leicht erkennbar sind.
+9. [ ] Signierte Android-Version und einen verlässlichen Aktualisierungsweg für Installationen einrichten.
+
+## Umfangshinweis
+
+Der aktuelle Katalog enthält sieben im bisherigen Datensatz erfasste Artikel und ist keine vollständige schweizweite Migros-Sortimentserhebung. Auch die 37 Filialen sind der derzeit gebündelte App-Datensatz und müssen noch mit der offiziellen Filialliste abgeglichen werden.

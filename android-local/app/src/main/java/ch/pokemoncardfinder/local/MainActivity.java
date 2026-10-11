@@ -14,12 +14,15 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.BufferedReader;
@@ -34,10 +37,12 @@ import java.util.Map;
 /** Locally queries the Migros product dialog for all catalog products and bundled branches. */
 public class MainActivity extends Activity {
     private static final String CATALOG_ASSET = "catalog.json";
-    private TextView status, result, checkedAt, productTitle, productPrice;
+    private TextView status, result, checkedAt, productTitle, productPrice, stockSummary;
     private ProgressBar loadingSpinner;
     private Button refresh;
     private Spinner productPicker;
+    private Spinner stockFilterPicker;
+    private EditText branchSearch;
     private ImageView productImage;
     private WebView webView;
     private LinearLayout root;
@@ -81,6 +86,15 @@ public class MainActivity extends Activity {
             }
             @Override public void onNothingSelected(android.widget.AdapterView<?> parent) {}
         });
+        branchSearch.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) { renderRecords(); }
+            @Override public void afterTextChanged(Editable s) {}
+        });
+        stockFilterPicker.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) { renderRecords(); }
+            @Override public void onNothingSelected(android.widget.AdapterView<?> parent) {}
+        });
         renderProduct();
     }
 
@@ -101,6 +115,13 @@ public class MainActivity extends Activity {
         loadingSpinner=new ProgressBar(this); loadingSpinner.setIndeterminate(true); loadingSpinner.setVisibility(View.GONE); progressLine.addView(loadingSpinner,new LinearLayout.LayoutParams(dp(22),dp(22)));
         status=new TextView(this); status.setText("Noch keine vollständige Live-Abfrage."); status.setTextSize(12); status.setTextColor(Color.DKGRAY); LinearLayout.LayoutParams sp=new LinearLayout.LayoutParams(0,-2,1);sp.leftMargin=dp(8);progressLine.addView(status,sp);root.addView(progressLine,params(dp(8)));
         checkedAt=new TextView(this); checkedAt.setText("Die Migros-Abfragen und gespeicherten Ergebnisse bleiben auf diesem Gerät."); checkedAt.setTextSize(10); checkedAt.setTextColor(Color.GRAY); root.addView(checkedAt,params(dp(3)));
+        stockSummary=new TextView(this); stockSummary.setTextSize(11); stockSummary.setTextColor(Color.rgb(60,56,72)); root.addView(stockSummary,params(dp(8)));
+        LinearLayout filters=new LinearLayout(this); filters.setGravity(Gravity.CENTER_VERTICAL);
+        branchSearch=new EditText(this); branchSearch.setSingleLine(true); branchSearch.setTextSize(12); branchSearch.setHint("Filiale oder Ort suchen");
+        LinearLayout.LayoutParams searchParams=new LinearLayout.LayoutParams(0,dp(48),1); filters.addView(branchSearch,searchParams);
+        stockFilterPicker=new Spinner(this); String[] filterOptions={"Alle", "Verfügbar", "Nicht auf Lager", "Nicht eindeutig", "Noch ungeprüft"};
+        stockFilterPicker.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,filterOptions));
+        LinearLayout.LayoutParams filterParams=new LinearLayout.LayoutParams(dp(150),-2); filterParams.leftMargin=dp(6); filters.addView(stockFilterPicker,filterParams); root.addView(filters,params(dp(4)));
         result=new TextView(this); result.setTextSize(12); result.setTextColor(Color.rgb(35,32,48)); ScrollView scroll=new ScrollView(this);scroll.addView(result);LinearLayout.LayoutParams rp=new LinearLayout.LayoutParams(-1,0,1);rp.topMargin=dp(8);root.addView(scroll,rp);
         TextView note=new TextView(this);note.setText("Katalog: 7 im Datensatz erfasste Artikel für PLZ 1700; das ist keine schweizweite Sortimentserhebung. Migros-Bestände sind Momentaufnahmen, Ca.-Mengen sind Schätzungen.");note.setTextSize(9);note.setTextColor(Color.GRAY);root.addView(note,params(dp(6)));
         setContentView(root);
@@ -149,7 +170,30 @@ public class MainActivity extends Activity {
     private String now(){return DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT).format(new Date());}
 
     private void renderProduct(){if(products==null||products.length()==0||productTitle==null)return;JSONObject p=products.optJSONObject(selectedProductIndex);if(p==null)return;productTitle.setText(p.optString("name"));productPrice.setText(String.format(java.util.Locale.GERMANY,"CHF %.2f",p.optDouble("price_chf",0)));loadImage(p.optString("image_url"));renderRecords();String checked=checkedByProduct.get(p.optString("id"));if(checked!=null)checkedAt.setText("Dieser Artikel zuletzt geprüft: "+checked+" · lokal gespeichert");}
-    private void renderRecords(){if(result==null)return;Map<String,JSONObject> rows=recordsByProduct.get(currentProductId());StringBuilder out=new StringBuilder();for(int i=0;i<branches.length();i++){JSONObject b=branches.optJSONObject(i);JSONObject row=rows==null?null:rows.get(b.optString("id"));out.append(row==null?"◌  Noch nicht geprüft":label(row)).append('\n').append(b.optString("name")).append(" · ").append(b.optString("address")).append("\n\n");}result.setText(out.toString());}
+    private void renderRecords(){
+        if(result==null)return;
+        Map<String,JSONObject> rows=recordsByProduct.get(currentProductId());
+        String query=branchSearch==null?"":branchSearch.getText().toString().trim().toLowerCase(java.util.Locale.ROOT);
+        String filter=stockFilterPicker==null||stockFilterPicker.getSelectedItem()==null?"Alle":stockFilterPicker.getSelectedItem().toString();
+        int available=0,outOfStock=0,unclear=0,unchecked=0; StringBuilder out=new StringBuilder();
+        for(int i=0;i<branches.length();i++){
+            JSONObject b=branches.optJSONObject(i); if(b==null)continue;
+            JSONObject row=rows==null?null:rows.get(b.optString("id")); String state=row==null?"unchecked":row.optString("status","unknown");
+            if(state.equals("in_stock")||state.equals("estimated_in_stock"))available++;else if(state.equals("out_of_stock"))outOfStock++;else if(state.equals("unknown"))unclear++;else unchecked++;
+            String searchable=(b.optString("name")+" "+b.optString("address")).toLowerCase(java.util.Locale.ROOT);
+            if(!searchable.contains(query)||!matchesFilter(filter,state))continue;
+            out.append(row==null?"◌  Noch nicht geprüft":label(row)).append('\n').append(b.optString("name")).append(" · ").append(b.optString("address")).append("\n\n");
+        }
+        if(stockSummary!=null)stockSummary.setText("Verfügbar: "+available+" · Nicht auf Lager: "+outOfStock+" · Unklar: "+unclear+" · Offen: "+unchecked);
+        result.setText(out.length()==0?"Keine Filiale passt zu Suche und Filter.":out.toString());
+    }
+    private boolean matchesFilter(String filter,String state){
+        if(filter.equals("Verfügbar"))return state.equals("in_stock")||state.equals("estimated_in_stock");
+        if(filter.equals("Nicht auf Lager"))return state.equals("out_of_stock");
+        if(filter.equals("Nicht eindeutig"))return state.equals("unknown");
+        if(filter.equals("Noch ungeprüft"))return state.equals("unchecked");
+        return true;
+    }
     private String label(JSONObject row){String s=row.optString("status");if(s.equals("out_of_stock"))return "○  Nicht auf Lager";if(s.equals("estimated_in_stock"))return "●  Ca. "+row.optInt("quantity")+" auf Lager";if(s.equals("in_stock"))return "●  Auf Lager (Menge unbekannt)";return "?  Nicht eindeutig geprüft";}
     private void loadImage(String imageUrl){productImage.setImageDrawable(null);if(imageUrl==null||imageUrl.isEmpty())return;new Thread(()->{try{Bitmap bitmap=BitmapFactory.decodeStream(new URL(imageUrl).openStream());runOnUiThread(()->productImage.setImageBitmap(bitmap));}catch(Exception ignored){}}).start();}
     private void saveLocal(){try{JSONObject all=new JSONObject();for(String id:recordsByProduct.keySet())all.put(id,new JSONObject(recordsByProduct.get(id)));JSONObject times=new JSONObject(checkedByProduct);getPreferences(MODE_PRIVATE).edit().putString("all_stock_json",all.toString()).putString("all_checked_json",times.toString()).apply();}catch(Exception ignored){}}

@@ -28,6 +28,13 @@
 
 - [ ] PWA-Installation über HTTPS auf dem Galaxy S24 Ultra prüfen
 - [ ] Native APK/TWA-Alternative und Signierung bewerten, falls PWA-Installation nicht genügt
+- [x] Lokale Android-App um Filialsuche, Bestandsfilter und Statussummen erweitern
+- [ ] Gezielte Abfrage für einen ausgewählten Artikel und eine Filiale ermöglichen
+- [ ] Unterbrochene lokale Abfragen fortsetzen können
+- [ ] Offizielle Filialliste mit dem lokalen App-Datensatz abgleichen
+- [ ] Kartenansicht mit Verfügbarkeitsfilter und Wegbeschreibung ergänzen
+- [ ] Favoriten, optionale Bestandsbenachrichtigungen, Kaufnotizen und CSV-Verlauf ergänzen
+- [ ] Signierte Android-Version mit verlässlichem Aktualisierungsweg bereitstellen
 
 ## Datenzugriff
 

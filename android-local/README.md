@@ -10,4 +10,6 @@ Der Repository-Workflow baut nach Änderungen am Ordner `android-local/` eine De
 
 App öffnen, gewünschten Artikel im Auswahlfeld wählen und **Alle Artikel in allen Filialen abfragen** antippen. Die App fragt alle sieben Produktseiten nacheinander ab und sucht die Filialen jeweils im Verfügbarkeitsdialog. Erfasste Ergebnisse werden lokal gespeichert und erscheinen fortlaufend in der Liste. Unlesbare oder fehlende Antworten stehen ausdrücklich als „Nicht eindeutig geprüft“ und werden nicht als „Nicht auf Lager“ ausgegeben. Bei einer Migros-Wartungs- oder Sperrseite wird der Lauf gestoppt; bereits erfasste Ergebnisse bleiben lokal gespeichert.
 
+Die Filialliste kann nach Filialname oder Ort durchsucht und nach Verfügbarkeit, Nichtverfügbarkeit, unklarem Status oder noch nicht erfolgter Prüfung gefiltert werden. Eine Übersicht zählt die vier Statusgruppen für den ausgewählten Artikel. Weitere geplante Erweiterungen stehen in [TODO.md](TODO.md).
+
 Die Produktbilder werden von der Migros-Bildquelle geladen. Android kann Hintergrundaufgaben verzögern; die Schaltfläche startet die Abfrage verlässlich auf Wunsch. Bei 259 Kombinationen kann ein Lauf länger dauern. Die App sollte dabei geöffnet bleiben.
