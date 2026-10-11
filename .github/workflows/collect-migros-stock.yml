@@ -27,6 +27,48 @@ jobs:
       - run: pip install -r requirements-collector.txt
       - run: python -m playwright install --with-deps chromium
       - run: python scripts/collect_migros_stock.py
+      - name: Erfassungsstand in der Job-Zusammenfassung zeigen
+        run: |
+          python - <<'PY'
+          import json
+          import os
+
+          with open("data/stock-latest.json", encoding="utf-8") as file:
+              feed = json.load(file)
+
+          regions = feed.get("regions", {})
+          pairs = sum(
+              len(product.get("branches", {}))
+              for region in regions.values()
+              for product in region.get("products", {}).values()
+          )
+          expected = feed.get("total_branches", 0) * feed.get("total_products", 0)
+          if not expected or feed.get("checked_pairs") != expected or pairs != expected:
+              raise SystemExit(
+                  f"Feed-Abdeckung unvollständig: {pairs}/{expected} Datensätze, "
+                  f"Zähler={feed.get('checked_pairs')}"
+              )
+
+          lines = [
+              "## Migros-Bestandsabfrage",
+              f"- Stand: {feed.get('checked_at_local_approx', 'unbekannt')}",
+              f"- Abdeckung: {pairs}/{expected} Produkt-Filial-Kombinationen",
+              "",
+              "| Gebiet | Filialen | Artikel | Kombinationen |",
+              "| --- | ---: | ---: | ---: |",
+          ]
+          for name, region in regions.items():
+              branch_count = len(region.get("branches", []))
+              product_count = len(region.get("products", {}))
+              lines.append(
+                  f"| {name} | {branch_count} | {product_count} "
+                  f"| {branch_count * product_count} |"
+              )
+
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as file:
+              file.write("\n".join(lines) + "\n")
+          print(f"Feed vollständig: {pairs}/{expected} Kombinationen.")
+          PY
       - name: Feed speichern
         run: |
           git config user.name "github-actions[bot]"
