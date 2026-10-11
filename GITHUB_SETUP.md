@@ -12,4 +12,4 @@ Der ChatGPT Codex Connector ist auf dem GitHub-Konto installiert und hat Zugriff
 
 `.github/workflows/collect-migros-stock.yml` ist täglich auf 01:15 UTC eingestellt und kann in GitHub Actions manuell gestartet werden. Der Collector fragt alle Filialen in `data/branches.json` für jeden Filialartikel ab und schreibt den Feed nur bei vollständiger Erfassung.
 
-Der erste erfolgreiche Actions-Lauf muss noch geprüft werden. Ebenfalls offen ist, ob neue Feeds automatisch in die bisherige private App-Veröffentlichung übernommen werden. Die App kann den Feed aus dem GitHub-Repository nicht automatisch abrufen, solange diese Verbindung nicht eingerichtet ist.
+Der erste erfolgreiche Actions-Lauf muss noch geprüft werden. Das Frontend lädt den neuesten öffentlichen Feed aus diesem Repository beim Öffnen und alle 15 Minuten; der bisherige Hosting-Feed ist die Rückfalloption. Das aktualisierte Frontend muss noch in der privaten Site veröffentlicht werden.

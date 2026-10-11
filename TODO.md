@@ -7,7 +7,8 @@
 - [x] Interaktive Vorschau mit Karten-/Listenansicht begonnen
 - [x] Bestandsstatus von Kaufnotizen getrennt
 - [ ] Prototyp auf Smartphone testen und Filialnamen/-standorte verifizieren
-- [ ] Prüfen, ob neue Feeds automatisch in die bestehende private Site-Veröffentlichung gelangen
+- [x] Frontend liest den neuesten Feed direkt aus GitHub; private Hosting-Datei bleibt Rückfalloption
+- [ ] Aktualisiertes Frontend auf der bestehenden privaten Site veröffentlichen
 
 ## GitHub-Repository und Automatik
 
@@ -17,8 +18,9 @@
 - [x] ChatGPT Codex Connector auf dem GitHub-Konto installiert und Repository-Zugriff erteilt
 - [x] Projektdateien, Bestandsdaten und Workflow auf `main` veröffentlicht (Commit `2d4959c`)
 - [x] Täglichen GitHub-Actions-Workflow (01:15 UTC) und manuellen Start im Repository eingerichtet
-- [ ] Ersten erfolgreichen Actions-Lauf prüfen
-- [ ] Prüfen, dass neue Feeds automatisch in die private App-Veröffentlichung gelangen
+- [ ] Ersten erfolgreichen Actions-Lauf prüfen (Connector liefert hier keine Workflow-Laufliste; über Actions-Seite verifizieren)
+- [x] Feed-URL im Frontend auf den öffentlichen GitHub-Feed gesetzt; Aktualisierung erfolgt beim Start und danach alle 15 Minuten
+- [ ] Private Site mit dem aktualisierten Frontend neu veröffentlichen
 - [ ] Bei neuen Filialen Daten in `data/branches.json` ergänzen und Abdeckung im nächsten Lauf verifizieren
 
 ## Android-Installation
