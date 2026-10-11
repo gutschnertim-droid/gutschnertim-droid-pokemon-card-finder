@@ -36,6 +36,7 @@
 - [x] Benachrichtigungen in der Android-App einzeln für Restock, steigenden Bestand, Preisänderungen und neue Rabattaktionen einstellbar machen
 - [x] Eigenes Launcher-Symbol für die App hinzufügen
 - [x] Bei Aktualisierungen neue passende Produkte auf Migros' öffentlicher Pokémon-Seite suchen, lokal in den Katalog aufnehmen und im selben Durchlauf prüfen
+- [x] Android-Build erfolgreich; aktueller Testbuild als APK und ZIP im GitHub-Release veröffentlicht
 - [ ] Produktentdeckung auf Migros-Kategorieseiten und Suchergebnisse ausweiten; die neue Suche hängt davon ab, welche Treffer die öffentliche Pokémon-Seite anzeigt
 - [ ] Benachrichtigungen/Bestandsprüfung auch bei geschlossener App ermöglichen; aktuelle Live-Abfragen benötigen die geöffnete App
 - [ ] Gezielte Abfrage für einen ausgewählten Artikel und eine Filiale ermöglichen

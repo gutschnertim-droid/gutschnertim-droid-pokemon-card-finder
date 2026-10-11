@@ -15,7 +15,7 @@
 - [x] Benachrichtigungen einzeln für Restock, steigenden Bestand, sinkenden/steigenden Preis und Aktionen einstellbar machen.
 - [x] Eigenes Pokémon-Card-Finder-Launcher-Symbol statt Android-Standardsymbol einbauen.
 - [x] Bei jeder Aktualisierung die Migros-Pokémon-Produktseite nach neuen Karten-/TCG-Artikeln durchsuchen, lokal ergänzen und im selben Lauf mitprüfen.
-- [ ] Nach erfolgreichem Build einen stabilen Direktlink zur aktualisierten APK bereitstellen.
+- [x] Nach erfolgreichem Build einen stabilen Direktlink zur APK und zur ZIP-Datei mit der APK bereitstellen.
 - [x] Bestände automatisch alle vier Stunden neu abfragen, wenn die App geöffnet ist; eine fällige Prüfung beim Zurückkehren starten.
 
 ## Als Nächstes

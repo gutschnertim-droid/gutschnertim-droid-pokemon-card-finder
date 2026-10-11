@@ -4,7 +4,7 @@ Diese native App fragt Pokémon-TCG-Artikel auf den Migros-Produktseiten direkt 
 
 ## APK herunterladen oder selbst bauen
 
-Der Repository-Workflow baut nach Änderungen am Ordner `android-local/` eine Debug-APK. Nach erfolgreichem Build steht sie direkt zum Download bereit: https://github.com/gutschnertim-droid/gutschnertim-droid-pokemon-card-finder/releases/download/android-test-latest/app-debug.apk . **Bestandsanfragen und Ergebnisanzeige laufen auf dem Handy direkt bei Migros.** Alternativ benötigt ein lokaler Bau Android Studio (JDK 17, Android SDK 35): Ordner in Android Studio öffnen und **Build → Build APK(s)** wählen. Die Datei liegt danach unter `app/build/outputs/apk/debug/app-debug.apk`. Auf dem Android-Gerät muss die Installation von APK-Dateien erlaubt werden.
+Der Repository-Workflow baut nach Änderungen am Ordner `android-local/` eine Debug-APK und ein ZIP mit dieser APK. Downloads: [ZIP für Android](https://github.com/gutschnertim-droid/gutschnertim-droid-pokemon-card-finder/releases/download/android-test-latest/app-debug.zip) · [APK direkt](https://github.com/gutschnertim-droid/gutschnertim-droid-pokemon-card-finder/releases/download/android-test-latest/app-debug.apk). **Bestandsanfragen und Ergebnisanzeige laufen auf dem Handy direkt bei Migros.** Alternativ benötigt ein lokaler Bau Android Studio (JDK 17, Android SDK 35): Ordner in Android Studio öffnen und **Build → Build APK(s)** wählen. Die Datei liegt danach unter `app/build/outputs/apk/debug/app-debug.apk`. Auf dem Android-Gerät muss die Installation von APK-Dateien erlaubt werden.
 
 ## Test
 

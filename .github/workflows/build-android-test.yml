@@ -23,10 +23,14 @@ jobs:
       - name: Build debug APK
         working-directory: android-local
         run: gradle --no-daemon :app:assembleDebug
+      - name: Package APK for phone download
+        run: zip -j android-local/app/build/outputs/apk/debug/app-debug.zip android-local/app/build/outputs/apk/debug/app-debug.apk
       - uses: actions/upload-artifact@v4
         with:
           name: pokemon-card-finder-android-test
-          path: android-local/app/build/outputs/apk/debug/app-debug.apk
+          path: |
+            android-local/app/build/outputs/apk/debug/app-debug.apk
+            android-local/app/build/outputs/apk/debug/app-debug.zip
           if-no-files-found: error
           retention-days: 14
       - name: Publish direct APK download
@@ -35,12 +39,13 @@ jobs:
         run: |
           release_tag=android-test-latest
           apk_path=android-local/app/build/outputs/apk/debug/app-debug.apk
+          zip_path=android-local/app/build/outputs/apk/debug/app-debug.zip
           if ! gh release view "$release_tag" >/dev/null 2>&1; then
-            gh release create "$release_tag" "$apk_path" \
+            gh release create "$release_tag" "$apk_path" "$zip_path" \
               --target "$GITHUB_SHA" \
               --title "Pokémon Card Finder – Android Test" \
               --notes "Automatisch gebaute Android-Testversion. Der Direktlink wird bei jedem erfolgreichen Build aktualisiert." \
               --prerelease
           else
-            gh release upload "$release_tag" "$apk_path" --clobber
+            gh release upload "$release_tag" "$apk_path" "$zip_path" --clobber
           fi
