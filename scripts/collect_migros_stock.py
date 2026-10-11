@@ -91,7 +91,12 @@ async def capture_product(page, product, branches):
 async def main():
     branches = json.loads(BRANCH_FILE.read_text())['branches']
     catalog = json.loads(CATALOG_FILE.read_text())
-    products = [p for p in catalog['products'] if p.get('store')]
+    # The catalog uses `in_store_assortment`; older snapshots may use `store`.
+    # Do not silently discard every product when the schema uses the newer key.
+    products = [
+        p for p in catalog.get('products', [])
+        if p.get('in_store_assortment', p.get('store', False))
+    ]
     if not branches or not products:
         raise RuntimeError('Filialliste oder Filialproduktkatalog ist leer.')
     # Existing regions are inferred from branch IDs; all other/new IDs are assigned
