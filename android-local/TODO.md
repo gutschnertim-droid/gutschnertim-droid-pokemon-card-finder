@@ -8,6 +8,11 @@
 - [x] Fortschritt während der Abfrage anzeigen und Ergebnisse lokal speichern.
 - [x] Unbekannten Bestand getrennt von „Nicht auf Lager“ darstellen.
 - [x] Filialen nach Name oder Ort suchen, Bestände filtern und Statussummen anzeigen.
+- [x] Verfügbare Filialen mit grünem Punkt kennzeichnen.
+- [x] Nach Filialen mit dem höchsten erfassten Bestand filtern und sortieren.
+- [x] Bei erkanntem Restock sowie steigendem oder sinkendem Bestand ein Symbol anzeigen.
+- [x] Produktseiten nach Livepreisen und sichtbaren Rabattpreisen auslesen; Preisänderungen markieren.
+- [x] Nach erfolgreichem Build einen stabilen Direktlink zur APK bereitstellen.
 
 ## Als Nächstes
 
@@ -16,8 +21,8 @@
 3. [ ] Offizielle Migros-Filialliste gegen den lokalen Bestand abgleichen und fehlende Filialen ergänzen.
 4. [ ] Pokémon-TCG-Sortiment systematisch nach Regionen erfassen und neue Produkte nachvollziehbar in den Katalog aufnehmen.
 5. [ ] Kartenansicht mit Filialstatus, Bestandsfilter und Wegbeschreibung ergänzen.
-6. [ ] Favoriten und optionale Hinweise bei Bestandsänderungen hinzufügen.
-7. [ ] Letzte Käufe manuell erfassen sowie lokalen Bestandsverlauf und CSV-Export anbieten.
+6. [ ] Echte Android-Benachrichtigungen für Restock und Preisänderungen optional ergänzen.
+7. [ ] Favoriten, manuelle Kaufnotizen und CSV-Verlauf ergänzen.
 8. [ ] Zeitstempel und Fehlermeldungen pro Filiale deutlicher machen, damit alte und nicht gelesene Daten leicht erkennbar sind.
 9. [ ] Signierte Android-Version und einen verlässlichen Aktualisierungsweg für Installationen einrichten.
 
