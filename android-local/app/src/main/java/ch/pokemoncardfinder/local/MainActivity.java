@@ -169,7 +169,7 @@ public class MainActivity extends Activity {
         productTitle=new TextView(this); productTitle.setTextSize(14); productTitle.setTextColor(Color.rgb(35,32,48)); productTitle.setTypeface(null,1); details.addView(productTitle);
         productPrice=new TextView(this); productPrice.setTextSize(14); productPrice.setTextColor(Color.rgb(96,72,220)); details.addView(productPrice,params(dp(3)));
         root.addView(card,params(dp(8)));
-        refresh=new Button(this); refresh.setText("Ausgewählte Filialen abfragen"); root.addView(refresh,params(dp(8)));
+        refresh=new Button(this); refresh.setText("Ausgewählte Filialen abfragen ("+branches.length()+")"); refresh.setEnabled(branches.length()>0); root.addView(refresh,params(dp(8)));
         LinearLayout progressLine=new LinearLayout(this); progressLine.setGravity(Gravity.CENTER_VERTICAL);
         loadingSpinner=new ProgressBar(this); loadingSpinner.setIndeterminate(true); loadingSpinner.setVisibility(View.GONE); progressLine.addView(loadingSpinner,new LinearLayout.LayoutParams(dp(22),dp(22)));
         status=new TextView(this); status.setText("Noch keine vollständige Live-Abfrage."); status.setTextSize(12); status.setTextColor(Color.DKGRAY); LinearLayout.LayoutParams sp=new LinearLayout.LayoutParams(0,-2,1);sp.leftMargin=dp(8);progressLine.addView(status,sp);root.addView(progressLine,params(dp(8)));
@@ -247,6 +247,7 @@ public class MainActivity extends Activity {
         if(regionPicker!=null)updateRegionUi();
         if(subtitle!=null)subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Migros-Filialen ausgewählt · Anfrage direkt vom Handy");
         if(refresh!=null)refresh.setText("Ausgewählte Filialen abfragen ("+branches.length()+")");
+        if(refresh!=null)refresh.setEnabled(!queryRunning&&branches.length()>0);
         renderRecords();
     }
     private String selectedRegionDescription(){
@@ -345,7 +346,7 @@ public class MainActivity extends Activity {
 
     private void finishAll(){int total=0,unknown=0;for(Map<String,JSONObject> rows:recordsByProduct.values())for(String regionBranchId:selectedBranchIds())if(rows.containsKey(regionBranchId)){total++;if(rows.get(regionBranchId).optString("status").equals("unknown"))unknown++;}status.setText("Abfrage fertig · "+total+" von "+(products.length()*branches.length())+" ausgewählten Artikel-Filial-Datensätzen · "+unknown+" ohne lesbaren Status");checkedAt.setText("Zuletzt geprüft: "+now()+" · Ergebnisse lokal gespeichert");finishBusy();renderProduct();updateAutoRefreshInfo();scheduleAutomaticRefresh(0);}
     private void finishError(String message){status.setText(message+". Bisherige Ergebnisse bleiben lokal gespeichert.");finishBusy();updateAutoRefreshInfo();scheduleAutomaticRefresh(0);}
-    private void finishBusy(){queryRunning=false;getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);loadingSpinner.setVisibility(View.GONE);refresh.setEnabled(true);updateRegionUi();}
+    private void finishBusy(){queryRunning=false;getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);loadingSpinner.setVisibility(View.GONE);refresh.setEnabled(branches.length()>0);updateRegionUi();}
     private java.util.Set<String> selectedBranchIds(){java.util.HashSet<String> ids=new java.util.HashSet<>();for(int i=0;i<branches.length();i++){JSONObject b=branches.optJSONObject(i);if(b!=null)ids.add(b.optString("id"));}return ids;}
     private void scheduleAutomaticRefresh(long delayOverride){autoRefreshHandler.removeCallbacks(autoRefreshRunnable);if(!activityResumed||autoRefreshToggle==null||!autoRefreshToggle.isChecked())return;long anchor=getPreferences(MODE_PRIVATE).getLong("auto_refresh_anchor_ms",0);long delay=delayOverride>0?delayOverride:(anchor==0?0:Math.max(0,anchor+AUTO_REFRESH_INTERVAL_MS-System.currentTimeMillis()));autoRefreshHandler.postDelayed(autoRefreshRunnable,delay);updateAutoRefreshInfo();}
     private void checkAutomaticRefresh(){if(!activityResumed||autoRefreshToggle==null||!autoRefreshToggle.isChecked())return;if(queryRunning){scheduleAutomaticRefresh(60_000);return;}long anchor=getPreferences(MODE_PRIVATE).getLong("auto_refresh_anchor_ms",0);if(anchor==0||System.currentTimeMillis()-anchor>=AUTO_REFRESH_INTERVAL_MS){status.setText("Automatische Live-Aktualisierung läuft …");beginCheck(true);}else scheduleAutomaticRefresh(0);}
