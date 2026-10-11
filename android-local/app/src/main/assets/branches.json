@@ -12,7 +12,7 @@
     "weitere Nicht-Supermarkt-Formate"
   ],
   "official_finder_matches": 682,
-  "regular_supermarkets": 673,
+  "regular_supermarkets": 668,
   "branches": [
     {
       "id": "bern-bachmaetteli",
@@ -676,6 +676,15 @@
       "official_url": "https://filialen.migros.ch/de/basel-bahnhof-sbb/"
     },
     {
+      "id": "migros-0024560",
+      "name": "Basel - Burgfelder",
+      "address": "Burgfelderstrasse 11, 4055 Basel",
+      "region": "weitere-schweiz",
+      "store_type": "MM",
+      "official_store_id": "0024560",
+      "official_url": "https://filialen.migros.ch/de/basel-burgfelder/"
+    },
+    {
       "id": "migros-0024240",
       "name": "Basel - Claramarkt",
       "address": "Untere Rebgasse 11, 4058 Basel",
@@ -719,6 +728,15 @@
       "store_type": "M",
       "official_store_id": "0023880",
       "official_url": "https://filialen.migros.ch/de/basel-eglisee/"
+    },
+    {
+      "id": "migros-0024520",
+      "name": "Basel - Gundelitor",
+      "address": "Güterstrasse 180, 4053 Basel",
+      "region": "weitere-schweiz",
+      "store_type": "MM",
+      "official_store_id": "0024520",
+      "official_url": "https://filialen.migros.ch/de/basel-gundelitor/"
     },
     {
       "id": "migros-0023870",
@@ -827,15 +845,6 @@
       "store_type": "MM",
       "official_store_id": "0124210",
       "official_url": "https://filialen.migros.ch/de/bellinzona-7/"
-    },
-    {
-      "id": "migros-0123870",
-      "name": "Bellinzona Nord",
-      "address": "Via San Gottardo 124, 6500 Bellinzona",
-      "region": "weitere-schweiz",
-      "store_type": "M",
-      "official_store_id": "0123870",
-      "official_url": "https://filialen.migros.ch/de/bellinzona-nord-2/"
     },
     {
       "id": "migros-0034540",
@@ -955,6 +964,15 @@
       "official_url": "https://filialen.migros.ch/de/binningen-gorenmatt/"
     },
     {
+      "id": "migros-0024540",
+      "name": "Binningen - Zentrum",
+      "address": "Hauptstrasse 71, 4102 Binningen",
+      "region": "weitere-schweiz",
+      "store_type": "M",
+      "official_store_id": "0024540",
+      "official_url": "https://filialen.migros.ch/de/binningen-zentrum/"
+    },
+    {
       "id": "migros-0123910",
       "name": "Bioggio",
       "address": "Via Lugano 1, 6934 Bioggio",
@@ -1025,6 +1043,15 @@
       "store_type": "M",
       "official_store_id": "0083820",
       "official_url": "https://filialen.migros.ch/de/boudry-3/"
+    },
+    {
+      "id": "migros-0024500",
+      "name": "Breitenbach - Wydehof",
+      "address": "Laufenstrasse 4, 4226 Breitenbach",
+      "region": "weitere-schweiz",
+      "store_type": "MM",
+      "official_store_id": "0024500",
+      "official_url": "https://filialen.migros.ch/de/breitenbach-wydehof/"
     },
     {
       "id": "migros-0034263",
@@ -1223,15 +1250,6 @@
       "store_type": "MM",
       "official_store_id": "0044950",
       "official_url": "https://filialen.migros.ch/de/carouge-vibert/"
-    },
-    {
-      "id": "migros-0123880",
-      "name": "Caslano",
-      "address": "Via Stazione 80, 6987 Caslano",
-      "region": "weitere-schweiz",
-      "store_type": "M",
-      "official_store_id": "0123880",
-      "official_url": "https://filialen.migros.ch/de/caslano-2/"
     },
     {
       "id": "migros-0124290",
@@ -1502,15 +1520,6 @@
       "store_type": "M",
       "official_store_id": "0073960",
       "official_url": "https://filialen.migros.ch/de/dagmersellen-3/"
-    },
-    {
-      "id": "migros-0150362",
-      "name": "Daily Zürich-Zollstrasse",
-      "address": "Zollstrasse 6, 8005 Zürich",
-      "region": "weitere-schweiz",
-      "store_type": "M",
-      "official_store_id": "0150362",
-      "official_url": "https://filialen.migros.ch/de/daily-zuerich-zollstrasse/"
     },
     {
       "id": "migros-0090432",
@@ -3196,15 +3205,6 @@
       "official_url": "https://filialen.migros.ch/de/locarno-5/"
     },
     {
-      "id": "migros-0123900",
-      "name": "Losone",
-      "address": "Via dei Pioppi 2, 6616 Losone",
-      "region": "weitere-schweiz",
-      "store_type": "M",
-      "official_store_id": "0123900",
-      "official_url": "https://filialen.migros.ch/de/losone-3/"
-    },
-    {
       "id": "migros-0033233",
       "name": "Lostorf",
       "address": "Hauptstrasse 20, 4654 Lostorf",
@@ -3257,15 +3257,6 @@
       "store_type": "M",
       "official_store_id": "0073230",
       "official_url": "https://filialen.migros.ch/de/luzern-bahnhof/"
-    },
-    {
-      "id": "migros-0073150",
-      "name": "Luzern - Bahnhof Daily",
-      "address": "Zentralstrasse 7, 6003 Luzern",
-      "region": "weitere-schweiz",
-      "store_type": "M",
-      "official_store_id": "0073150",
-      "official_url": "https://filialen.migros.ch/de/luzern-bahnhof-daily/"
     },
     {
       "id": "migros-0073770",
@@ -4292,15 +4283,6 @@
       "store_type": "MM",
       "official_store_id": "0034293",
       "official_url": "https://filialen.migros.ch/de/rheinfelden/"
-    },
-    {
-      "id": "migros-0123890",
-      "name": "Riazzino",
-      "address": "Via Cantonale 40, 6595 Riazzino",
-      "region": "weitere-schweiz",
-      "store_type": "M",
-      "official_store_id": "0123890",
-      "official_url": "https://filialen.migros.ch/de/riazzino-2/"
     },
     {
       "id": "migros-0150158",
@@ -5842,15 +5824,6 @@
       "official_url": "https://filialen.migros.ch/de/zuerich-albisriederplatz/"
     },
     {
-      "id": "migros-0150360",
-      "name": "Zürich - Altstetten M-Express",
-      "address": "Hohlstrasse 600, 8048 Zürich",
-      "region": "weitere-schweiz",
-      "store_type": "M",
-      "official_store_id": "0150360",
-      "official_url": "https://filialen.migros.ch/de/zuerich-altstetten-m-express/"
-    },
-    {
       "id": "migros-0150201",
       "name": "Zürich - Altstetten Neumarkt",
       "address": "Altstetterstrasse 145, 8048 Zürich",
@@ -5968,15 +5941,6 @@
       "official_url": "https://filialen.migros.ch/de/zuerich-oerlikon-neumarkt/"
     },
     {
-      "id": "migros-0150132",
-      "name": "Zürich - Puls 5 M-Express",
-      "address": "Hardturmstrasse 11, 8005 Zürich",
-      "region": "weitere-schweiz",
-      "store_type": "M",
-      "official_store_id": "0150132",
-      "official_url": "https://filialen.migros.ch/de/zuerich-puls-5-m-express/"
-    },
-    {
       "id": "migros-0150122",
       "name": "Zürich - Pünt",
       "address": "Albisriederstrasse 365, 8047 Zürich",
@@ -6047,15 +6011,6 @@
       "store_type": "M",
       "official_store_id": "0150007",
       "official_url": "https://filialen.migros.ch/de/zuerich-stadelhofen/"
-    },
-    {
-      "id": "migros-0150131",
-      "name": "Zürich - Stockerstrasse M-Express",
-      "address": "Stockerstrasse 47, 8002 Zürich",
-      "region": "weitere-schweiz",
-      "store_type": "M",
-      "official_store_id": "0150131",
-      "official_url": "https://filialen.migros.ch/de/zuerich-stockerstrasse-m-express/"
     },
     {
       "id": "migros-0150319",
