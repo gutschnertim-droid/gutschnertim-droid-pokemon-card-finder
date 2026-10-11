@@ -12,4 +12,6 @@ Der ChatGPT Codex Connector ist auf dem GitHub-Konto installiert und hat Zugriff
 
 `.github/workflows/collect-migros-stock.yml` ist täglich auf 01:15 UTC eingestellt und kann in GitHub Actions manuell gestartet werden. Der Collector fragt alle Filialen in `data/branches.json` für jeden Filialartikel ab und schreibt den Feed nur bei vollständiger Erfassung. Jeder Lauf prüft und zeigt die Abdeckung pro Region in der Job-Zusammenfassung; erwartet werden aktuell 259/259 Kombinationen.
 
-Der erste erfolgreiche Actions-Lauf muss noch geprüft werden. Das Frontend lädt den neuesten öffentlichen Feed aus diesem Repository beim Öffnen und alle 15 Minuten; der bisherige Hosting-Feed ist die Rückfalloption. Das aktualisierte Frontend muss noch in der privaten Site veröffentlicht werden.
+Nach dem geplanten Lauf ist noch kein neuer Bestands-Commit sichtbar. Die verbundene GitHub-Integration kann hier Repository-Dateien lesen und schreiben, stellt aber keine Liste normaler Zeitplan-Läufe samt Protokollen bereit. Den ersten Lauf deshalb im [Actions-Tab](https://github.com/gutschnertim-droid/gutschnertim-droid-pokemon-card-finder/actions) kontrollieren und bei einer GitHub-Aufforderung die Workflows aktivieren.
+
+Das Frontend lädt den neuesten öffentlichen Feed aus diesem Repository beim Öffnen und alle 15 Minuten; der bisherige Hosting-Feed ist die Rückfalloption. Das aktualisierte Frontend muss noch in der privaten Site veröffentlicht werden. Der Sites-Quell-Sync war in der aktuellen Umgebung nicht erreichbar.
