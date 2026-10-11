@@ -1602,6 +1602,15 @@
       "official_url": "https://filialen.migros.ch/de/domdidier/"
     },
     {
+      "id": "migros-0084320",
+      "name": "Düdingen",
+      "address": "Käsereistrasse 3, 3186 Düdingen",
+      "region": "fribourg",
+      "store_type": "MM",
+      "official_store_id": "0084320",
+      "official_url": "https://filialen.migros.ch/de/duedingen/"
+    },
+    {
       "id": "migros-0063715",
       "name": "Estavayer Gare",
       "address": "Route de la Gare 93, 1470 Estavayer-le-Lac",
@@ -1618,6 +1627,15 @@
       "store_type": "MM",
       "official_store_id": "0063630",
       "official_url": "https://filialen.migros.ch/de/estavayer-le-lac/"
+    },
+    {
+      "id": "migros-0084350",
+      "name": "Flamatt",
+      "address": "Bernstrasse 36, 3175 Flamatt",
+      "region": "fribourg",
+      "store_type": "M",
+      "official_store_id": "0084350",
+      "official_url": "https://filialen.migros.ch/de/flamatt-2/"
     },
     {
       "id": "migros-0083871",
@@ -2213,24 +2231,6 @@
       "store_type": "M",
       "official_store_id": "0083890",
       "official_url": "https://filialen.migros.ch/de/cortaillod/"
-    },
-    {
-      "id": "migros-0084320",
-      "name": "Düdingen",
-      "address": "Käsereistrasse 3, 3186 Düdingen",
-      "region": "neuchatel",
-      "store_type": "MM",
-      "official_store_id": "0084320",
-      "official_url": "https://filialen.migros.ch/de/duedingen/"
-    },
-    {
-      "id": "migros-0084350",
-      "name": "Flamatt",
-      "address": "Bernstrasse 36, 3175 Flamatt",
-      "region": "neuchatel",
-      "store_type": "M",
-      "official_store_id": "0084350",
-      "official_url": "https://filialen.migros.ch/de/flamatt-2/"
     },
     {
       "id": "migros-0083700",
