@@ -20,6 +20,7 @@ from playwright.async_api import async_playwright
 START_URL = "https://filialen.migros.ch/de/"
 FILTERED_URL = "https://filialen.migros.ch/de/filter:markets-%5Bsuper.voi.mp%5D/center:46.8182,8.2275/zoom:8/"
 ALLOWED_TYPES = {"M", "MM", "MMM"}
+EXCLUDED_NAME_RE = re.compile(r"\\bdaily\\b|\\bm[\\s-]?express\\b|\\bm[\\s-]?outlet\\b|\\bvoi\\b|\\bteo\\b|\\bmigros partner\\b", re.I)
 MIN_EXPECTED = 650
 
 
@@ -117,7 +118,7 @@ async def main(output: Path, baseline: Path) -> None:
     branches = []
     for row in seen.values():
         store_type = row["store_type"]
-        if store_type not in ALLOWED_TYPES:
+        if store_type not in ALLOWED_TYPES or EXCLUDED_NAME_RE.search(row["name"]):
             continue
         old_branch = old_by_name.get(norm(row["name"])) or old_by_address.get(norm(row["address"].split(",")[0]))
         slug = row["slug"]
