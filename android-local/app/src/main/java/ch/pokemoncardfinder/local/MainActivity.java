@@ -235,15 +235,38 @@ public class MainActivity extends Activity {
         }
     }
     private String regionLabel(String id){
-        if(id.equalsIgnoreCase("bern"))return "Bern";
-        if(id.equalsIgnoreCase("fribourg")||id.equalsIgnoreCase("freiburg"))return "Fribourg";
-        if(id.equalsIgnoreCase("weitere-schweiz"))return "Weitere Filialen Schweiz";
-        String label=id.replace('_',' ').replace('-',' ');return label.isEmpty()?"Weitere":label.substring(0,1).toUpperCase(java.util.Locale.ROOT)+label.substring(1);
+        switch(id.toLowerCase(java.util.Locale.ROOT)){
+            case "bern": return "Bern";
+            case "fribourg":
+            case "freiburg": return "Fribourg";
+            case "aare": return "Aare (Bern, Aargau, Solothurn)";
+            case "basel": return "Basel";
+            case "geneve": return "Genf";
+            case "vaud-lausanne": return "Waadt / Lausanne";
+            case "neuchatel": return "Neuenburg";
+            case "ostschweiz-st-gallen": return "Ostschweiz / St. Gallen";
+            case "zentralschweiz": return "Zentralschweiz";
+            case "ticino": return "Tessin";
+            case "wallis": return "Wallis";
+            case "zuerich": return "Zürich";
+            case "weitere-schweiz": return "Weitere Filialen Schweiz";
+            default:
+                String label=id.replace('_',' ').replace('-',' ');
+                return label.isEmpty()?"Weitere":label.substring(0,1).toUpperCase(java.util.Locale.ROOT)+label.substring(1);
+        }
     }
     private void restoreSelectedRegions(){
         String saved=getPreferences(MODE_PRIVATE).getString("selected_regions","");
         if(saved.trim().isEmpty()){selectedRegions.addAll(regionNames.keySet());return;}
-        for(String item:saved.split(","))if(regionNames.containsKey(item))selectedRegions.add(item);
+        boolean legacyRestSelected=false;
+        for(String item:saved.split(",")){
+            if(regionNames.containsKey(item))selectedRegions.add(item);
+            else if(item.equals("weitere-schweiz")||item.equals("weitere"))legacyRestSelected=true;
+        }
+        if(legacyRestSelected){
+            for(String id:regionNames.keySet())if(!id.equals("bern")&&!id.equals("fribourg"))selectedRegions.add(id);
+        }
+        if(selectedRegions.isEmpty())selectedRegions.addAll(regionNames.keySet());
     }
     private void applyRegionFilter(){
         branches=new JSONArray();
