@@ -1,0 +1,268 @@
+{
+  "retailer": "Migros",
+  "updated_on": "2026-10-11",
+  "branches": [
+    {
+      "id": "beauregard",
+      "name": "Beauregard",
+      "address": "Chemin de Béthléem 7",
+      "coordinates": [
+        46.800454,
+        7.144527
+      ],
+      "region": "fribourg"
+    },
+    {
+      "id": "marche",
+      "name": "Marché FR",
+      "address": "Rue St-Pierre 2",
+      "coordinates": [
+        46.803414,
+        7.154547
+      ],
+      "region": "fribourg"
+    },
+    {
+      "id": "perolles",
+      "name": "Pérolles Centre",
+      "address": "Boulevard de Pérolles 21 A",
+      "coordinates": [
+        46.79978,
+        7.152313
+      ],
+      "region": "fribourg"
+    },
+    {
+      "id": "schoenberg",
+      "name": "Schoenberg",
+      "address": "Chemin Cité-des-Jardins 13A",
+      "coordinates": [
+        46.8097786,
+        7.1723464
+      ],
+      "region": "fribourg"
+    },
+    {
+      "id": "ste-therese",
+      "name": "Ste-Thérèse",
+      "address": "Route de Sainte-Thérèse 2a",
+      "coordinates": [
+        46.8101267,
+        7.1490104
+      ],
+      "region": "fribourg"
+    },
+    {
+      "id": "gare",
+      "name": "Gare Fribourg",
+      "address": "Rue Louis-d'Affry 2",
+      "coordinates": [
+        46.803162,
+        7.150047
+      ],
+      "region": "fribourg"
+    },
+    {
+      "id": "agy",
+      "name": "Agy",
+      "address": "route d'Agy 2",
+      "coordinates": [
+        46.820916,
+        7.153915
+      ],
+      "region": "fribourg"
+    },
+    {
+      "id": "granges",
+      "name": "Granges - Paccot",
+      "address": "Route d'Englisberg 15b",
+      "coordinates": [
+        46.828877,
+        7.146965
+      ],
+      "region": "fribourg"
+    },
+    {
+      "id": "cormanon",
+      "name": "Cormanon",
+      "address": "Rue du centre 4",
+      "coordinates": [
+        46.793611,
+        7.133234
+      ],
+      "region": "fribourg"
+    },
+    {
+      "id": "marly",
+      "name": "Marly",
+      "address": "Route des Pralettes 1",
+      "coordinates": [
+        46.776065,
+        7.161175
+      ],
+      "region": "fribourg"
+    },
+    {
+      "id": "bern-marktgasse",
+      "name": "Bern - Marktgasse",
+      "address": "Marktgasse 46, 3011 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "bern-bahnhof",
+      "name": "Bern - Bahnhof",
+      "address": "Bahnhofplatz 10, 3011 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "bern-christoffel",
+      "name": "Bern - Christoffel",
+      "address": "Christoffelunterführung, 3011 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "bern-bubenberg",
+      "name": "Bern - Bubenberg",
+      "address": "Bubenbergplatz 8, 3011 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "bern-kirchenfeld",
+      "name": "Bern - Kirchenfeld",
+      "address": "Thunstrasse 18, 3005 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "bern-welle-7",
+      "name": "Bern - Welle 7",
+      "address": "Schanzenstrasse 5, 3000 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "bern-lorraine",
+      "name": "Bern - Lorraine",
+      "address": "Dammweg 9, 3013 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "bern-breitenrain",
+      "name": "Bern - Breitenrain",
+      "address": "Breitenrainstrasse 11, 3013 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "bern-zaehringer",
+      "name": "Bern - Zähringer",
+      "address": "Zähringerstrasse 43, 3012 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "bern-eigerplatz",
+      "name": "Bern - Eigerplatz",
+      "address": "Seftigenstrasse 1, 3007 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "bern-burgernziel",
+      "name": "Bern Burgernziel",
+      "address": "Thunstrasse 110, 3006 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "bern-freudenberg",
+      "name": "Bern - Freudenberg",
+      "address": "Giacomettistrasse 15, 3006 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "bern-winkelried",
+      "name": "Bern - Winkelried",
+      "address": "Wankdorffeldstrasse 71, 3014 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "bern-egghoelzli",
+      "name": "Bern - Egghölzli",
+      "address": "Egghölzlistrasse 1 / 1a, 3006 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "ostermundigen-poststrasse",
+      "name": "Ostermundigen Poststrasse",
+      "address": "Poststr. 1, 3072 Ostermundigen",
+      "region": "bern"
+    },
+    {
+      "id": "wabern-chly-wabere",
+      "name": "Wabern - Chly Wabere",
+      "address": "Seftigenstrasse 368, 3084 Wabern",
+      "region": "bern"
+    },
+    {
+      "id": "bremgarten-kalchacker",
+      "name": "Bremgarten Kalchacker",
+      "address": "Kalchackerstrasse 9, 3047 Bremgarten b. Bern",
+      "region": "bern"
+    },
+    {
+      "id": "koeniz-blaeuacker",
+      "name": "Köniz - Bläuacker",
+      "address": "Bläuacker 10, 3098 Köniz",
+      "region": "bern"
+    },
+    {
+      "id": "ostermundigen",
+      "name": "Ostermundigen",
+      "address": "Bernstrasse 114, 3072 Ostermundigen",
+      "region": "bern"
+    },
+    {
+      "id": "bern-westfluegel",
+      "name": "Bern Westflügel",
+      "address": "Bethlehemstrasse 40, 3027 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "ittigen",
+      "name": "Ittigen",
+      "address": "Talweg 6, 3063 Ittigen",
+      "region": "bern"
+    },
+    {
+      "id": "bern-bachmaetteli",
+      "name": "Bern - Bachmätteli",
+      "address": "Bottigenstrasse 7, 3018 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "guemligen",
+      "name": "Gümligen",
+      "address": "Turbenweg 1, 3073 Gümligen",
+      "region": "bern"
+    },
+    {
+      "id": "bern-bethlehem",
+      "name": "Bern - Bethlehem",
+      "address": "Riedbachstrasse 10, 3027 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "zollikofen",
+      "name": "Zollikofen",
+      "address": "Bernstrasse 103, 3052 Zollikofen",
+      "region": "bern"
+    },
+    {
+      "id": "bern-westside",
+      "name": "Bern - Westside",
+      "address": "Gilberte-de-Courgenay-Platz 4, 3027 Bern",
+      "region": "bern"
+    },
+    {
+      "id": "hinterkappelen-chappelemaerit",
+      "name": "Hinterkappelen - Chappelemärit",
+      "address": "Kappelenring 2, 3032 Hinterkappelen",
+      "region": "bern"
+    }
+  ]
+}
