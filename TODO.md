@@ -7,16 +7,17 @@
 - [x] Interaktive Vorschau mit Karten-/Listenansicht begonnen
 - [x] Bestandsstatus von Kaufnotizen getrennt
 - [ ] Prototyp auf Smartphone testen und Filialnamen/-standorte verifizieren
-- [ ] GitHub-Quellrepository mit der bestehenden privaten Site verbinden und Änderungen pushen (in Arbeit)
+- [ ] Prüfen, ob neue Feeds automatisch in die bestehende private Site-Veröffentlichung gelangen
 
 ## GitHub-Repository und Automatik
 
 - [x] Lokales Git-Repository vorbereitet und vollständigen Projektstand committet (`a8ba113`)
 - [x] GitHub-Verbindung aktiv und Konto geprüft (`gutschnertim-droid`)
-- [x] Vom Nutzer geliefertes Repository geprüft und als lokales `origin` eingetragen: `gutschnertim-droid/gutschnertim-droid-pokemon-card-finder`, Branch `main`, derzeit leer und öffentlich
-- [ ] Zugriff der verbundenen GitHub-App auf dieses Repository freigeben (**Blocker:** Schreibversuch mit HTTP 403 „Resource not accessible by integration“; keine GitHub-App-Installation/Repository-Freigabe sichtbar)
-- [ ] Lokale Commits ins GitHub-Repository übertragen und `main` verifizieren
-- [ ] GitHub-Actions-Workflow mit erstem Lauf prüfen; Push-Trigger ist dafür vorbereitet
+- [x] Vom Nutzer geliefertes öffentliches Repository geprüft und als lokales `origin` eingetragen: `gutschnertim-droid/gutschnertim-droid-pokemon-card-finder`
+- [x] ChatGPT Codex Connector auf dem GitHub-Konto installiert und Repository-Zugriff erteilt
+- [x] Projektdateien, Bestandsdaten und Workflow auf `main` veröffentlicht (Commit `2d4959c`)
+- [x] Täglichen GitHub-Actions-Workflow (01:15 UTC) und manuellen Start im Repository eingerichtet
+- [ ] Ersten erfolgreichen Actions-Lauf prüfen
 - [ ] Prüfen, dass neue Feeds automatisch in die private App-Veröffentlichung gelangen
 - [ ] Bei neuen Filialen Daten in `data/branches.json` ergänzen und Abdeckung im nächsten Lauf verifizieren
 
@@ -47,7 +48,7 @@
 - [ ] Abgleich der vier zusätzlichen offiziellen Fribourg-Standorte mit der App-Filialliste (Bestandsabdeckung gilt für alle 37 derzeit eingetragenen Filialen)
 - [x] Bestände für sieben Pokémon-Artikel in allen 27 erfassten Berner Filialen prüfen und in den Feed übernehmen (11.10.2026).
 - [x] UI-Collector erfasst alle Filialen aus `data/branches.json` für jeden Filialartikel; schreibt den Feed nur bei vollständiger Abdeckung (Playwright, ohne Login)
-- [x] Täglichen GitHub-Actions-Ablauf und manuellen Start ergänzt; wirksam nach Veröffentlichung des Repositories
+- [x] Täglichen GitHub-Actions-Ablauf und manuellen Start im veröffentlichten Repository eingerichtet; erster Lauf noch zu prüfen
 - [ ] Sortiment schweizweit gegen weitere Migros-Regionen prüfen; aktueller Katalogstand gilt für Region Neuenburg-Freiburg / PLZ 1700
 - [x] Filialbestand je Produkt erfassen, soweit die Migros-Produktseite dies öffentlich ausgibt
 - [x] Öffentliche Migros Search API-Dokumentation prüfen: Produkt- und Filialsuche vorhanden, aber kein Filialbestand; Doku nennt `key` und `apikey`
@@ -61,7 +62,7 @@
 - [ ] Datenmodell und Datenbank entwerfen
 - [x] „Zuletzt geprüft“-Zeitpunkt pro Produkt in der App anzeigen
 - [x] Gehostete App mit Feed-Poller und Statusanzeige ausgestattet (15-Minuten-Abstand)
-- [x] Collector und täglicher Job implementiert. Der Collector befragt die öffentliche Produktseite ohne Login und schreibt bei Erfolg `regions.<region>.branches` sowie `regions.<region>.products.<id>.branches.<branchId>`. Der GitHub-Zeitplan startet erst, wenn dieses Projekt in ein GitHub-Repository übertragen wurde.
+- [x] Collector und täglicher Job implementiert. Der Collector befragt die öffentliche Produktseite ohne Login und schreibt bei Erfolg `regions.<region>.branches` sowie `regions.<region>.products.<id>.branches.<branchId>`. Der Workflow ist auf GitHub veröffentlicht; erfolgreicher Lauf noch zu verifizieren.
 - [ ] Alte Daten bei erfolgreichem/fehlgeschlagenem Feed klar als veraltet kennzeichnen
 - [ ] Fehlermeldungen und alte Daten sichtbar kennzeichnen
 - [ ] Private Käufe optional mit Datum, Menge und Filiale erfassen
