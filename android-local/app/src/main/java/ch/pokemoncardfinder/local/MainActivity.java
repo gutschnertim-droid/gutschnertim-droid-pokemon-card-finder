@@ -1,11 +1,19 @@
 package ch.pokemoncardfinder.local;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
@@ -17,6 +25,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,11 +57,13 @@ public class MainActivity extends Activity {
     private TextView status, checkedAt, productTitle, productPrice, stockSummary;
     private ProgressBar loadingSpinner;
     private Button refresh;
+    private Button notificationSettings;
     private Spinner productPicker;
     private Spinner stockFilterPicker;
     private EditText branchSearch;
     private Switch autoRefreshToggle;
     private TextView autoRefreshInfo;
+    private TextView subtitle;
     private ImageView productImage;
     private LinearLayout resultList;
     private WebView webView;
@@ -63,6 +74,7 @@ public class MainActivity extends Activity {
     private final Map<String, String> checkedByProduct = new LinkedHashMap<>();
     private final Map<String, JSONObject> livePricesByProduct = new LinkedHashMap<>();
     private boolean waitingForPage;
+    private boolean discoveringProducts;
     private boolean queryRunning;
     private boolean activityResumed;
     private final Handler autoRefreshHandler = new Handler(Looper.getMainLooper());
@@ -74,6 +86,7 @@ public class MainActivity extends Activity {
             branches = new JSONObject(readAsset("branches.json")).getJSONArray("branches");
             products = new JSONObject(readAsset(CATALOG_ASSET)).getJSONArray("products");
         } catch (Exception ex) { branches = new JSONArray(); products = new JSONArray(); }
+        loadDiscoveredProducts();
         buildScreen();
         webView = new WebView(this);
         webView.getSettings().setJavaScriptEnabled(true);
@@ -84,6 +97,11 @@ public class MainActivity extends Activity {
             @Override public void onPageFinished(WebView view, String url) {
                 if (waitingForPage) {
                     waitingForPage = false;
+                    if (discoveringProducts) {
+                        status.setText("Suche Migros-Sortiment nach neuen Pokémon-Kartenartikeln …");
+                        view.postDelayed(() -> scanProductCatalog(), 900);
+                        return;
+                    }
                     status.setText("Migros lädt Artikel " + (activeProductIndex+1) + "/" + products.length() + " …");
                     view.postDelayed(() -> startMigrosCheck(), 700);
                 }
@@ -92,6 +110,7 @@ public class MainActivity extends Activity {
         root.addView(webView, new LinearLayout.LayoutParams(1, 1));
         loadSavedRecords();
         refresh.setOnClickListener(v -> beginCheck(false));
+        notificationSettings.setOnClickListener(v -> showNotificationSettings());
         autoRefreshToggle.setChecked(getPreferences(MODE_PRIVATE).getBoolean("auto_refresh_enabled", true));
         autoRefreshToggle.setOnCheckedChangeListener((button, enabled) -> {
             getPreferences(MODE_PRIVATE).edit().putBoolean("auto_refresh_enabled", enabled).apply();
@@ -134,7 +153,7 @@ public class MainActivity extends Activity {
         getWindow().setStatusBarColor(Color.rgb(248,248,252)); getWindow().setNavigationBarColor(Color.rgb(248,248,252));
         root=new LinearLayout(this); root.setOrientation(LinearLayout.VERTICAL); root.setPadding(dp(16),dp(18),dp(16),dp(12)); root.setBackgroundColor(Color.rgb(248,248,252));
         TextView title=new TextView(this); title.setText("Pokémon Card Finder"); title.setTextSize(22); title.setTextColor(Color.rgb(35,32,48)); title.setTypeface(null,1); root.addView(title);
-        TextView subtitle=new TextView(this); subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Migros-Filialen · Anfrage direkt vom Handy"); subtitle.setTextSize(12); subtitle.setTextColor(Color.DKGRAY); root.addView(subtitle,params(dp(4)));
+        subtitle=new TextView(this); subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Migros-Filialen · Anfrage direkt vom Handy"); subtitle.setTextSize(12); subtitle.setTextColor(Color.DKGRAY); root.addView(subtitle,params(dp(4)));
         productPicker=new Spinner(this); root.addView(productPicker,params(dp(8)));
         LinearLayout card=new LinearLayout(this); card.setGravity(Gravity.CENTER_VERTICAL); card.setBackgroundColor(Color.WHITE); card.setPadding(dp(10),dp(8),dp(10),dp(8));
         productImage=new ImageView(this); productImage.setScaleType(ImageView.ScaleType.FIT_CENTER); card.addView(productImage,new LinearLayout.LayoutParams(dp(88),dp(78)));
@@ -149,15 +168,16 @@ public class MainActivity extends Activity {
         checkedAt=new TextView(this); checkedAt.setText("Die Migros-Abfragen und gespeicherten Ergebnisse bleiben auf diesem Gerät."); checkedAt.setTextSize(10); checkedAt.setTextColor(Color.GRAY); root.addView(checkedAt,params(dp(3)));
         autoRefreshToggle=new Switch(this);autoRefreshToggle.setText("Automatisch alle 4 Stunden aktualisieren");autoRefreshToggle.setTextSize(11);root.addView(autoRefreshToggle,params(dp(2)));
         autoRefreshInfo=new TextView(this);autoRefreshInfo.setTextSize(9);autoRefreshInfo.setTextColor(Color.GRAY);root.addView(autoRefreshInfo,params(dp(1)));
+        notificationSettings=new Button(this);notificationSettings.setText("Benachrichtigungen einstellen");root.addView(notificationSettings,params(dp(4)));
         stockSummary=new TextView(this); stockSummary.setTextSize(11); stockSummary.setTextColor(Color.rgb(60,56,72)); root.addView(stockSummary,params(dp(8)));
         LinearLayout filters=new LinearLayout(this); filters.setGravity(Gravity.CENTER_VERTICAL);
         branchSearch=new EditText(this); branchSearch.setSingleLine(true); branchSearch.setTextSize(12); branchSearch.setHint("Filiale oder Ort suchen");
         LinearLayout.LayoutParams searchParams=new LinearLayout.LayoutParams(0,dp(48),1); filters.addView(branchSearch,searchParams);
-        stockFilterPicker=new Spinner(this); String[] filterOptions={"Alle", "Höchster Bestand", "Verfügbar", "Nicht auf Lager", "Nicht eindeutig", "Noch ungeprüft"};
+        stockFilterPicker=new Spinner(this); String[] filterOptions={"Alle", "Höchster Bestand", "Verfügbar", "Nicht auf Lager", "Nur online", "Nicht eindeutig", "Noch ungeprüft"};
         stockFilterPicker.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,filterOptions));
         LinearLayout.LayoutParams filterParams=new LinearLayout.LayoutParams(dp(150),-2); filterParams.leftMargin=dp(6); filters.addView(stockFilterPicker,filterParams); root.addView(filters,params(dp(4)));
         resultList=new LinearLayout(this); resultList.setOrientation(LinearLayout.VERTICAL); ScrollView scroll=new ScrollView(this);scroll.addView(resultList);LinearLayout.LayoutParams rp=new LinearLayout.LayoutParams(-1,0,1);rp.topMargin=dp(8);root.addView(scroll,rp);
-        TextView note=new TextView(this);note.setText("Katalog: 7 im Datensatz erfasste Artikel für PLZ 1700; das ist keine schweizweite Sortimentserhebung. Migros-Bestände sind Momentaufnahmen, Ca.-Mengen sind Schätzungen.");note.setTextSize(9);note.setTextColor(Color.GRAY);root.addView(note,params(dp(6)));
+        TextView note=new TextView(this);note.setText(products.length()+" Artikel im lokalen Katalog; neue Treffer werden auf der öffentlichen Migros-Pokémon-Seite gesucht. Das ist keine garantierte schweizweite Sortimentserhebung. Bestände sind Momentaufnahmen, Ca.-Mengen sind Schätzungen.");note.setTextSize(9);note.setTextColor(Color.GRAY);root.addView(note,params(dp(6)));
         setContentView(root);
     }
 
@@ -167,7 +187,37 @@ public class MainActivity extends Activity {
         getPreferences(MODE_PRIVATE).edit().putLong("auto_refresh_anchor_ms",System.currentTimeMillis()).apply();updateAutoRefreshInfo();
         queryRunning=true;activeProductIndex=0;selectedProductIndex=0;productPicker.setSelection(0);getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         renderProduct();
-        refresh.setEnabled(false);loadingSpinner.setVisibility(View.VISIBLE);loadProductPage();
+        refresh.setEnabled(false);loadingSpinner.setVisibility(View.VISIBLE);
+        discoveringProducts=true;waitingForPage=true;status.setText("Suche nach neuen Pokémon-Kartenartikeln im Migros-Sortiment …");
+        webView.loadUrl("https://www.migros.ch/de/brand/pokemon");
+    }
+
+    private void scanProductCatalog(){
+        String script="(async()=>{const norm=s=>(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase();for(let n=0;n<10;n++){window.scrollTo(0,document.body.scrollHeight);await new Promise(r=>setTimeout(r,250))}window.scrollTo(0,0);const rows=[];const seen=new Set();for(const a of document.querySelectorAll('a[href*=\"/de/product/\"]')){const m=a.href.match(/\\/de\\/product\\/(\\d{8,14})/);if(!m||seen.has(m[1]))continue;seen.add(m[1]);let card=a;for(let i=0;i<4&&card.parentElement;i++){if((card.innerText||'').length>180)break;card=card.parentElement}const img=a.querySelector('img')||card.querySelector('img');const name=(a.innerText||a.getAttribute('aria-label')||a.title||'').trim()||(img?.alt||'').trim()||(card.innerText||'').trim().split('\\n').filter(Boolean)[0]||'';const text=norm(name+' '+(card.innerText||''));if(!/pokemon/.test(text))continue;if(!/(booster|sammelkart|trading card|\\btcg\\b|karten|deck|sleeve|portfolio|\\btin\\b|blister|trainer|elite trainer|\\betb\\b|display|collection)/.test(text))continue;const image=img?.currentSrc||img?.src||'';const priceMatch=(card.innerText||'').match(/(?:CHF|Fr\\.)\\s*([0-9]+[.,][0-9]{2})/i);const onlineOnly=/nur online|only online|online only/i.test(card.innerText||'');rows.push({id:m[1],name:name||('Pokémon Kartenartikel '+m[1]),image_url:image,product_url:'https://www.migros.ch/de/product/'+m[1],price_chf:priceMatch?Number(priceMatch[1].replace(',','.')):0,in_store_assortment:!onlineOnly,online_only:onlineOnly,online_listed_for_1700:true,discovered:true})}window.FinderBridge.discovered(JSON.stringify(rows))})()";
+        webView.evaluateJavascript(script,null);
+    }
+
+    private void mergeDiscoveredProducts(JSONArray found){
+        java.util.HashSet<String> existing=new java.util.HashSet<>();
+        for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p!=null)existing.add(p.optString("id"));}
+        for(int i=0;i<found.length();i++){JSONObject candidate=found.optJSONObject(i);if(candidate==null)continue;String id=candidate.optString("id");if(id.isEmpty()||existing.contains(id))continue;products.put(candidate);existing.add(id);}
+        saveDiscoveredProducts();
+        updateProductPicker();
+    }
+
+    private void updateProductPicker(){
+        if(productPicker==null)return;ArrayList<String> names=new ArrayList<>();for(int i=0;i<products.length();i++)names.add(products.optJSONObject(i).optString("name"));
+        productPicker.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,names));
+        if(subtitle!=null)subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Migros-Filialen · Katalog wird bei Aktualisierung ergänzt");
+        if(selectedProductIndex<names.size())productPicker.setSelection(selectedProductIndex);
+    }
+
+    private void saveDiscoveredProducts(){
+        try{JSONArray discovered=new JSONArray();for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p!=null&&p.optBoolean("discovered"))discovered.put(p);}getPreferences(MODE_PRIVATE).edit().putString("discovered_products_json",discovered.toString()).apply();}catch(Exception ignored){}
+    }
+
+    private void loadDiscoveredProducts(){
+        try{JSONArray saved=new JSONArray(getPreferences(MODE_PRIVATE).getString("discovered_products_json","[]"));java.util.HashSet<String> ids=new java.util.HashSet<>();for(int i=0;i<products.length();i++)ids.add(products.optJSONObject(i).optString("id"));for(int i=0;i<saved.length();i++){JSONObject p=saved.optJSONObject(i);if(p!=null&&!ids.contains(p.optString("id"))){products.put(p);ids.add(p.optString("id"));}}}catch(Exception ignored){}
     }
     private void loadProductPage(){
         JSONObject p=products.optJSONObject(activeProductIndex); if(p==null){finishError("Produktkatalog ist ungültig.");return;}
@@ -176,15 +226,16 @@ public class MainActivity extends Activity {
     }
 
     private void startMigrosCheck() {
-        String productId=products.optJSONObject(activeProductIndex).optString("id");
+        JSONObject current=products.optJSONObject(activeProductIndex);String productId=current.optString("id");boolean onlineOnly=current.optBoolean("online_only",false);
         String progressProductLabel=(activeProductIndex+1)+"/"+products.length();
         String script="(async()=>{const sleep=ms=>new Promise(r=>setTimeout(r,ms));const norm=s=>(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();"
-          +"const branches="+branches.toString()+";const productId="+JSONObject.quote(productId)+";const send=(m,o)=>window.FinderBridge[m](JSON.stringify(o));const seen=new Set();"
+          +"const branches="+branches.toString()+";const productId="+JSONObject.quote(productId)+";const onlineOnly="+onlineOnly+";const send=(m,o)=>window.FinderBridge[m](JSON.stringify(o));const seen=new Set();"
           +"const amount=v=>{const n=Number(String(v||'').replace(/[^0-9,.]/g,'').replace(',','.'));return Number.isFinite(n)&&n>0?n:null};"
           +"let livePrice=null,originalPrice=null;const metas=['meta[property=\"product:price:amount\"]','meta[itemprop=\"price\"]','[itemprop=\"price\"]'];for(const s of metas){const e=document.querySelector(s);const n=amount(e?.content||e?.getAttribute('content')||e?.innerText);if(n){livePrice=n;break}}"
           +"if(!livePrice){for(const script of document.querySelectorAll('script[type=\"application/ld+json\"]')){try{const walk=o=>{if(!o)return;if(Array.isArray(o)){o.forEach(walk);return}if(typeof o==='object'){if(o.price!=null&&(/offer/i.test(String(o['@type']||''))||o.priceCurrency)){const n=amount(o.price);if(n&&!livePrice)livePrice=n}if(o.offers)walk(o.offers);for(const [k,v] of Object.entries(o))if(k!=='offers')walk(v)}};walk(JSON.parse(script.textContent))}catch(e){}}}"
           +"if(!livePrice){const e=document.querySelector('[data-testid*=\"price\"], [class*=\"price\"] [itemprop=\"price\"], [itemprop=\"price\"]');if(e)livePrice=amount(e.content||e.getAttribute('content')||e.innerText)}"
           +"if(livePrice){const old=document.querySelector('del, s, [class*=\"old-price\"], [class*=\"original-price\"], [data-testid*=\"old-price\"]');if(old)originalPrice=amount(old.innerText);send('livePrice',{product_id:productId,price:livePrice,original_price:originalPrice,source:'Migros-Produktseite'})}"
+          +"if(onlineOnly){for(const b of branches)send('record',{product_id:productId,branch_id:b.id,name:b.name,address:b.address,status:'online_only',source:'Migros-Sortiment kennzeichnet den Artikel als nur online erhältlich'});send('complete',{product_id:productId,checked:branches.length});return}"
           +"const classify=raw=>{let m=raw.match(/(?:nur\\s*)?ca\\.?\\s*(\\d+)\\s*auf lager/i)||raw.match(/(\\d+)\\s*auf lager/i);if(m)return {status:'estimated_in_stock',quantity:Number(m[1]),source:raw};if(/nicht auf lager/i.test(norm(raw)))return {status:'out_of_stock',source:raw};if(/\\bauf lager\\b|verfugbar/i.test(norm(raw)))return {status:'in_stock',source:raw};return null};"
           +"const scan=body=>{const lines=body.split(/\\n+/).map(x=>x.trim()).filter(Boolean);for(const b of branches){if(seen.has(b.id))continue;const name=norm(b.name),addr=norm((b.address||'').split(',')[0]);let i=lines.findIndex(x=>norm(x)===name||norm(x).includes(name));if(i<0&&addr.length>5)i=lines.findIndex(x=>norm(x).startsWith(addr));if(i<0)continue;const raw=lines.slice(i,i+6).join(' | ');const found=classify(raw);if(found){seen.add(b.id);send('record',{product_id:productId,branch_id:b.id,name:b.name,address:b.address,...found})}}};"
           +"let button=null;for(let n=0;n<120;n++){button=[...document.querySelectorAll('button')].find(b=>norm(b.innerText).includes('verfugbarkeit in filialen prufen'));if(button)break;await sleep(250)}"
@@ -198,10 +249,30 @@ public class MainActivity extends Activity {
 
     private class ResultBridge {
         @JavascriptInterface public void progress(String json){runOnUiThread(()->{try{status.setText(new JSONObject(json).optString("message","Prüfe Migros-Filialen …"));}catch(Exception ignored){}});}
-        @JavascriptInterface public void record(String json){runOnUiThread(()->{try{JSONObject row=new JSONObject(json);String productId=row.getString("product_id"),branchId=row.getString("branch_id");Map<String,JSONObject> productRows=recordsByProduct.get(productId);if(productRows==null){productRows=new LinkedHashMap<>();recordsByProduct.put(productId,productRows);}JSONObject old=productRows.get(branchId);String oldStatus=old==null?"":old.optString("status");int oldQty=old==null?-1:old.optInt("quantity",-1);if("unknown".equals(oldStatus)){oldStatus=old.optString("last_known_status",oldStatus);oldQty=old.optInt("last_known_quantity",oldQty);}String newStatus=row.optString("status");int newQty=row.optInt("quantity",-1);boolean oldAvailable=oldStatus.equals("in_stock")||oldStatus.equals("estimated_in_stock");boolean newAvailable=newStatus.equals("in_stock")||newStatus.equals("estimated_in_stock");String signal="";if(old!=null&&!oldAvailable&&newAvailable)signal="restock";else if(oldStatus.equals("estimated_in_stock")&&newStatus.equals("estimated_in_stock")&&newQty>oldQty)signal="up";else if(oldStatus.equals("estimated_in_stock")&&newStatus.equals("estimated_in_stock")&&newQty<oldQty)signal="down";if("unknown".equals(newStatus)&&old!=null){row.put("last_known_status",oldStatus);if(oldQty>=0)row.put("last_known_quantity",oldQty);}row.put("stock_signal",signal);row.put("checked_at",now());productRows.put(branchId,row);saveLocal();if(productId.equals(currentProductId()))renderRecords();}catch(Exception ignored){}});}
-        @JavascriptInterface public void livePrice(String json){runOnUiThread(()->{try{JSONObject incoming=new JSONObject(json);String id=incoming.getString("product_id");double current=incoming.getDouble("price");JSONObject old=livePricesByProduct.get(id);double previous=old==null?catalogPrice(id):old.optDouble("price",catalogPrice(id));JSONObject saved=new JSONObject();saved.put("price",current);saved.put("checked_at",now());saved.put("source",incoming.optString("source"));if(Math.abs(current-previous)>=0.01){saved.put("previous_price",previous);saved.put("change",current<previous?"down":"up");}else saved.put("change","none");double original=incoming.optDouble("original_price",0);if(original>current){saved.put("promotion",true);saved.put("original_price",original);}livePricesByProduct.put(id,saved);saveLocal();if(id.equals(currentProductId()))renderProduct();}catch(Exception ignored){}});}
+        @JavascriptInterface public void discovered(String json){runOnUiThread(()->{try{JSONArray found=new JSONArray(json);mergeDiscoveredProducts(found);discoveringProducts=false;activeProductIndex=0;selectedProductIndex=0;updateProductPicker();status.setText(found.length()+" passende Pokémon-Kartenartikel im Sortiment gefunden; prüfe jetzt alle Artikel in den Filialen …");loadProductPage();}catch(Exception ex){discoveringProducts=false;activeProductIndex=0;status.setText("Produktsuche nicht lesbar; prüfe die gespeicherten Artikel weiter …");loadProductPage();}});}
+        @JavascriptInterface public void record(String json){runOnUiThread(()->{try{JSONObject row=new JSONObject(json);String productId=row.getString("product_id"),branchId=row.getString("branch_id");Map<String,JSONObject> productRows=recordsByProduct.get(productId);if(productRows==null){productRows=new LinkedHashMap<>();recordsByProduct.put(productId,productRows);}JSONObject old=productRows.get(branchId);String oldStatus=old==null?"":old.optString("status");int oldQty=old==null?-1:old.optInt("quantity",-1);if("unknown".equals(oldStatus)){oldStatus=old.optString("last_known_status",oldStatus);oldQty=old.optInt("last_known_quantity",oldQty);}String newStatus=row.optString("status");int newQty=row.optInt("quantity",-1);boolean oldAvailable=oldStatus.equals("in_stock")||oldStatus.equals("estimated_in_stock");boolean newAvailable=newStatus.equals("in_stock")||newStatus.equals("estimated_in_stock");String signal="";if(old!=null&&!oldAvailable&&newAvailable)signal="restock";else if(oldStatus.equals("estimated_in_stock")&&newStatus.equals("estimated_in_stock")&&newQty>oldQty)signal="up";else if(oldStatus.equals("estimated_in_stock")&&newStatus.equals("estimated_in_stock")&&newQty<oldQty)signal="down";if("unknown".equals(newStatus)&&old!=null){row.put("last_known_status",oldStatus);if(oldQty>=0)row.put("last_known_quantity",oldQty);}row.put("stock_signal",signal);row.put("checked_at",now());if(old!=null&&signal.equals("restock")&&notificationsEnabled("notify_restock"))postNotification("Restock erkannt",productName(productId)+" ist wieder verfügbar bei "+row.optString("name"),productId.hashCode()^branchId.hashCode());else if(old!=null&&signal.equals("up")&&notificationsEnabled("notify_stock_increase"))postNotification("Bestand gestiegen",productName(productId)+" · "+row.optString("name")+" · ca. "+newQty,productId.hashCode()^branchId.hashCode());productRows.put(branchId,row);saveLocal();if(productId.equals(currentProductId()))renderRecords();}catch(Exception ignored){}});}
+        @JavascriptInterface public void livePrice(String json){runOnUiThread(()->{try{JSONObject incoming=new JSONObject(json);String id=incoming.getString("product_id");double current=incoming.getDouble("price");JSONObject old=livePricesByProduct.get(id);double previous=old==null?catalogPrice(id):old.optDouble("price",catalogPrice(id));boolean hasBaseline=previous>0;JSONObject saved=new JSONObject();saved.put("price",current);saved.put("checked_at",now());saved.put("source",incoming.optString("source"));if(hasBaseline&&Math.abs(current-previous)>=0.01){saved.put("previous_price",previous);saved.put("change",current<previous?"down":"up");if(old!=null){String direction=current<previous?"notify_price_drop":"notify_price_increase";if(notificationsEnabled(direction))postNotification(current<previous?"Preis gesunken":"Preis gestiegen",productName(id)+": CHF "+String.format(java.util.Locale.GERMANY,"%.2f",previous)+" → CHF "+String.format(java.util.Locale.GERMANY,"%.2f",current),id.hashCode());}}else saved.put("change","none");double original=incoming.optDouble("original_price",0);if(original>current){saved.put("promotion",true);saved.put("original_price",original);if(old!=null&&!old.optBoolean("promotion")&&notificationsEnabled("notify_promotion")&&(!hasBaseline||Math.abs(current-previous)<0.01))postNotification("Aktion erkannt",productName(id)+" · jetzt CHF "+String.format(java.util.Locale.GERMANY,"%.2f",current),id.hashCode());}livePricesByProduct.put(id,saved);saveLocal();if(id.equals(currentProductId()))renderProduct();}catch(Exception ignored){}});}
         @JavascriptInterface public void failed(String json){runOnUiThread(()->{try{JSONObject d=new JSONObject(json);finishError("Abfrage gestoppt bei "+productName(d.optString("product_id"))+": "+d.optString("error","Migros-Fehler"));}catch(Exception ex){finishError("Migros-Abfrage fehlgeschlagen.");}});}
         @JavascriptInterface public void complete(String json){runOnUiThread(()->{String id=products.optJSONObject(activeProductIndex).optString("id");checkedByProduct.put(id,now());saveLocal();activeProductIndex++;if(activeProductIndex<products.length()){loadProductPage();}else finishAll();});}
+    }
+
+    private boolean notificationsEnabled(String key){return getPreferences(MODE_PRIVATE).getBoolean(key,false);}
+    private void postNotification(String title,String message,int id){
+        if(Build.VERSION.SDK_INT>=33&&checkSelfPermission("android.permission.POST_NOTIFICATIONS")!=PackageManager.PERMISSION_GRANTED)return;
+        NotificationManager manager=(NotificationManager)getSystemService(NOTIFICATION_SERVICE);if(manager==null)return;
+        String channel="pokemon_inventory_alerts";if(Build.VERSION.SDK_INT>=26){manager.createNotificationChannel(new NotificationChannel(channel,"Pokémon Card Finder",NotificationManager.IMPORTANCE_DEFAULT));}
+        Intent intent=new Intent(this,MainActivity.class);PendingIntent pending=PendingIntent.getActivity(this,id,intent,PendingIntent.FLAG_UPDATE_CURRENT|(Build.VERSION.SDK_INT>=23?PendingIntent.FLAG_IMMUTABLE:0));
+        Notification.Builder builder=Build.VERSION.SDK_INT>=26?new Notification.Builder(this,channel):new Notification.Builder(this);
+        builder.setSmallIcon(android.R.drawable.ic_dialog_info).setContentTitle(title).setContentText(message).setStyle(new Notification.BigTextStyle().bigText(message)).setContentIntent(pending).setAutoCancel(true);
+        manager.notify(id,builder.build());
+    }
+
+    private void showNotificationSettings(){
+        LinearLayout options=new LinearLayout(this);options.setOrientation(LinearLayout.VERTICAL);options.setPadding(dp(20),dp(4),dp(20),0);
+        String[][] rows={{"notify_restock","Restock: Filiale ist wieder verfügbar"},{"notify_stock_increase","Bestand steigt"},{"notify_price_drop","Preis sinkt"},{"notify_price_increase","Preis steigt"},{"notify_promotion","Neue Rabattaktion"}};
+        CheckBox[] boxes=new CheckBox[rows.length];for(int i=0;i<rows.length;i++){boxes[i]=new CheckBox(this);boxes[i].setText(rows[i][1]);boxes[i].setChecked(getPreferences(MODE_PRIVATE).getBoolean(rows[i][0],i==0||i==2||i==4));options.addView(boxes[i]);}
+        AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Benachrichtigungen").setMessage("Du erhältst Hinweise nach einer Bestands- oder Preisprüfung.").setView(options).setNegativeButton("Abbrechen",null).setPositiveButton("Speichern",null).create();
+        dialog.setOnShowListener(v->dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(button->{boolean any=false;android.content.SharedPreferences.Editor editor=getPreferences(MODE_PRIVATE).edit();for(int i=0;i<rows.length;i++){editor.putBoolean(rows[i][0],boxes[i].isChecked());any|=boxes[i].isChecked();}editor.apply();if(any&&Build.VERSION.SDK_INT>=33&&checkSelfPermission("android.permission.POST_NOTIFICATIONS")!=PackageManager.PERMISSION_GRANTED)requestPermissions(new String[]{"android.permission.POST_NOTIFICATIONS"},41);dialog.dismiss();});dialog.show();
     }
 
     private void finishAll(){int total=0,unknown=0;for(Map<String,JSONObject> rows:recordsByProduct.values()){total+=rows.size();for(JSONObject row:rows.values())if(row.optString("status").equals("unknown"))unknown++;}status.setText("Abfrage fertig · "+total+" von "+(products.length()*branches.length())+" Artikel-Filial-Datensätzen · "+unknown+" ohne lesbaren Status");checkedAt.setText("Zuletzt geprüft: "+now()+" · Ergebnisse lokal gespeichert");finishBusy();renderProduct();updateAutoRefreshInfo();scheduleAutomaticRefresh(0);}
@@ -220,16 +291,16 @@ public class MainActivity extends Activity {
         Map<String,JSONObject> rows=recordsByProduct.get(currentProductId());
         String query=branchSearch==null?"":branchSearch.getText().toString().trim().toLowerCase(java.util.Locale.ROOT);
         String filter=stockFilterPicker==null||stockFilterPicker.getSelectedItem()==null?"Alle":stockFilterPicker.getSelectedItem().toString();
-        int available=0,outOfStock=0,unclear=0,unchecked=0; List<JSONObject> visible=new ArrayList<>();
+        int available=0,outOfStock=0,unclear=0,unchecked=0,onlineOnly=0; List<JSONObject> visible=new ArrayList<>();
         for(int i=0;i<branches.length();i++){
             JSONObject b=branches.optJSONObject(i); if(b==null)continue;
             JSONObject row=rows==null?null:rows.get(b.optString("id")); String state=row==null?"unchecked":row.optString("status","unknown");
-            if(state.equals("in_stock")||state.equals("estimated_in_stock"))available++;else if(state.equals("out_of_stock"))outOfStock++;else if(state.equals("unknown"))unclear++;else unchecked++;
+            if(state.equals("in_stock")||state.equals("estimated_in_stock"))available++;else if(state.equals("out_of_stock"))outOfStock++;else if(state.equals("unknown"))unclear++;else if(state.equals("online_only"))onlineOnly++;else unchecked++;
             String searchable=(b.optString("name")+" "+b.optString("address")).toLowerCase(java.util.Locale.ROOT);
             if(!searchable.contains(query)||!matchesFilter(filter,state))continue;
             visible.add(b);
         }
-        if(stockSummary!=null)stockSummary.setText("Verfügbar: "+available+" · Nicht auf Lager: "+outOfStock+" · Unklar: "+unclear+" · Offen: "+unchecked);
+        if(stockSummary!=null)stockSummary.setText("Verfügbar: "+available+" · Nicht auf Lager: "+outOfStock+" · Nur online: "+onlineOnly+" · Unklar: "+unclear+" · Offen: "+unchecked);
         if(filter.equals("Höchster Bestand"))Collections.sort(visible,(a,b)->Integer.compare(stockQuantity(rows,b),stockQuantity(rows,a)));
         resultList.removeAllViews();
         if(visible.isEmpty()){TextView empty=new TextView(this);empty.setText("Keine Filiale passt zu Suche und Filter.");empty.setTextSize(12);empty.setPadding(dp(8),dp(12),dp(8),dp(12));resultList.addView(empty);return;}
@@ -246,11 +317,12 @@ public class MainActivity extends Activity {
         if(filter.equals("Verfügbar"))return state.equals("in_stock")||state.equals("estimated_in_stock");
         if(filter.equals("Nicht auf Lager"))return state.equals("out_of_stock");
         if(filter.equals("Nicht eindeutig"))return state.equals("unknown");
+        if(filter.equals("Nur online"))return state.equals("online_only");
         if(filter.equals("Noch ungeprüft"))return state.equals("unchecked");
         return true;
     }
-    private String label(JSONObject row){if(row==null)return "Noch nicht geprüft";String s=row.optString("status");if(s.equals("out_of_stock"))return "Nicht auf Lager";if(s.equals("estimated_in_stock"))return "Ca. "+row.optInt("quantity")+" auf Lager";if(s.equals("in_stock"))return "Auf Lager (Menge unbekannt)";return "Nicht eindeutig geprüft";}
-    private int statusColor(String state){if(state.equals("in_stock")||state.equals("estimated_in_stock"))return Color.rgb(36,148,72);if(state.equals("out_of_stock"))return Color.rgb(130,132,140);if(state.equals("unknown"))return Color.rgb(218,143,25);return Color.rgb(185,188,195);}
+    private String label(JSONObject row){if(row==null)return "Noch nicht geprüft";String s=row.optString("status");if(s.equals("out_of_stock"))return "Nicht auf Lager";if(s.equals("estimated_in_stock"))return "Ca. "+row.optInt("quantity")+" auf Lager";if(s.equals("in_stock"))return "Auf Lager (Menge unbekannt)";if(s.equals("online_only"))return "Nur online erhältlich";return "Nicht eindeutig geprüft";}
+    private int statusColor(String state){if(state.equals("in_stock")||state.equals("estimated_in_stock"))return Color.rgb(36,148,72);if(state.equals("out_of_stock"))return Color.rgb(130,132,140);if(state.equals("unknown"))return Color.rgb(218,143,25);if(state.equals("online_only"))return Color.rgb(96,72,220);return Color.rgb(185,188,195);}
     private int stockQuantity(Map<String,JSONObject> rows,JSONObject branch){JSONObject row=rows==null?null:rows.get(branch.optString("id"));return row!=null&&row.optString("status").equals("estimated_in_stock")?row.optInt("quantity",0):0;}
     private double catalogPrice(String id){for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p.optString("id").equals(id))return p.optDouble("price_chf",0);}return 0;}
     private void loadImage(String imageUrl){productImage.setImageDrawable(null);if(imageUrl==null||imageUrl.isEmpty())return;new Thread(()->{try{Bitmap bitmap=BitmapFactory.decodeStream(new URL(imageUrl).openStream());runOnUiThread(()->productImage.setImageBitmap(bitmap));}catch(Exception ignored){}}).start();}

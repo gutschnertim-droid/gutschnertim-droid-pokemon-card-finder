@@ -33,11 +33,16 @@
 - [x] Restocks/Bestandsanstiege sowie geänderte Livepreise und mögliche Aktionen markieren
 - [x] Direktlink zur aktuellen APK einrichten: https://github.com/gutschnertim-droid/gutschnertim-droid-pokemon-card-finder/releases/download/android-test-latest/app-debug.apk
 - [x] Automatische Vier-Stunden-Aktualisierung ohne Button für geöffnete App ergänzen
+- [x] Benachrichtigungen in der Android-App einzeln für Restock, steigenden Bestand, Preisänderungen und neue Rabattaktionen einstellbar machen
+- [x] Eigenes Launcher-Symbol für die App hinzufügen
+- [x] Bei Aktualisierungen neue passende Produkte auf Migros' öffentlicher Pokémon-Seite suchen, lokal in den Katalog aufnehmen und im selben Durchlauf prüfen
+- [ ] Produktentdeckung auf Migros-Kategorieseiten und Suchergebnisse ausweiten; die neue Suche hängt davon ab, welche Treffer die öffentliche Pokémon-Seite anzeigt
+- [ ] Benachrichtigungen/Bestandsprüfung auch bei geschlossener App ermöglichen; aktuelle Live-Abfragen benötigen die geöffnete App
 - [ ] Gezielte Abfrage für einen ausgewählten Artikel und eine Filiale ermöglichen
 - [ ] Unterbrochene lokale Abfragen fortsetzen können
 - [ ] Offizielle Filialliste mit dem lokalen App-Datensatz abgleichen
 - [ ] Kartenansicht mit Verfügbarkeitsfilter und Wegbeschreibung ergänzen
-- [ ] Optionale Android-Benachrichtigungen, Favoriten, Kaufnotizen und CSV-Verlauf ergänzen
+- [ ] Favoriten, Kaufnotizen und CSV-Verlauf ergänzen
 - [ ] Signierte Android-Version mit verlässlichem Aktualisierungsweg bereitstellen
 - [ ] Bestandsabfrage auch bei vollständig geschlossener App zuverlässig im Hintergrund ermöglichen
 

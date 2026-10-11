@@ -12,7 +12,10 @@
 - [x] Nach Filialen mit dem höchsten erfassten Bestand filtern und sortieren.
 - [x] Bei erkanntem Restock sowie steigendem oder sinkendem Bestand ein Symbol anzeigen.
 - [x] Produktseiten nach Livepreisen und sichtbaren Rabattpreisen auslesen; Preisänderungen markieren.
-- [x] Nach erfolgreichem Build einen stabilen Direktlink zur APK bereitstellen.
+- [x] Benachrichtigungen einzeln für Restock, steigenden Bestand, sinkenden/steigenden Preis und Aktionen einstellbar machen.
+- [x] Eigenes Pokémon-Card-Finder-Launcher-Symbol statt Android-Standardsymbol einbauen.
+- [x] Bei jeder Aktualisierung die Migros-Pokémon-Produktseite nach neuen Karten-/TCG-Artikeln durchsuchen, lokal ergänzen und im selben Lauf mitprüfen.
+- [ ] Nach erfolgreichem Build einen stabilen Direktlink zur aktualisierten APK bereitstellen.
 - [x] Bestände automatisch alle vier Stunden neu abfragen, wenn die App geöffnet ist; eine fällige Prüfung beim Zurückkehren starten.
 
 ## Als Nächstes
@@ -22,10 +25,10 @@
 3. [ ] Offizielle Migros-Filialliste gegen den lokalen Bestand abgleichen und fehlende Filialen ergänzen.
 4. [ ] Pokémon-TCG-Sortiment systematisch nach Regionen erfassen und neue Produkte nachvollziehbar in den Katalog aufnehmen.
 5. [ ] Kartenansicht mit Filialstatus, Bestandsfilter und Wegbeschreibung ergänzen.
-6. [ ] Echte Android-Benachrichtigungen für Restock und Preisänderungen optional ergänzen.
-7. [ ] Favoriten, manuelle Kaufnotizen und CSV-Verlauf ergänzen.
-8. [ ] Zeitstempel und Fehlermeldungen pro Filiale deutlicher machen, damit alte und nicht gelesene Daten leicht erkennbar sind.
-9. [ ] Hintergrundabfrage auch bei geschlossener App ermöglichen; die aktuelle Migros-Abfrage läuft über eine WebView in der geöffneten App.
+6. [ ] Produktentdeckung über weitere Migros-Kategorie- und Suchseiten ergänzen; die aktuelle Suche erfasst nur Produktlinks, die auf der öffentlichen Pokémon-Seite gerendert werden.
+7. [ ] Hintergrundabfrage und Benachrichtigungen auch bei geschlossener App ermöglichen; die Migros-Abfrage läuft derzeit über eine WebView, wenn die App geöffnet ist.
+8. [ ] Favoriten, manuelle Kaufnotizen und CSV-Verlauf ergänzen.
+9. [ ] Zeitstempel und Fehlermeldungen pro Filiale deutlicher machen, damit alte und nicht gelesene Daten leicht erkennbar sind.
 10. [ ] Signierte Android-Version und einen verlässlichen Aktualisierungsweg für Installationen einrichten.
 
 ## Umfangshinweis

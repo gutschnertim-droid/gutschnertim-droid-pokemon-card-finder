@@ -1,6 +1,6 @@
 # Pokémon Card Finder – lokaler Android-Live-Test
 
-Diese native Test-App fragt die **sieben Pokémon-TCG-Artikel im vorhandenen Migros-Katalog** in allen Filialen aus `app/src/main/assets/branches.json` direkt auf dem Android-Gerät ab. Die aktuelle Filialliste umfasst 37 Fribourger und Berner Standorte. Damit umfasst ein vollständiger Lauf bis zu 259 Artikel-Filial-Kombinationen. Anfrage und letzte Anzeige laufen lokal; die App benötigt weder GitHub-Feed noch eigenen Server oder Migros-Login. Der Katalog ist der erfasste Stand für PLZ 1700 und keine schweizweite Sortimentserhebung.
+Diese native App fragt Pokémon-TCG-Artikel auf den Migros-Produktseiten direkt auf dem Android-Gerät ab. Sie durchsucht bei jeder Aktualisierung zusätzlich die öffentliche Pokémon-Produktseite nach neuen Karten-/TCG-Artikeln, ergänzt erkannte Artikel lokal zum Katalog und prüft sie im selben Lauf in allen Filialen aus `app/src/main/assets/branches.json`. Die aktuelle Filialliste umfasst 37 Fribourger und Berner Standorte. Anfrage und letzte Anzeige laufen lokal; die App benötigt weder GitHub-Feed noch eigenen Server oder Migros-Login. Der Katalog ist der erfasste Stand für PLZ 1700 und keine schweizweite Sortimentserhebung. Die automatische Erkennung kann Produkte übersehen, die Migros auf der Pokémon-Seite nicht öffentlich rendert.
 
 ## APK herunterladen oder selbst bauen
 
@@ -8,7 +8,7 @@ Der Repository-Workflow baut nach Änderungen am Ordner `android-local/` eine De
 
 ## Test
 
-App öffnen, gewünschten Artikel im Auswahlfeld wählen und **Alle Artikel in allen Filialen abfragen** antippen. Die App fragt alle sieben Produktseiten nacheinander ab und sucht die Filialen jeweils im Verfügbarkeitsdialog. Erfasste Ergebnisse werden lokal gespeichert und erscheinen fortlaufend in der Liste. Unlesbare oder fehlende Antworten stehen ausdrücklich als „Nicht eindeutig geprüft“ und werden nicht als „Nicht auf Lager“ ausgegeben. Bei einer Migros-Wartungs- oder Sperrseite wird der Lauf gestoppt; bereits erfasste Ergebnisse bleiben lokal gespeichert.
+App öffnen, gewünschten Artikel im Auswahlfeld wählen und **Alle Artikel in allen Filialen abfragen** antippen. Die App sucht neue Artikel und fragt dann alle Katalogprodukte nacheinander ab, jeweils mit den Filialen im Verfügbarkeitsdialog. Erfasste Ergebnisse werden lokal gespeichert und erscheinen fortlaufend in der Liste. Unlesbare oder fehlende Antworten stehen ausdrücklich als „Nicht eindeutig geprüft“ und werden nicht als „Nicht auf Lager“ ausgegeben. Bei einer Migros-Wartungs- oder Sperrseite wird der Lauf gestoppt; bereits erfasste Ergebnisse bleiben lokal gespeichert.
 
 Die Filialliste kann nach Filialname oder Ort durchsucht und nach Verfügbarkeit, Nichtverfügbarkeit, unklarem Status oder noch nicht erfolgter Prüfung gefiltert werden. Eine Übersicht zählt die vier Statusgruppen für den ausgewählten Artikel. Weitere geplante Erweiterungen stehen in [TODO.md](TODO.md).
 
@@ -17,3 +17,5 @@ Verfügbare Filialen werden mit einem grünen Punkt hervorgehoben. „Höchster 
 Die Produktbilder werden von der Migros-Bildquelle geladen. Android kann Hintergrundaufgaben verzögern; die Schaltfläche startet die Abfrage verlässlich auf Wunsch. Bei 259 Kombinationen kann ein Lauf länger dauern. Die App sollte dabei geöffnet bleiben.
 
 Die automatische Aktualisierung ist standardmässig eingeschaltet und kann in der App ausgeschaltet werden. Beim ersten Öffnen startet sie selbstständig; danach startet sie alle vier Stunden, solange die App geöffnet ist. Wenn die App währenddessen geschlossen oder im Hintergrund war, startet eine fällige Abfrage beim nächsten Öffnen. Die aktuelle Migros-Erfassung nutzt die App-WebView und läuft deshalb nicht zuverlässig bei vollständig geschlossener App.
+
+Unter **Benachrichtigungen einstellen** lassen sich Restock, steigender Filialbestand, sinkender/steigender Preis und neue Rabattaktionen getrennt aktivieren. Android fragt beim Speichern um System-Benachrichtigungserlaubnis. Meldungen können erst nach einer Bestands- oder Preisprüfung ausgelöst werden; eine Aktualisierung im Hintergrund bei vollständig geschlossener App ist weiterhin nicht enthalten.
