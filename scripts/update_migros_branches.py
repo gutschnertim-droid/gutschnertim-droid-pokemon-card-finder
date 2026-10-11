@@ -59,7 +59,7 @@ async def main(output: Path, baseline: Path) -> None:
         if not filtered_count_match:
             raise RuntimeError("Die Standortzahl im offiziellen Migros-Filialfinder fehlt.")
         filtered_count = int(filtered_count_match.group(1))
-        await count_button.click()
+        await count_button.click(force=True)
         list_root = page.locator("#msrc-storefinder-storelist")
         await list_root.wait_for(state="visible", timeout=20000)
         store_list = list_root.locator("ul[role=list]")
