@@ -39,14 +39,20 @@ async def main(output: Path, baseline: Path) -> None:
         page.set_default_timeout(20000)
         await page.goto(START_URL, wait_until="domcontentloaded", timeout=60000)
         await page.wait_for_timeout(3000)
-        necessary_cookies = page.get_by_role("button", name=re.compile(r"nur notwendige cookies", re.I))
+        necessary_cookies = page.get_by_text(re.compile(r"^nur notwendige cookies$", re.I), exact=True)
         if await necessary_cookies.count():
-            await necessary_cookies.click()
+            await necessary_cookies.click(force=True)
             await page.wait_for_load_state("domcontentloaded", timeout=20000)
         await page.wait_for_timeout(2500)
         # This exact official route was captured after selecting "Supermarkt" in the Migros finder.
         await page.goto(FILTERED_URL, wait_until="domcontentloaded", timeout=60000)
         await page.wait_for_timeout(4000)
+        necessary_cookies = page.get_by_text(re.compile(r"^nur notwendige cookies$", re.I), exact=True)
+        if await necessary_cookies.count():
+            await necessary_cookies.click(force=True)
+            await page.wait_for_timeout(1500)
+        if await necessary_cookies.count():
+            raise RuntimeError("Der Migros-Cookiebanner blieb trotz Auswahl notwendiger Cookies geöffnet.")
         count_button = page.get_by_role("button", name=re.compile(r"\d+\s+STANDORTE ANZEIGEN", re.I))
         await count_button.wait_for(state="visible", timeout=20000)
         filtered_count_match = re.search(r"(\d+)", await count_button.inner_text())
