@@ -13,6 +13,7 @@
 - [x] Bei erkanntem Restock sowie steigendem oder sinkendem Bestand ein Symbol anzeigen.
 - [x] Produktseiten nach Livepreisen und sichtbaren Rabattpreisen auslesen; Preisänderungen markieren.
 - [x] Nach erfolgreichem Build einen stabilen Direktlink zur APK bereitstellen.
+- [x] Bestände automatisch alle vier Stunden neu abfragen, wenn die App geöffnet ist; eine fällige Prüfung beim Zurückkehren starten.
 
 ## Als Nächstes
 
@@ -24,7 +25,8 @@
 6. [ ] Echte Android-Benachrichtigungen für Restock und Preisänderungen optional ergänzen.
 7. [ ] Favoriten, manuelle Kaufnotizen und CSV-Verlauf ergänzen.
 8. [ ] Zeitstempel und Fehlermeldungen pro Filiale deutlicher machen, damit alte und nicht gelesene Daten leicht erkennbar sind.
-9. [ ] Signierte Android-Version und einen verlässlichen Aktualisierungsweg für Installationen einrichten.
+9. [ ] Hintergrundabfrage auch bei geschlossener App ermöglichen; die aktuelle Migros-Abfrage läuft über eine WebView in der geöffneten App.
+10. [ ] Signierte Android-Version und einen verlässlichen Aktualisierungsweg für Installationen einrichten.
 
 ## Umfangshinweis
 

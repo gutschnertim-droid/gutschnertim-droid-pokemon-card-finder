@@ -32,12 +32,14 @@
 - [x] Verfügbarkeit grün markieren und Filialen nach höchstem ausgelesenem Bestand sortieren
 - [x] Restocks/Bestandsanstiege sowie geänderte Livepreise und mögliche Aktionen markieren
 - [x] Direktlink zur aktuellen APK einrichten: https://github.com/gutschnertim-droid/gutschnertim-droid-pokemon-card-finder/releases/download/android-test-latest/app-debug.apk
+- [x] Automatische Vier-Stunden-Aktualisierung ohne Button für geöffnete App ergänzen
 - [ ] Gezielte Abfrage für einen ausgewählten Artikel und eine Filiale ermöglichen
 - [ ] Unterbrochene lokale Abfragen fortsetzen können
 - [ ] Offizielle Filialliste mit dem lokalen App-Datensatz abgleichen
 - [ ] Kartenansicht mit Verfügbarkeitsfilter und Wegbeschreibung ergänzen
 - [ ] Optionale Android-Benachrichtigungen, Favoriten, Kaufnotizen und CSV-Verlauf ergänzen
 - [ ] Signierte Android-Version mit verlässlichem Aktualisierungsweg bereitstellen
+- [ ] Bestandsabfrage auch bei vollständig geschlossener App zuverlässig im Hintergrund ermöglichen
 
 ## Datenzugriff
 

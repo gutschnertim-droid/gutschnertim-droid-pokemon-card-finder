@@ -6,6 +6,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -41,12 +44,15 @@ import java.util.Map;
 /** Locally queries the Migros product dialog for all catalog products and bundled branches. */
 public class MainActivity extends Activity {
     private static final String CATALOG_ASSET = "catalog.json";
+    private static final long AUTO_REFRESH_INTERVAL_MS = 4L * 60L * 60L * 1000L;
     private TextView status, checkedAt, productTitle, productPrice, stockSummary;
     private ProgressBar loadingSpinner;
     private Button refresh;
     private Spinner productPicker;
     private Spinner stockFilterPicker;
     private EditText branchSearch;
+    private Switch autoRefreshToggle;
+    private TextView autoRefreshInfo;
     private ImageView productImage;
     private LinearLayout resultList;
     private WebView webView;
@@ -58,6 +64,9 @@ public class MainActivity extends Activity {
     private final Map<String, JSONObject> livePricesByProduct = new LinkedHashMap<>();
     private boolean waitingForPage;
     private boolean queryRunning;
+    private boolean activityResumed;
+    private final Handler autoRefreshHandler = new Handler(Looper.getMainLooper());
+    private final Runnable autoRefreshRunnable = this::checkAutomaticRefresh;
 
     @Override public void onCreate(Bundle state) {
         super.onCreate(state);
@@ -82,7 +91,14 @@ public class MainActivity extends Activity {
         });
         root.addView(webView, new LinearLayout.LayoutParams(1, 1));
         loadSavedRecords();
-        refresh.setOnClickListener(v -> beginCheck());
+        refresh.setOnClickListener(v -> beginCheck(false));
+        autoRefreshToggle.setChecked(getPreferences(MODE_PRIVATE).getBoolean("auto_refresh_enabled", true));
+        autoRefreshToggle.setOnCheckedChangeListener((button, enabled) -> {
+            getPreferences(MODE_PRIVATE).edit().putBoolean("auto_refresh_enabled", enabled).apply();
+            if (!enabled) autoRefreshHandler.removeCallbacks(autoRefreshRunnable);
+            else scheduleAutomaticRefresh(0);
+            updateAutoRefreshInfo();
+        });
         ArrayList<String> names = new ArrayList<>();
         for (int i=0;i<products.length();i++) names.add(products.optJSONObject(i).optString("name"));
         productPicker.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, names));
@@ -104,6 +120,16 @@ public class MainActivity extends Activity {
         renderProduct();
     }
 
+    @Override protected void onResume() {
+        super.onResume(); activityResumed=true;
+        if (autoRefreshToggle!=null&&autoRefreshToggle.isChecked()) scheduleAutomaticRefresh(0);
+    }
+
+    @Override protected void onPause() {
+        activityResumed=false; autoRefreshHandler.removeCallbacks(autoRefreshRunnable);
+        super.onPause();
+    }
+
     private void buildScreen() {
         getWindow().setStatusBarColor(Color.rgb(248,248,252)); getWindow().setNavigationBarColor(Color.rgb(248,248,252));
         root=new LinearLayout(this); root.setOrientation(LinearLayout.VERTICAL); root.setPadding(dp(16),dp(18),dp(16),dp(12)); root.setBackgroundColor(Color.rgb(248,248,252));
@@ -121,6 +147,8 @@ public class MainActivity extends Activity {
         loadingSpinner=new ProgressBar(this); loadingSpinner.setIndeterminate(true); loadingSpinner.setVisibility(View.GONE); progressLine.addView(loadingSpinner,new LinearLayout.LayoutParams(dp(22),dp(22)));
         status=new TextView(this); status.setText("Noch keine vollständige Live-Abfrage."); status.setTextSize(12); status.setTextColor(Color.DKGRAY); LinearLayout.LayoutParams sp=new LinearLayout.LayoutParams(0,-2,1);sp.leftMargin=dp(8);progressLine.addView(status,sp);root.addView(progressLine,params(dp(8)));
         checkedAt=new TextView(this); checkedAt.setText("Die Migros-Abfragen und gespeicherten Ergebnisse bleiben auf diesem Gerät."); checkedAt.setTextSize(10); checkedAt.setTextColor(Color.GRAY); root.addView(checkedAt,params(dp(3)));
+        autoRefreshToggle=new Switch(this);autoRefreshToggle.setText("Automatisch alle 4 Stunden aktualisieren");autoRefreshToggle.setTextSize(11);root.addView(autoRefreshToggle,params(dp(2)));
+        autoRefreshInfo=new TextView(this);autoRefreshInfo.setTextSize(9);autoRefreshInfo.setTextColor(Color.GRAY);root.addView(autoRefreshInfo,params(dp(1)));
         stockSummary=new TextView(this); stockSummary.setTextSize(11); stockSummary.setTextColor(Color.rgb(60,56,72)); root.addView(stockSummary,params(dp(8)));
         LinearLayout filters=new LinearLayout(this); filters.setGravity(Gravity.CENTER_VERTICAL);
         branchSearch=new EditText(this); branchSearch.setSingleLine(true); branchSearch.setTextSize(12); branchSearch.setHint("Filiale oder Ort suchen");
@@ -133,8 +161,10 @@ public class MainActivity extends Activity {
         setContentView(root);
     }
 
-    private void beginCheck() {
+    private void beginCheck(boolean automatic) {
         if(products.length()==0||branches.length()==0){status.setText("Produkt- oder Filialliste fehlt.");return;}
+        if(queryRunning)return;
+        getPreferences(MODE_PRIVATE).edit().putLong("auto_refresh_anchor_ms",System.currentTimeMillis()).apply();updateAutoRefreshInfo();
         queryRunning=true;activeProductIndex=0;selectedProductIndex=0;productPicker.setSelection(0);getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         renderProduct();
         refresh.setEnabled(false);loadingSpinner.setVisibility(View.VISIBLE);loadProductPage();
@@ -174,9 +204,12 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void complete(String json){runOnUiThread(()->{String id=products.optJSONObject(activeProductIndex).optString("id");checkedByProduct.put(id,now());saveLocal();activeProductIndex++;if(activeProductIndex<products.length()){loadProductPage();}else finishAll();});}
     }
 
-    private void finishAll(){int total=0,unknown=0;for(Map<String,JSONObject> rows:recordsByProduct.values()){total+=rows.size();for(JSONObject row:rows.values())if(row.optString("status").equals("unknown"))unknown++;}status.setText("Abfrage fertig · "+total+" von "+(products.length()*branches.length())+" Artikel-Filial-Datensätzen · "+unknown+" ohne lesbaren Status");checkedAt.setText("Zuletzt geprüft: "+now()+" · Ergebnisse lokal gespeichert");finishBusy();renderProduct();}
-    private void finishError(String message){status.setText(message+". Bisherige Ergebnisse bleiben lokal gespeichert.");finishBusy();}
+    private void finishAll(){int total=0,unknown=0;for(Map<String,JSONObject> rows:recordsByProduct.values()){total+=rows.size();for(JSONObject row:rows.values())if(row.optString("status").equals("unknown"))unknown++;}status.setText("Abfrage fertig · "+total+" von "+(products.length()*branches.length())+" Artikel-Filial-Datensätzen · "+unknown+" ohne lesbaren Status");checkedAt.setText("Zuletzt geprüft: "+now()+" · Ergebnisse lokal gespeichert");finishBusy();renderProduct();updateAutoRefreshInfo();scheduleAutomaticRefresh(0);}
+    private void finishError(String message){status.setText(message+". Bisherige Ergebnisse bleiben lokal gespeichert.");finishBusy();updateAutoRefreshInfo();scheduleAutomaticRefresh(0);}
     private void finishBusy(){queryRunning=false;getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);loadingSpinner.setVisibility(View.GONE);refresh.setEnabled(true);}
+    private void scheduleAutomaticRefresh(long delayOverride){autoRefreshHandler.removeCallbacks(autoRefreshRunnable);if(!activityResumed||autoRefreshToggle==null||!autoRefreshToggle.isChecked())return;long anchor=getPreferences(MODE_PRIVATE).getLong("auto_refresh_anchor_ms",0);long delay=delayOverride>0?delayOverride:(anchor==0?0:Math.max(0,anchor+AUTO_REFRESH_INTERVAL_MS-System.currentTimeMillis()));autoRefreshHandler.postDelayed(autoRefreshRunnable,delay);updateAutoRefreshInfo();}
+    private void checkAutomaticRefresh(){if(!activityResumed||autoRefreshToggle==null||!autoRefreshToggle.isChecked())return;if(queryRunning){scheduleAutomaticRefresh(60_000);return;}long anchor=getPreferences(MODE_PRIVATE).getLong("auto_refresh_anchor_ms",0);if(anchor==0||System.currentTimeMillis()-anchor>=AUTO_REFRESH_INTERVAL_MS){status.setText("Automatische Live-Aktualisierung läuft …");beginCheck(true);}else scheduleAutomaticRefresh(0);}
+    private void updateAutoRefreshInfo(){if(autoRefreshInfo==null)return;if(autoRefreshToggle==null||!autoRefreshToggle.isChecked()){autoRefreshInfo.setText("Automatische Aktualisierung ausgeschaltet.");return;}long anchor=getPreferences(MODE_PRIVATE).getLong("auto_refresh_anchor_ms",0);if(anchor==0){autoRefreshInfo.setText("Erste automatische Prüfung startet beim Öffnen der App. App geöffnet lassen.");return;}long next=anchor+AUTO_REFRESH_INTERVAL_MS;autoRefreshInfo.setText("Nächste Prüfung ab "+DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(next))+" · läuft bei geöffneter App; nach Rückkehr wird eine fällige Prüfung gestartet.");}
     private String currentProductId(){JSONObject p=products.optJSONObject(selectedProductIndex);return p==null?"":p.optString("id");}
     private String productName(String id){for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p.optString("id").equals(id))return p.optString("name");}return id;}
     private String now(){return DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT).format(new Date());}
