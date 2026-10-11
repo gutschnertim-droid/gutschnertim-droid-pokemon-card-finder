@@ -19,7 +19,7 @@
 - [x] Projektdateien, Bestandsdaten und Workflow auf `main` veröffentlicht (Commit `2d4959c`)
 - [x] Täglichen GitHub-Actions-Workflow (01:15 UTC) und manuellen Start im Repository eingerichtet
 - [x] Vollständigen Abdeckungsbericht je Region im Actions-Lauf ergänzen; Feed muss 259/259 Kombinationen enthalten
-- [ ] Erfolgreichen Actions-Lauf verifizieren: Katalogfilter korrigiert (Commit `7c4bbed`); GitHub Actions erhält bei Migros wiederholt eine Wartungsseite statt der Produktseite. Der vorhandene Feed bleibt bei 259/259 geprüften Kombinationen vom 11.10.2026, bis Migros die Live-Abfrage vom Runner aus zulässt.
+- [ ] GitHub-Datenlauf verifizieren: Der Runner erhielt auch beim erneuten Versuch am 11.10.2026 um 21:00 CEST die Migros-Wartungsseite. Der Feed bleibt ein Snapshot vom 11.10.2026, 01:23 CEST (37 Filialen × 7 Artikel = 259 Kombinationen). Die normale Migros-Seite und der Verfügbarkeitsdialog waren im Browser erreichbar; wahrscheinlich netzwerkabhängige Antwort für den GitHub-Runner.
 - [x] Feed-URL im Frontend auf den öffentlichen GitHub-Feed gesetzt; Aktualisierung erfolgt beim Start und danach alle 15 Minuten
 - [ ] Private Site mit dem aktualisierten Frontend neu veröffentlichen (Quell-Sync aktuell nicht erreichbar)
 - [ ] Bei neuen Filialen Daten in `data/branches.json` ergänzen und Abdeckung im nächsten Lauf verifizieren
@@ -37,12 +37,12 @@
 - [x] Eigenes Launcher-Symbol für die App hinzufügen
 - [x] Bei Aktualisierungen neue passende Produkte auf Migros' öffentlicher Pokémon-Seite suchen, lokal in den Katalog aufnehmen und im selben Durchlauf prüfen
 - [x] Android-Build erfolgreich; aktueller Testbuild als APK und ZIP im GitHub-Release veröffentlicht
-- [ ] Produktentdeckung auf Migros-Kategorieseiten und Suchergebnisse ausweiten; die neue Suche hängt davon ab, welche Treffer die öffentliche Pokémon-Seite anzeigt
+- [x] Produktsuche bei Aktualisierung auf Migros-Pokémon-Markenübersicht und Kategorie Sammelkartenspiele ausweiten; neue Treffer lokal aufnehmen und mit den ausgewählten Filialen prüfen
 - [ ] Benachrichtigungen/Bestandsprüfung auch bei geschlossener App ermöglichen; aktuelle Live-Abfragen benötigen die geöffnete App
 - [ ] Gezielte Abfrage für einen ausgewählten Artikel und eine Filiale ermöglichen
 - [ ] Unterbrochene lokale Abfragen fortsetzen können
-- [ ] Offizielle Filialliste mit dem lokalen App-Datensatz abgleichen
-- [ ] Kartenansicht mit Verfügbarkeitsfilter und Wegbeschreibung ergänzen
+- [x] Offizielle Migros-Liste normaler M/MM/MMM-Supermärkte im Build aktualisieren; neueste Erfassung: 669 Filialen
+- [ ] Kartenansicht eingebaut (OpenStreetMap, Bestandsfarben/-filter und Google-Wegbeschreibung); Koordinaten für alle 669 Filialen noch vervollständigen und Geräteansicht testen. Migros-Koordinaten werden bei Live-Abfragen lokal zwischengespeichert.
 - [ ] Favoriten, Kaufnotizen und CSV-Verlauf ergänzen
 - [ ] Signierte Android-Version mit verlässlichem Aktualisierungsweg bereitstellen
 - [ ] Bestandsabfrage auch bei vollständig geschlossener App zuverlässig im Hintergrund ermöglichen
