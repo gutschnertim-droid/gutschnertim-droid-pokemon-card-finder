@@ -10,7 +10,7 @@ android {
         applicationId 'ch.pokemoncardfinder.local'
         minSdk 24
         targetSdk 35
-        versionCode 1
-        versionName '0.1-test'
+        versionCode 2
+        versionName '0.2-37-branch-test'
     }
 }
