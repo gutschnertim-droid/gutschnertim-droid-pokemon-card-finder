@@ -7,6 +7,9 @@ on:
       - 'scripts/update_migros_branches.py'
       - '.github/workflows/build-android-test.yml'
   workflow_dispatch:
+concurrency:
+  group: android-test-apk
+  cancel-in-progress: true
 permissions:
   contents: write
 jobs:
@@ -30,15 +33,6 @@ jobs:
         run: |
           python scripts/update_migros_branches.py --output data/branches.json --baseline data/branches.json
           cp data/branches.json android-local/app/src/main/assets/branches.json
-      - name: Persist refreshed nationwide roster
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/branches.json android-local/app/src/main/assets/branches.json
-          if ! git diff --cached --quiet; then
-            git commit -m "Refresh official Migros supermarket roster [skip ci]"
-            git push
-          fi
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
