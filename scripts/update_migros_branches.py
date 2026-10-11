@@ -37,7 +37,10 @@ async def main(output: Path, baseline: Path) -> None:
         page = await browser.new_page(locale="de-CH")
         page.set_default_timeout(20000)
         await page.goto(START_URL, wait_until="domcontentloaded", timeout=60000)
-        await page.wait_for_timeout(5000)
+        await page.wait_for_timeout(3000)
+        necessary_cookies = page.get_by_role("button", name=re.compile(r"nur notwendige cookies", re.I))
+        if await necessary_cookies.count():
+            await necessary_cookies.click()
         filter_button = page.get_by_role("button", name=re.compile(r"filtern", re.I))
         try:
             await filter_button.wait_for(state="visible", timeout=20000)
