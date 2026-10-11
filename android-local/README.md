@@ -1,6 +1,6 @@
 # Pokémon Card Finder – lokaler Android-Live-Test
 
-Diese kleine native Test-App fragt genau **ein Migros-Produkt** (Pokémon Booster Blister, ID `746658000000`) in allen Filialen aus `app/src/main/assets/branches.json` direkt auf dem Android-Gerät ab. Die aktuelle Filialliste umfasst 37 Fribourger und Berner Standorte. Die Anfrage und die letzte Anzeige laufen lokal; die App benötigt weder GitHub-Feed noch eigenen Server oder Migros-Login.
+Diese native Test-App fragt die **sieben Pokémon-TCG-Artikel im vorhandenen Migros-Katalog** in allen Filialen aus `app/src/main/assets/branches.json` direkt auf dem Android-Gerät ab. Die aktuelle Filialliste umfasst 37 Fribourger und Berner Standorte. Damit umfasst ein vollständiger Lauf bis zu 259 Artikel-Filial-Kombinationen. Anfrage und letzte Anzeige laufen lokal; die App benötigt weder GitHub-Feed noch eigenen Server oder Migros-Login. Der Katalog ist der erfasste Stand für PLZ 1700 und keine schweizweite Sortimentserhebung.
 
 ## APK herunterladen oder selbst bauen
 
@@ -8,6 +8,6 @@ Der Repository-Workflow baut nach Änderungen am Ordner `android-local/` eine De
 
 ## Test
 
-App öffnen und **Alle Filialen jetzt abfragen** antippen. Die App lädt die Migros-Produktseite einmal und sucht die Filialen nacheinander im Verfügbarkeitsdialog. Erfasste Ergebnisse werden lokal gespeichert und erscheinen fortlaufend in der Liste. Unlesbare oder fehlende Antworten stehen ausdrücklich als „Nicht eindeutig geprüft“ und werden nicht als „Nicht auf Lager“ ausgegeben. Bei einer Migros-Wartungs- oder Sperrseite wird ein Fehler angezeigt.
+App öffnen, gewünschten Artikel im Auswahlfeld wählen und **Alle Artikel in allen Filialen abfragen** antippen. Die App fragt alle sieben Produktseiten nacheinander ab und sucht die Filialen jeweils im Verfügbarkeitsdialog. Erfasste Ergebnisse werden lokal gespeichert und erscheinen fortlaufend in der Liste. Unlesbare oder fehlende Antworten stehen ausdrücklich als „Nicht eindeutig geprüft“ und werden nicht als „Nicht auf Lager“ ausgegeben. Bei einer Migros-Wartungs- oder Sperrseite wird der Lauf gestoppt; bereits erfasste Ergebnisse bleiben lokal gespeichert.
 
-Dies ist ein Machbarkeitstest für ein Produkt. Nach erfolgreichem Lauf kann derselbe Prozess auf die sechs übrigen Produkte erweitert und in die vollständige Karten-/Listenansicht eingebunden werden. Android kann Hintergrundaufgaben verzögern; die Schaltfläche startet die Abfrage verlässlich auf Wunsch. Bei 37 Filialen kann ein Lauf mehrere Minuten dauern.
+Die Produktbilder werden von der Migros-Bildquelle geladen. Android kann Hintergrundaufgaben verzögern; die Schaltfläche startet die Abfrage verlässlich auf Wunsch. Bei 259 Kombinationen kann ein Lauf länger dauern. Die App sollte dabei geöffnet bleiben.
