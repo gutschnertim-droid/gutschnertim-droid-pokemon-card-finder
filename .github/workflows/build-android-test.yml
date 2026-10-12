@@ -27,12 +27,13 @@ jobs:
         with:
           gradle-version: '8.9'
       - name: Prepare stable signing key
-        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
-          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/pokemon-card-finder.p12"
-          echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/pokemon-card-finder.p12" >> "$GITHUB_ENV"
+          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/pokemon-card-finder.p12"
+            echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/pokemon-card-finder.p12" >> "$GITHUB_ENV"
+          fi
       - name: Build installable APK
         working-directory: android-local
         env:
