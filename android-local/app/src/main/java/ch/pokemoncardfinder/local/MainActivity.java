@@ -210,9 +210,10 @@ public class MainActivity extends Activity {
         stockFilterPicker=new Spinner(this); String[] filterOptions={"Alle", "Höchster Bestand", "Verfügbar", "Nicht auf Lager", "Nur online", "Nicht eindeutig", "Noch ungeprüft"};
         stockFilterPicker.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,filterOptions));
         LinearLayout.LayoutParams filterParams=new LinearLayout.LayoutParams(dp(150),-2); filterParams.leftMargin=dp(6); filters.addView(stockFilterPicker,filterParams); root.addView(filters,params(dp(4)));
-        resultList=new LinearLayout(this); resultList.setOrientation(LinearLayout.VERTICAL); ScrollView scroll=new ScrollView(this);scroll.addView(resultList);LinearLayout.LayoutParams rp=new LinearLayout.LayoutParams(-1,0,1);rp.topMargin=dp(8);root.addView(scroll,rp);
+        resultList=new LinearLayout(this); resultList.setOrientation(LinearLayout.VERTICAL); LinearLayout.LayoutParams rp=new LinearLayout.LayoutParams(-1,-2);rp.topMargin=dp(8);root.addView(resultList,rp);
         TextView note=new TextView(this);note.setText(products.length()+" Artikel im lokalen Katalog; neue Treffer werden auf der öffentlichen Migros-Pokémon-Seite gesucht. Das ist keine garantierte schweizweite Sortimentserhebung. Bestände sind Momentaufnahmen, Ca.-Mengen sind Schätzungen.");note.setTextSize(9);note.setTextColor(Color.GRAY);root.addView(note,params(dp(6)));
-        setContentView(root);
+        ScrollView screenScroll=new ScrollView(this);screenScroll.setFillViewport(true);screenScroll.setVerticalScrollBarEnabled(true);screenScroll.setScrollbarFadingEnabled(false);screenScroll.addView(root,new ScrollView.LayoutParams(-1,-2));
+        setContentView(screenScroll);
     }
 
     private void beginCheck(boolean automatic) {
