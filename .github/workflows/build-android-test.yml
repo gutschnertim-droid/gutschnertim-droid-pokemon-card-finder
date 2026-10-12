@@ -26,17 +26,36 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
-      - name: Build debug APK
+      - name: Prepare stable signing key
+        if: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' }}
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/pokemon-card-finder.p12"
+          echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/pokemon-card-finder.p12" >> "$GITHUB_ENV"
+      - name: Build installable APK
         working-directory: android-local
-        run: gradle --no-daemon :app:assembleDebug
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          if [ -n "$ANDROID_KEYSTORE_PATH" ]; then
+            gradle --no-daemon :app:assembleRelease
+            mkdir -p app/build/outputs/apk/download
+            cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/download/app-debug.apk
+          else
+            gradle --no-daemon :app:assembleDebug
+            mkdir -p app/build/outputs/apk/download
+            cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/download/app-debug.apk
+            echo "::warning::Stable signing is not configured. This APK may require reinstalling."
+          fi
       - name: Package APK for phone download
-        run: zip -j android-local/app/build/outputs/apk/debug/app-debug.zip android-local/app/build/outputs/apk/debug/app-debug.apk
+        run: zip -j android-local/app/build/outputs/apk/download/app-debug.zip android-local/app/build/outputs/apk/download/app-debug.apk
       - uses: actions/upload-artifact@v4
         with:
           name: pokemon-card-finder-android-test
           path: |
-            android-local/app/build/outputs/apk/debug/app-debug.apk
-            android-local/app/build/outputs/apk/debug/app-debug.zip
+            android-local/app/build/outputs/apk/download/app-debug.apk
+            android-local/app/build/outputs/apk/download/app-debug.zip
           if-no-files-found: error
           retention-days: 14
       - name: Publish direct APK download
@@ -44,8 +63,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           release_tag=android-test-latest
-          apk_path=android-local/app/build/outputs/apk/debug/app-debug.apk
-          zip_path=android-local/app/build/outputs/apk/debug/app-debug.zip
+          apk_path=android-local/app/build/outputs/apk/download/app-debug.apk
+          zip_path=android-local/app/build/outputs/apk/download/app-debug.zip
           if ! gh release view "$release_tag" >/dev/null 2>&1; then
             gh release create "$release_tag" "$apk_path" "$zip_path" \
               --target "$GITHUB_SHA" \
