@@ -233,7 +233,7 @@ public class MainActivity extends Activity {
         if(ids.isEmpty()){finishError("Keine Pokémon-Produkte im Katalog gefunden");return;}
         String saved=getPreferences(MODE_PRIVATE).getString("checked_product_ids","");
         java.util.LinkedHashSet<String> draft=new java.util.LinkedHashSet<>();
-        if(saved.isEmpty())draft.addAll(ids);else for(String id:saved.split(","))if(ids.contains(id))draft.add(id);
+        if(saved.isEmpty()){int initial=Math.max(0,Math.min(selectedProductIndex,ids.size()-1));draft.add(ids.get(initial));}else for(String id:saved.split(","))if(ids.contains(id))draft.add(id);
         CharSequence[] labels=new CharSequence[names.size()+1];boolean[] checked=new boolean[labels.length];
         labels[0]="Alle Produkte";checked[0]=draft.size()==ids.size();
         for(int i=0;i<ids.size();i++){labels[i+1]=names.get(i);checked[i+1]=draft.contains(ids.get(i));}
@@ -254,8 +254,9 @@ public class MainActivity extends Activity {
 
     private void startSelectedProductChecks(){
         productQueue.clear();String saved=getPreferences(MODE_PRIVATE).getString("checked_product_ids","");
-        java.util.HashSet<String> wanted=new java.util.HashSet<>();if(!saved.isEmpty())wanted.addAll(java.util.Arrays.asList(saved.split(",")));
-        for(int i=0;i<products.length();i++)if(saved.isEmpty()||wanted.contains(products.optJSONObject(i).optString("id")))productQueue.add(i);
+        java.util.HashSet<String> wanted=new java.util.HashSet<>();if(!saved.isEmpty())wanted.addAll(java.util.Arrays.asList(saved.split(",")));else if(products.length()>0)wanted.add(products.optJSONObject(Math.max(0,Math.min(selectedProductIndex,products.length()-1))).optString("id"));
+        for(int i=0;i<products.length();i++)if(wanted.contains(products.optJSONObject(i).optString("id")))productQueue.add(i);
+        if(saved.isEmpty()&&!productQueue.isEmpty())getPreferences(MODE_PRIVATE).edit().putString("checked_product_ids",products.optJSONObject(productQueue.get(0)).optString("id")).apply();
         if(productQueue.isEmpty()){finishError("Keine Produkte zur Abfrage ausgewählt");return;}
         productQueueCursor=0;activeProductIndex=productQueue.get(0);selectedProductIndex=activeProductIndex;productPicker.setSelection(selectedProductIndex);renderProduct();
         status.setText("Prüfe "+productQueue.size()+" ausgewählte Produkte in "+branches.length()+" Filialen …");loadProductPage();
