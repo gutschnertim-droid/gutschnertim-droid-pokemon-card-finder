@@ -62,6 +62,12 @@ public class MainActivity extends Activity {
     private Button refresh;
     private Button notificationSettings;
     private Button regionPicker;
+    private Button branchScopePicker;
+    private JSONArray queryBranches = new JSONArray();
+    private WebView radiusMapWebView;
+    private boolean radiusMapReady;
+    private double radiusCenterLat=46.8182, radiusCenterLon=8.2275;
+    private int queryRadiusKm=5;
     private Button historyButton;
     private Button mapButton;
     private int discoveryPageIndex;
@@ -135,6 +141,7 @@ public class MainActivity extends Activity {
         loadSavedRecords();
         refresh.setOnClickListener(v -> beginCheck(false));
         regionPicker.setOnClickListener(v -> showRegionPicker());
+        branchScopePicker.setOnClickListener(v -> showBranchScopeDialog());
         notificationSettings.setOnClickListener(v -> showNotificationSettings());
         historyButton.setOnClickListener(v -> showStockHistory());
         mapButton.setOnClickListener(v -> showMap());
@@ -186,6 +193,7 @@ public class MainActivity extends Activity {
         TextView title=new TextView(this); title.setText("Pokémon Card Finder"); title.setTextSize(22); title.setTextColor(Color.rgb(35,32,48)); title.setTypeface(null,1); root.addView(title);
         subtitle=new TextView(this); subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Migros-Filialen · Anfrage direkt vom Handy"); subtitle.setTextSize(12); subtitle.setTextColor(Color.DKGRAY); root.addView(subtitle,params(dp(4)));
         regionPicker=new Button(this); regionPicker.setTextSize(11); root.addView(regionPicker,params(dp(4))); updateRegionUi();
+        branchScopePicker=new Button(this);branchScopePicker.setTextSize(11);root.addView(branchScopePicker,params(dp(4)));updateBranchScopeUi();
         productPicker=new Spinner(this); root.addView(productPicker,params(dp(8)));
         LinearLayout card=new LinearLayout(this); card.setGravity(Gravity.CENTER_VERTICAL); card.setBackgroundColor(Color.WHITE); card.setPadding(dp(10),dp(8),dp(10),dp(8));
         productImage=new ImageView(this); productImage.setScaleType(ImageView.ScaleType.FIT_CENTER); card.addView(productImage,new LinearLayout.LayoutParams(dp(88),dp(78)));
@@ -330,10 +338,25 @@ public class MainActivity extends Activity {
             if(include)branches.put(branch);
         }
         if(regionPicker!=null)updateRegionUi();
-        if(subtitle!=null)subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Migros-Filialen ausgewählt · Anfrage direkt vom Handy");
-        if(refresh!=null)refresh.setText("Ausgewählte Filialen abfragen ("+branches.length()+")");
-        if(refresh!=null)refresh.setEnabled(!queryRunning&&branches.length()>0);
+        if(subtitle!=null)subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Filialen in den gewählten Regionen");
+        applyBranchScope();
+        if(refresh!=null)refresh.setText("Ausgewählte Filialen abfragen ("+queryBranches.length()+")");
+        if(refresh!=null)refresh.setEnabled(!queryRunning&&queryBranches.length()>0);
         renderRecords();
+    }
+    private void applyBranchScope(){
+        queryBranches=new JSONArray();
+        String saved=getPreferences(MODE_PRIVATE).getString("query_branch_ids","");
+        java.util.HashSet<String> ids=new java.util.HashSet<>();if(!saved.isEmpty())ids.addAll(java.util.Arrays.asList(saved.split(",")));
+        for(int i=0;i<branches.length();i++){JSONObject b=branches.optJSONObject(i);if(b!=null&&(saved.isEmpty()||ids.contains(b.optString("id"))))queryBranches.put(b);}
+        updateBranchScopeUi();
+    }
+    private void updateBranchScopeUi(){
+        if(branchScopePicker==null)return;
+        String label=getPreferences(MODE_PRIVATE).getString("query_branch_scope_label","");
+        String description=label.isEmpty()?(queryBranches.length()==branches.length()?"alle":"Auswahl"):label;
+        branchScopePicker.setText("Abfrage-Filialen: "+description+" · "+queryBranches.length()+" / "+branches.length());
+        branchScopePicker.setEnabled(!queryRunning);
     }
     private String selectedRegionDescription(){
         if(selectedRegions.size()==regionNames.size())return "allen erfassten Regionen";
@@ -365,6 +388,77 @@ public class MainActivity extends Activity {
                 applyRegionFilter();status.setText(branches.length()+" Migros-Filialen ausgewählt. Die nächste Abfrage prüft nur diese Filialen.");
             }).create();dialog.setOnShowListener(v->dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(x->{dialog.dismiss();showCustomRegionDialog();}));dialog.show();
     }
+
+    private void showBranchScopeDialog(){
+        if(queryRunning)return;
+        if(branches.length()==0){status.setText("Wähle zuerst mindestens eine Region aus.");return;}
+        ArrayList<String> ids=new ArrayList<>();CharSequence[] labels=new CharSequence[branches.length()+1];boolean[] checked=new boolean[labels.length];
+        java.util.HashSet<String> selected=new java.util.HashSet<>();for(int i=0;i<queryBranches.length();i++){JSONObject b=queryBranches.optJSONObject(i);if(b!=null)selected.add(b.optString("id"));}
+        labels[0]="Alle Filialen in den gewählten Regionen";checked[0]=queryBranches.length()==branches.length();
+        for(int i=0;i<branches.length();i++){JSONObject b=branches.optJSONObject(i);String id=b.optString("id");ids.add(id);labels[i+1]=b.optString("name")+" · "+b.optString("address");checked[i+1]=selected.contains(id);}
+        AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Filialen für die Abfrage")
+            .setMultiChoiceItems(labels,checked,(d,which,isChecked)->{
+                if(which==0){selected.clear();if(isChecked)selected.addAll(ids);}else{String id=ids.get(which-1);if(isChecked)selected.add(id);else selected.remove(id);}
+                android.widget.ListView list=((AlertDialog)d).getListView();list.setItemChecked(0,selected.size()==ids.size());
+                for(int i=0;i<ids.size();i++)list.setItemChecked(i+1,selected.contains(ids.get(i)));
+            }).setNegativeButton("Abbrechen",null).setNeutralButton("Radius auf Karte",null).setPositiveButton("Übernehmen",null).create();
+        dialog.setOnShowListener(v->{
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(x->{dialog.dismiss();prepareRadiusMap();});
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(x->{
+                if(selected.isEmpty()){status.setText("Wähle mindestens eine Filiale aus.");return;}
+                String saved="";
+                if(selected.size()!=ids.size()){ArrayList<String> ordered=new ArrayList<>();for(String id:ids)if(selected.contains(id))ordered.add(id);saved=android.text.TextUtils.join(",",ordered);}
+                getPreferences(MODE_PRIVATE).edit().putString("query_branch_ids",saved).putString("query_branch_scope_label",selected.size()==ids.size()?"Alle Filialen":"Einzelfilialen").apply();
+                applyBranchScope();dialog.dismiss();status.setText(queryBranches.length()+" Filialen für die nächste Abfrage ausgewählt.");
+            });
+        });dialog.show();
+    }
+
+    private void prepareRadiusMap(){
+        android.app.ProgressDialog progress=new android.app.ProgressDialog(this);progress.setMessage("Filialstandorte werden für die Karte gesucht …");progress.setCancelable(false);progress.show();
+        new Thread(()->{
+            int done=0;
+            try{
+                android.location.Geocoder geocoder=new android.location.Geocoder(this,new java.util.Locale("de","CH"));
+                for(int i=0;i<branches.length();i++){
+                    JSONObject b=branches.optJSONObject(i);if(b==null)continue;JSONArray coords=b.optJSONArray("coordinates");
+                    if(coords==null||coords.length()<2){
+                        try{java.util.List<android.location.Address> found=geocoder.getFromLocationName(b.optString("address")+", Schweiz",1);
+                            if(found!=null&&!found.isEmpty()&&found.get(0).hasLatitude()&&found.get(0).hasLongitude())cacheBranchCoordinates(b.optString("id"),found.get(0).getLatitude(),found.get(0).getLongitude());
+                        }catch(Exception ignored){}
+                    }
+                    done++;if(done%5==0){final int count=done;runOnUiThread(()->progress.setMessage("Filialstandorte werden gesucht … "+count+" / "+branches.length()));}
+                }
+            }catch(Exception ignored){}
+            runOnUiThread(()->{progress.dismiss();showRadiusMapDialog();});
+        }).start();
+    }
+
+    private void showRadiusMapDialog(){
+        int[] radii={2,3,5,10,15,20,30,50};ArrayList<String> radiusLabels=new ArrayList<>();for(int radius:radii)radiusLabels.add(radius+" km");
+        LinearLayout box=new LinearLayout(this);box.setOrientation(LinearLayout.VERTICAL);
+        TextView hint=new TextView(this);hint.setPadding(dp(12),dp(8),dp(12),dp(8));hint.setText("Tippe auf die Karte, um den Mittelpunkt zu setzen. Der Kreis zeigt den Abfrageradius.");box.addView(hint);
+        Spinner radiusPicker=new Spinner(this);radiusPicker.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,radiusLabels));box.addView(radiusPicker);
+        for(int i=0;i<radii.length;i++)if(radii[i]==queryRadiusKm)radiusPicker.setSelection(i);
+        radiusMapWebView=new WebView(this);radiusMapReady=false;radiusMapWebView.getSettings().setJavaScriptEnabled(true);radiusMapWebView.addJavascriptInterface(new RadiusMapBridge(),"RadiusBridge");box.addView(radiusMapWebView,new LinearLayout.LayoutParams(-1,dp(440)));
+        double[] center=defaultRadiusMapCenter();radiusCenterLat=center[0];radiusCenterLon=center[1];
+        String html="<!doctype html><html><head><meta name='viewport' content='width=device-width,initial-scale=1'><link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'><style>html,body,#map{height:100%;margin:0}</style><script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script></head><body><div id='map'></div><script>let map=L.map('map').setView(["+radiusCenterLat+","+radiusCenterLon+"],10);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);let circle=null,centerMarker=null,km="+queryRadiusKm+";const setCenter=(lat,lon)=>{if(circle)map.removeLayer(circle);if(centerMarker)map.removeLayer(centerMarker);centerMarker=L.marker([lat,lon]).addTo(map);circle=L.circle([lat,lon],{radius:km*1000,color:'#1769d2',fillOpacity:.12}).addTo(map);window.RadiusBridge.center(JSON.stringify({lat:lat,lon:lon}))};window.setRadius=(value)=>{km=Number(value);if(centerMarker){let p=centerMarker.getLatLng();setCenter(p.lat,p.lng)}};map.on('click',e=>setCenter(e.latlng.lat,e.latlng.lng));setCenter("+radiusCenterLat+","+radiusCenterLon+");window.addStores=(rows)=>rows.forEach(s=>L.circleMarker([s.lat,s.lon],{radius:5,color:'#6750a4'}).bindPopup(s.name+'<br>'+s.address).addTo(map));</script></body></html>";
+        radiusMapWebView.loadDataWithBaseURL("https://www.openstreetmap.org/",html,"text/html","UTF-8",null);
+        radiusPicker.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener(){public void onItemSelected(android.widget.AdapterView<?> p,View v,int pos,long id){queryRadiusKm=radii[pos];if(radiusMapReady)radiusMapWebView.evaluateJavascript("window.setRadius("+queryRadiusKm+")",null);}public void onNothingSelected(android.widget.AdapterView<?> p){}});
+        AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Abfrage im Umkreis").setView(box).setNegativeButton("Abbrechen",null).setPositiveButton("Filialen übernehmen",null).create();
+        dialog.setOnShowListener(v->dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(btn->{
+            ArrayList<String> selected=new ArrayList<>();int unknown=0;
+            for(int i=0;i<branches.length();i++){JSONObject b=branches.optJSONObject(i);if(b==null)continue;JSONArray c=b.optJSONArray("coordinates");if(c==null||c.length()<2){selected.add(b.optString("id"));unknown++;}else if(distanceKm(radiusCenterLat,radiusCenterLon,c.optDouble(0),c.optDouble(1))<=queryRadiusKm)selected.add(b.optString("id"));}
+            if(selected.isEmpty()){status.setText("Keine Filialen im Umkreis gefunden.");return;}
+            String saved=selected.size()==branches.length()?"":android.text.TextUtils.join(",",selected);
+            String label="Radius "+queryRadiusKm+" km";getPreferences(MODE_PRIVATE).edit().putString("query_branch_ids",saved).putString("query_branch_scope_label",label).putString("branch_scope_center",radiusCenterLat+","+radiusCenterLon).putInt("branch_scope_radius",queryRadiusKm).apply();
+            applyBranchScope();dialog.dismiss();status.setText(queryBranches.length()+" Filialen im Umkreis "+queryRadiusKm+" km ausgewählt"+(unknown>0?" · "+unknown+" ohne Koordinaten sicherheitshalber eingeschlossen":"")+".");
+        }));
+        radiusMapWebView.setWebViewClient(new WebViewClient(){@Override public void onPageFinished(WebView view,String url){radiusMapReady=true;JSONArray markers=new JSONArray();for(int i=0;i<branches.length();i++){JSONObject b=branches.optJSONObject(i);JSONArray c=b==null?null:b.optJSONArray("coordinates");if(c!=null&&c.length()>=2){JSONObject marker=new JSONObject();try{marker.put("name",b.optString("name"));marker.put("address",b.optString("address"));marker.put("lat",c.optDouble(0));marker.put("lon",c.optDouble(1));markers.put(marker);}catch(Exception ignored){}}}view.evaluateJavascript("window.addStores("+markers.toString()+")",null);}});
+    }
+    private double[] defaultRadiusMapCenter(){double lat=0,lon=0;int n=0;for(int i=0;i<branches.length();i++){JSONObject b=branches.optJSONObject(i);JSONArray c=b==null?null:b.optJSONArray("coordinates");if(c!=null&&c.length()>=2){lat+=c.optDouble(0);lon+=c.optDouble(1);n++;}}return n>0?new double[]{lat/n,lon/n}:new double[]{46.8,8.2};}
+    private double distanceKm(double lat1,double lon1,double lat2,double lon2){double dLat=Math.toRadians(lat2-lat1),dLon=Math.toRadians(lon2-lon1);double a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(Math.toRadians(lat1))*Math.cos(Math.toRadians(lat2))*Math.sin(dLon/2)*Math.sin(dLon/2);return 6371.0*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
+    private class RadiusMapBridge{@JavascriptInterface public void center(String json){runOnUiThread(()->{try{JSONObject p=new JSONObject(json);radiusCenterLat=p.getDouble("lat");radiusCenterLon=p.getDouble("lon");}catch(Exception ignored){}});}}
 
     private void loadCustomRegions(){try{JSONArray rows=new JSONArray(getPreferences(MODE_PRIVATE).getString("custom_regions_json","[]"));for(int i=0;i<rows.length();i++){JSONObject r=rows.optJSONObject(i);if(r!=null&&!r.optString("id").isEmpty())customRegions.put(r.optString("id"),r);}}catch(Exception ignored){}}
     private void saveCustomRegions(){JSONArray rows=new JSONArray();for(JSONObject r:customRegions.values())rows.put(r);getPreferences(MODE_PRIVATE).edit().putString("custom_regions_json",rows.toString()).apply();}
