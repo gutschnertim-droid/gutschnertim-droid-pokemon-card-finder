@@ -2,6 +2,12 @@
 
 Ein lokal ausführbarer Prototyp für die Filialverfügbarkeit von Pokémon-Sammelkarten in Fribourg, Bern und künftig weiteren erfassten Gebieten.
 
+## Aktuelle Android-Version
+
+Die native Android-App liegt unter `android-local/` und enthält 669 Migros-Filialen. Sie bietet einzelne Kantonsfilter, eigene Filialgruppen, Bestandsdifferenzen mit 24-Stunden-Anzeige, eine 7-Tage-Grafik und einen Änderungsverlauf. Die browserbasierte `dist/index.html` ist ein separater, älterer Prototyp und enthält weiterhin nur den dort dokumentierten Datenstand.
+
+Der Android-Build wird über den Workflow `.github/workflows/build-android-test.yml` erzeugt. Weitere Informationen stehen in [android-local/README.md](android-local/README.md).
+
 ## Stand
 
 - Die App zeigt standardmässig alle 37 bisher eingetragenen Filialen aus Fribourg und Bern in einer gemeinsamen Liste. Ein Gebietsfilter ist optional. Die echte, zoombare Google-Maps-Karte fokussiert auf die ausgewählte Filiale; für weitere Gebiete ergänzt ein Regions-Feed künftig neue Einträge.
