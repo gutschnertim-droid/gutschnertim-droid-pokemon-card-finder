@@ -10,7 +10,26 @@ android {
         applicationId 'ch.pokemoncardfinder.local'
         minSdk 24
         targetSdk 35
-        versionCode 8
-        versionName '0.8-stock-history'
+        versionCode 9
+        versionName '0.9-updateable'
+    }
+
+    def stableKeystorePath = System.getenv('ANDROID_KEYSTORE_PATH')
+    signingConfigs {
+        stable {
+            if (stableKeystorePath) {
+                storeFile file(stableKeystorePath)
+                storePassword System.getenv('ANDROID_KEYSTORE_PASSWORD')
+                keyAlias 'pcf-update'
+                keyPassword System.getenv('ANDROID_KEYSTORE_PASSWORD')
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            if (stableKeystorePath) signingConfig signingConfigs.stable
+        }
     }
 }
