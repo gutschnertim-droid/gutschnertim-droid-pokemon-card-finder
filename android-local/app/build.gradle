@@ -10,8 +10,8 @@ android {
         applicationId 'ch.pokemoncardfinder.local'
         minSdk 24
         targetSdk 35
-        versionCode 9
-        versionName '0.9-updateable'
+        versionCode 10
+        versionName '1.0-branch-scope'
     }
 
     def stableKeystorePath = System.getenv('ANDROID_KEYSTORE_PATH')
