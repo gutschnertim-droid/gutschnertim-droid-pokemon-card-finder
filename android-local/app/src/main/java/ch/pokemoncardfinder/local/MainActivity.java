@@ -85,7 +85,9 @@ public class MainActivity extends Activity {
     private static final String[] CANTON_NAMES = {"Aargau","Appenzell Innerrhoden","Appenzell Ausserrhoden","Basel-Landschaft","Basel-Stadt","Bern","Freiburg","Genf","Glarus","Graubünden","Jura","Luzern","Neuenburg","Nidwalden","Obwalden","Schaffhausen","Schwyz","Solothurn","St. Gallen","Tessin","Thurgau","Uri","Waadt","Wallis","Zug","Zürich","Weitere Standorte"};
     private final LinkedHashMap<String, String> regionNames = new LinkedHashMap<>();
     private final java.util.LinkedHashSet<String> selectedRegions = new java.util.LinkedHashSet<>();
-    private int selectedProductIndex = 0, activeProductIndex = 0;
+    private int selectedProductIndex = 0, activeProductIndex = 0, productQueueCursor = 0;
+    private boolean automaticCheck;
+    private final ArrayList<Integer> productQueue = new ArrayList<>();
     private final Map<String, Map<String, JSONObject>> recordsByProduct = new LinkedHashMap<>();
     private final Map<String, String> checkedByProduct = new LinkedHashMap<>();
     private final Map<String, JSONObject> livePricesByProduct = new LinkedHashMap<>();
@@ -124,7 +126,7 @@ public class MainActivity extends Activity {
                         view.postDelayed(() -> scanProductCatalog(), 900);
                         return;
                     }
-                    status.setText("Migros lädt Artikel " + (activeProductIndex+1) + "/" + products.length() + " …");
+                    status.setText("Migros lädt Artikel " + (productQueueCursor+1) + "/" + productQueue.size() + " …");
                     view.postDelayed(() -> startMigrosCheck(), 700);
                 }
             }
@@ -214,14 +216,48 @@ public class MainActivity extends Activity {
     }
 
     private void beginCheck(boolean automatic) {
-        if(products.length()==0||branches.length()==0){status.setText("Bitte mindestens eine Region mit erfassten Filialen auswählen.");return;}
+        if(branches.length()==0){status.setText("Bitte mindestens eine Region mit Filialen auswählen.");return;}
         if(queryRunning)return;
+        automaticCheck=automatic;
         getPreferences(MODE_PRIVATE).edit().putLong("auto_refresh_anchor_ms",System.currentTimeMillis()).apply();updateAutoRefreshInfo();
-        queryRunning=true;activeProductIndex=0;selectedProductIndex=0;productPicker.setSelection(0);getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        renderProduct();
-        refresh.setEnabled(false);regionPicker.setEnabled(false);loadingSpinner.setVisibility(View.VISIBLE);
-        discoveringProducts=true;discoveryPageIndex=0;waitingForPage=true;status.setText("Suche Migros-Marken- und Sammelkartenspielseiten nach neuen Pokémon-Artikeln; danach prüfe ich "+branches.length()+" Filialen in "+selectedRegionDescription()+" …");
+        queryRunning=true;productQueue.clear();productQueueCursor=0;activeProductIndex=0;getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        renderProduct();refresh.setEnabled(false);regionPicker.setEnabled(false);loadingSpinner.setVisibility(View.VISIBLE);
+        discoveringProducts=true;discoveryPageIndex=0;waitingForPage=true;status.setText("Suche zuerst nach neuen Pokémon-Artikeln bei Migros …");
         webView.loadUrl(DISCOVERY_URLS[discoveryPageIndex]);
+    }
+
+    private void showProductSelectionDialog(){
+        ArrayList<String> ids=new ArrayList<>(), names=new ArrayList<>();
+        for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p!=null){ids.add(p.optString("id"));names.add(p.optString("name"));}}
+        if(ids.isEmpty()){finishError("Keine Pokémon-Produkte im Katalog gefunden");return;}
+        String saved=getPreferences(MODE_PRIVATE).getString("checked_product_ids","");
+        java.util.LinkedHashSet<String> draft=new java.util.LinkedHashSet<>();
+        if(saved.isEmpty())draft.addAll(ids);else for(String id:saved.split(","))if(ids.contains(id))draft.add(id);
+        CharSequence[] labels=new CharSequence[names.size()+1];boolean[] checked=new boolean[labels.length];
+        labels[0]="Alle Produkte";checked[0]=draft.size()==ids.size();
+        for(int i=0;i<ids.size();i++){labels[i+1]=names.get(i);checked[i+1]=draft.contains(ids.get(i));}
+        AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Produkte für die Abfrage auswählen")
+            .setMultiChoiceItems(labels,checked,(d,which,isChecked)->{
+                if(which==0){draft.clear();if(isChecked)draft.addAll(ids);}else{String id=ids.get(which-1);if(isChecked)draft.add(id);else draft.remove(id);}
+                android.widget.ListView list=((AlertDialog)d).getListView();list.setItemChecked(0,draft.size()==ids.size());
+                for(int i=0;i<ids.size();i++)list.setItemChecked(i+1,draft.contains(ids.get(i)));
+            }).setNegativeButton("Abbrechen",(d,w)->finishBusy()).setPositiveButton("Abfragen",null).create();
+        dialog.setOnCancelListener(d->finishBusy());
+        dialog.setOnShowListener(v->dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(btn->{
+            if(draft.isEmpty()){status.setText("Wähle mindestens ein Produkt aus.");return;}
+            getPreferences(MODE_PRIVATE).edit().putString("checked_product_ids",android.text.TextUtils.join(",",draft)).apply();
+            dialog.dismiss();startSelectedProductChecks();
+        }));
+        dialog.show();
+    }
+
+    private void startSelectedProductChecks(){
+        productQueue.clear();String saved=getPreferences(MODE_PRIVATE).getString("checked_product_ids","");
+        java.util.HashSet<String> wanted=new java.util.HashSet<>();if(!saved.isEmpty())wanted.addAll(java.util.Arrays.asList(saved.split(",")));
+        for(int i=0;i<products.length();i++)if(saved.isEmpty()||wanted.contains(products.optJSONObject(i).optString("id")))productQueue.add(i);
+        if(productQueue.isEmpty()){finishError("Keine Produkte zur Abfrage ausgewählt");return;}
+        productQueueCursor=0;activeProductIndex=productQueue.get(0);selectedProductIndex=activeProductIndex;productPicker.setSelection(selectedProductIndex);renderProduct();
+        status.setText("Prüfe "+productQueue.size()+" ausgewählte Produkte in "+branches.length()+" Filialen …");loadProductPage();
     }
 
     private void scanProductCatalog(){
@@ -273,8 +309,10 @@ public class MainActivity extends Activity {
         }
     }
     private void restoreSelectedRegions(){
-        String saved=getPreferences(MODE_PRIVATE).getString("selected_regions","");
-        if(saved.trim().isEmpty()){selectedRegions.addAll(regionNames.keySet());return;}
+        String saved=getPreferences(MODE_PRIVATE).getString("selected_regions",null);
+        if(saved==null){selectedRegions.addAll(regionNames.keySet());return;}
+        if(saved.equals("__none__"))return;
+        if(saved.isEmpty()){selectedRegions.addAll(regionNames.keySet());return;}
         for(String item:saved.split(",")){
             if(regionNames.containsKey(item)){selectedRegions.add(item);continue;}
             for(int i=0;i<allBranches.length();i++){JSONObject b=allBranches.optJSONObject(i);if(b!=null&&item.equals(b.optString("region")))selectedRegions.add(branchCantons.optString(b.optString("id"),"INT"));}
@@ -321,7 +359,7 @@ public class MainActivity extends Activity {
                 for(int i=0;i<ids.size();i++)list.setItemChecked(i+1,draft.contains(ids.get(i)));
             }).setNegativeButton("Abbrechen",null).setNeutralButton("Eigene Region erstellen",null).setPositiveButton("Übernehmen",(d,w)->{
                 selectedRegions.clear();selectedRegions.addAll(draft);
-                getPreferences(MODE_PRIVATE).edit().putString("selected_regions",android.text.TextUtils.join(",",selectedRegions)).apply();
+                getPreferences(MODE_PRIVATE).edit().putString("selected_regions",selectedRegions.isEmpty()?"__none__":android.text.TextUtils.join(",",selectedRegions)).apply();
                 applyRegionFilter();status.setText(branches.length()+" Migros-Filialen ausgewählt. Die nächste Abfrage prüft nur diese Filialen.");
             }).create();dialog.setOnShowListener(v->dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(x->{dialog.dismiss();showCustomRegionDialog();}));dialog.show();
     }
@@ -360,13 +398,13 @@ public class MainActivity extends Activity {
 
     private void loadProductPage(){
         JSONObject p=products.optJSONObject(activeProductIndex); if(p==null){finishError("Produktkatalog ist ungültig.");return;}
-        String id=p.optString("id");status.setText("Artikel "+(activeProductIndex+1)+"/"+products.length()+": "+p.optString("name"));waitingForPage=true;
+        String id=p.optString("id");status.setText("Artikel "+(productQueueCursor+1)+"/"+productQueue.size()+": "+p.optString("name"));waitingForPage=true;
         webView.loadUrl("https://www.migros.ch/de/product/"+id);
     }
 
     private void startMigrosCheck() {
         JSONObject current=products.optJSONObject(activeProductIndex);String productId=current.optString("id");boolean onlineOnly=current.optBoolean("online_only",false);
-        String progressProductLabel=(activeProductIndex+1)+"/"+products.length();
+        String progressProductLabel=(productQueueCursor+1)+"/"+productQueue.size();
         String script="(async()=>{const sleep=ms=>new Promise(r=>setTimeout(r,ms));const norm=s=>(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();"
           +"const branches="+branches.toString()+";const productId="+JSONObject.quote(productId)+";const onlineOnly="+onlineOnly+";const send=(m,o)=>window.FinderBridge[m](JSON.stringify(o));const seen=new Set();"
           +"const amount=v=>{const n=Number(String(v||'').replace(/[^0-9,.]/g,'').replace(',','.'));return Number.isFinite(n)&&n>0?n:null};"
@@ -390,7 +428,7 @@ public class MainActivity extends Activity {
     private class ResultBridge {
         @JavascriptInterface public void progress(String json){runOnUiThread(()->{try{status.setText(new JSONObject(json).optString("message","Prüfe Migros-Filialen …"));}catch(Exception ignored){}});}
         @JavascriptInterface public void coordinate(String json){runOnUiThread(()->{try{JSONObject c=new JSONObject(json);cacheBranchCoordinates(c.getString("branch_id"),c.getDouble("lat"),c.getDouble("lon"));}catch(Exception ignored){}});}
-        @JavascriptInterface public void discovered(String json){runOnUiThread(()->{try{JSONArray found=new JSONArray(json);mergeDiscoveredProducts(found);if(discoveryPageIndex+1<DISCOVERY_URLS.length){discoveryPageIndex++;status.setText("Suche weitere Kartenartikel auf der Migros-Sammelkartenspielseite …");waitingForPage=true;webView.loadUrl(DISCOVERY_URLS[discoveryPageIndex]);return;}discoveringProducts=false;activeProductIndex=0;selectedProductIndex=0;updateProductPicker();status.setText("Migros-Marken- und Sammelkartenspielseiten geprüft; prüfe jetzt "+products.length()+" Artikel in den Filialen …");loadProductPage();}catch(Exception ex){discoveringProducts=false;activeProductIndex=0;status.setText("Produktsuche nicht lesbar; prüfe die gespeicherten Artikel weiter …");loadProductPage();}});}
+        @JavascriptInterface public void discovered(String json){runOnUiThread(()->{try{JSONArray found=new JSONArray(json);mergeDiscoveredProducts(found);if(discoveryPageIndex+1<DISCOVERY_URLS.length){discoveryPageIndex++;status.setText("Suche weitere Kartenartikel auf der Migros-Sammelkartenspielseite …");waitingForPage=true;webView.loadUrl(DISCOVERY_URLS[discoveryPageIndex]);return;}discoveringProducts=false;updateProductPicker();if(automaticCheck)startSelectedProductChecks();else showProductSelectionDialog();}catch(Exception ex){discoveringProducts=false;if(automaticCheck)startSelectedProductChecks();else showProductSelectionDialog();}});}
         @JavascriptInterface public void record(String json){runOnUiThread(()->{try{
             JSONObject row=new JSONObject(json);String productId=row.getString("product_id"),branchId=row.getString("branch_id");
             Map<String,JSONObject> productRows=recordsByProduct.get(productId);if(productRows==null){productRows=new LinkedHashMap<>();recordsByProduct.put(productId,productRows);}
@@ -415,7 +453,7 @@ public class MainActivity extends Activity {
         }catch(Exception ignored){}});}
         @JavascriptInterface public void livePrice(String json){runOnUiThread(()->{try{JSONObject incoming=new JSONObject(json);String id=incoming.getString("product_id");double current=incoming.getDouble("price");JSONObject old=livePricesByProduct.get(id);double previous=old==null?catalogPrice(id):old.optDouble("price",catalogPrice(id));boolean hasBaseline=previous>0;JSONObject saved=new JSONObject();saved.put("price",current);saved.put("checked_at",now());saved.put("source",incoming.optString("source"));if(hasBaseline&&Math.abs(current-previous)>=0.01){saved.put("previous_price",previous);saved.put("change",current<previous?"down":"up");if(old!=null){String direction=current<previous?"notify_price_drop":"notify_price_increase";if(notificationsEnabled(direction))postNotification(current<previous?"Preis gesunken":"Preis gestiegen",productName(id)+": CHF "+String.format(java.util.Locale.GERMANY,"%.2f",previous)+" → CHF "+String.format(java.util.Locale.GERMANY,"%.2f",current),id.hashCode());}}else saved.put("change","none");double original=incoming.optDouble("original_price",0);if(original>current){saved.put("promotion",true);saved.put("original_price",original);if(old!=null&&!old.optBoolean("promotion")&&notificationsEnabled("notify_promotion")&&(!hasBaseline||Math.abs(current-previous)<0.01))postNotification("Aktion erkannt",productName(id)+" · jetzt CHF "+String.format(java.util.Locale.GERMANY,"%.2f",current),id.hashCode());}livePricesByProduct.put(id,saved);saveLocal();if(id.equals(currentProductId()))renderProduct();}catch(Exception ignored){}});}
         @JavascriptInterface public void failed(String json){runOnUiThread(()->{try{JSONObject d=new JSONObject(json);finishError("Abfrage gestoppt bei "+productName(d.optString("product_id"))+": "+d.optString("error","Migros-Fehler"));}catch(Exception ex){finishError("Migros-Abfrage fehlgeschlagen.");}});}
-        @JavascriptInterface public void complete(String json){runOnUiThread(()->{String id=products.optJSONObject(activeProductIndex).optString("id");checkedByProduct.put(id,now());recordStockSnapshot(id);saveLocal();activeProductIndex++;if(activeProductIndex<products.length()){loadProductPage();}else finishAll();});}
+        @JavascriptInterface public void complete(String json){runOnUiThread(()->{String id=products.optJSONObject(activeProductIndex).optString("id");checkedByProduct.put(id,now());recordStockSnapshot(id);saveLocal();productQueueCursor++;if(productQueueCursor<productQueue.size()){activeProductIndex=productQueue.get(productQueueCursor);loadProductPage();}else finishAll();});}
     }
 
     private boolean notificationsEnabled(String key){return getPreferences(MODE_PRIVATE).getBoolean(key,key.equals("notify_restock")||key.equals("notify_stock_increase"));}
@@ -489,7 +527,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void finishAll(){int total=0,unknown=0;for(Map<String,JSONObject> rows:recordsByProduct.values())for(String regionBranchId:selectedBranchIds())if(rows.containsKey(regionBranchId)){total++;if(rows.get(regionBranchId).optString("status").equals("unknown"))unknown++;}status.setText("Abfrage fertig · "+total+" von "+(products.length()*branches.length())+" ausgewählten Artikel-Filial-Datensätzen · "+unknown+" ohne lesbaren Status");checkedAt.setText("Zuletzt geprüft: "+now()+" · Ergebnisse lokal gespeichert");finishBusy();renderProduct();updateAutoRefreshInfo();scheduleAutomaticRefresh(0);}
+    private void finishAll(){int total=0,unknown=0;for(Map<String,JSONObject> rows:recordsByProduct.values())for(String regionBranchId:selectedBranchIds())if(rows.containsKey(regionBranchId)){total++;if(rows.get(regionBranchId).optString("status").equals("unknown"))unknown++;}status.setText("Abfrage fertig · "+total+" von "+(productQueue.size()*branches.length())+" ausgewählten Artikel-Filial-Datensätzen · "+unknown+" ohne lesbaren Status");checkedAt.setText("Zuletzt geprüft: "+now()+" · Ergebnisse lokal gespeichert");finishBusy();renderProduct();updateAutoRefreshInfo();scheduleAutomaticRefresh(0);}
     private void finishError(String message){status.setText(message+". Bisherige Ergebnisse bleiben lokal gespeichert.");finishBusy();updateAutoRefreshInfo();scheduleAutomaticRefresh(0);}
     private void finishBusy(){queryRunning=false;getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);loadingSpinner.setVisibility(View.GONE);refresh.setEnabled(branches.length()>0);updateRegionUi();}
     private java.util.Set<String> selectedBranchIds(){java.util.HashSet<String> ids=new java.util.HashSet<>();for(int i=0;i<branches.length();i++){JSONObject b=branches.optJSONObject(i);if(b!=null)ids.add(b.optString("id"));}return ids;}
