@@ -191,7 +191,7 @@ public class MainActivity extends Activity {
         getWindow().setStatusBarColor(Color.rgb(248,248,252)); getWindow().setNavigationBarColor(Color.rgb(248,248,252));
         root=new LinearLayout(this); root.setOrientation(LinearLayout.VERTICAL); root.setPadding(dp(16),dp(18),dp(16),dp(12)); root.setBackgroundColor(Color.rgb(248,248,252));
         TextView title=new TextView(this); title.setText("Pokémon Card Finder"); title.setTextSize(22); title.setTextColor(Color.rgb(35,32,48)); title.setTypeface(null,1); root.addView(title);
-        subtitle=new TextView(this); subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Migros-Filialen · Anfrage direkt vom Handy"); subtitle.setTextSize(12); subtitle.setTextColor(Color.DKGRAY); root.addView(subtitle,params(dp(4)));
+        subtitle=new TextView(this); subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Filialen in den gewählten Regionen"); subtitle.setTextSize(12); subtitle.setTextColor(Color.DKGRAY); root.addView(subtitle,params(dp(4)));
         regionPicker=new Button(this); regionPicker.setTextSize(11); root.addView(regionPicker,params(dp(4))); updateRegionUi();
         branchScopePicker=new Button(this);branchScopePicker.setTextSize(11);root.addView(branchScopePicker,params(dp(4)));updateBranchScopeUi();
         productPicker=new Spinner(this); root.addView(productPicker,params(dp(8)));
@@ -201,7 +201,7 @@ public class MainActivity extends Activity {
         productTitle=new TextView(this); productTitle.setTextSize(14); productTitle.setTextColor(Color.rgb(35,32,48)); productTitle.setTypeface(null,1); details.addView(productTitle);
         productPrice=new TextView(this); productPrice.setTextSize(14); productPrice.setTextColor(Color.rgb(96,72,220)); details.addView(productPrice,params(dp(3)));
         root.addView(card,params(dp(8)));
-        refresh=new Button(this); refresh.setText("Ausgewählte Filialen abfragen ("+branches.length()+")"); refresh.setEnabled(branches.length()>0); root.addView(refresh,params(dp(8)));
+        refresh=new Button(this); refresh.setText("Ausgewählte Filialen abfragen ("+queryBranches.length()+")"); refresh.setEnabled(queryBranches.length()>0); root.addView(refresh,params(dp(8)));
         LinearLayout progressLine=new LinearLayout(this); progressLine.setGravity(Gravity.CENTER_VERTICAL);
         loadingSpinner=new ProgressBar(this); loadingSpinner.setIndeterminate(true); loadingSpinner.setVisibility(View.GONE); progressLine.addView(loadingSpinner,new LinearLayout.LayoutParams(dp(22),dp(22)));
         status=new TextView(this); status.setText("Noch keine vollständige Live-Abfrage."); status.setTextSize(12); status.setTextColor(Color.DKGRAY); LinearLayout.LayoutParams sp=new LinearLayout.LayoutParams(0,-2,1);sp.leftMargin=dp(8);progressLine.addView(status,sp);root.addView(progressLine,params(dp(8)));
@@ -286,7 +286,7 @@ public class MainActivity extends Activity {
     private void updateProductPicker(){
         if(productPicker==null)return;ArrayList<String> names=new ArrayList<>();for(int i=0;i<products.length();i++)names.add(products.optJSONObject(i).optString("name"));
         productPicker.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,names));
-        if(subtitle!=null)subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Migros-Filialen · Katalog wird bei Aktualisierung ergänzt");
+        if(subtitle!=null)subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Filialen in den gewählten Regionen");
         if(selectedProductIndex<names.size())productPicker.setSelection(selectedProductIndex);
     }
 
