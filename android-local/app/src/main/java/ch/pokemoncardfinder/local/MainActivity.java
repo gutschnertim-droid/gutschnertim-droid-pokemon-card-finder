@@ -590,7 +590,7 @@ public class MainActivity extends Activity {
         manager.notify(tag,0,builder.build());
     }
 
-    private String currentScopeKey(){ArrayList<String> ids=new ArrayList<>(selectedRegions);Collections.sort(ids);return android.text.TextUtils.join("|",ids);}
+    private String currentScopeKey(){ArrayList<String> ids=new ArrayList<>(selectedRegions);Collections.sort(ids);String regionScope=android.text.TextUtils.join("|",ids);if(queryBranches.length()==branches.length())return regionScope;ArrayList<String> stores=new ArrayList<>();for(int i=0;i<queryBranches.length();i++){JSONObject b=queryBranches.optJSONObject(i);if(b!=null)stores.add(b.optString("id"));}Collections.sort(stores);return regionScope+"#stores:"+Integer.toHexString(stores.hashCode());}
     private void recordStockSnapshot(String productId){
         Map<String,JSONObject> rows=recordsByProduct.get(productId);int quantity=0,available=0,out=0;
         for(int i=0;i<queryBranches.length();i++){JSONObject b=queryBranches.optJSONObject(i);if(b==null)continue;JSONObject r=rows==null?null:rows.get(b.optString("id"));if(r==null)continue;String state=r.optString("status");if(state.equals("estimated_in_stock")){quantity+=Math.max(0,r.optInt("quantity",0));available++;}else if(state.equals("in_stock"))available++;else if(state.equals("out_of_stock"))out++;}
