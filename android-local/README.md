@@ -4,6 +4,10 @@ Diese native App fragt Pokémon-TCG-Artikel auf den Migros-Produktseiten direkt 
 
 Eigene Regionen lassen sich aus frei gewählten Filialen zusammenstellen. Bestandsänderungen zeigen für 24 Stunden die Differenz in Stück, Steigerungen blau und Rückgänge rot. Die App speichert ab jetzt Bestands-Messpunkte der letzten sieben Tage und zeigt sie als Grafik sowie die erkannten Änderungen als Verlauf. Diese Verlaufsdaten bleiben lokal auf dem Gerät; frühere Messungen lassen sich nicht nachträglich ergänzen.
 
+## Updates und Signaturschlüssel
+
+Damit Android eine neue APK als Update annimmt und die lokalen App-Daten behält, müssen alle APKs mit demselben privaten Signaturschlüssel signiert sein. Für GitHub Actions sind dafür die Repository-Secrets `ANDROID_KEYSTORE_BASE64` (Base64 des privaten PKCS12-Keystores) und `ANDROID_KEYSTORE_PASSWORD` einzurichten. Der Keystore darf nicht ins Repository eingecheckt werden. Ohne diese Secrets baut der Workflow weiterhin eine Debug-APK; diese kann wegen der wechselnden Runner-Signatur eine Neuinstallation erfordern. Nach Einrichtung baut der Workflow eine stabile Release-APK. Beim Wechsel von einer bereits installierten APK mit anderer Signatur ist einmalig eine Neuinstallation nötig; danach sind Updates mit Erhalt der lokalen Daten möglich.
+
 ## APK herunterladen oder selbst bauen
 
 Der Repository-Workflow baut nach Änderungen am Ordner `android-local/` eine Debug-APK und ein ZIP mit dieser APK. Downloads: [ZIP für Android](https://github.com/gutschnertim-droid/gutschnertim-droid-pokemon-card-finder/releases/download/android-test-latest/app-debug.zip) · [APK direkt](https://github.com/gutschnertim-droid/gutschnertim-droid-pokemon-card-finder/releases/download/android-test-latest/app-debug.apk). **Bestandsanfragen und Ergebnisanzeige laufen auf dem Handy direkt bei Migros.** Alternativ benötigt ein lokaler Bau Android Studio (JDK 17, Android SDK 35): Ordner in Android Studio öffnen und **Build → Build APK(s)** wählen. Die Datei liegt danach unter `app/build/outputs/apk/debug/app-debug.apk`. Auf dem Android-Gerät muss die Installation von APK-Dateien erlaubt werden.
