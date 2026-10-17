@@ -11,8 +11,8 @@ android {
         minSdk 24
         targetSdk 35
         // GitHub Actions passes a monotonically increasing build number for each published APK.
-        versionCode (project.findProperty('pcfVersionCode') ?: '12000').toString().toInteger()
-        versionName (project.findProperty('pcfVersionName') ?: '1.2.0').toString()
+        versionCode = Integer.parseInt(project.findProperty('pcfVersionCode')?.toString() ?: '12000')
+        versionName = project.findProperty('pcfVersionName')?.toString() ?: '1.2.0'
     }
 
     def stableKeystorePath = System.getenv('ANDROID_KEYSTORE_PATH')
