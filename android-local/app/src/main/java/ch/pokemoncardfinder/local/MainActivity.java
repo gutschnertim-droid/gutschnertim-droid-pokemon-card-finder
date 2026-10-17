@@ -56,6 +56,10 @@ import java.util.Map;
 /** Locally queries the Migros product dialog for all catalog products and bundled branches. */
 public class MainActivity extends Activity {
     private static final String CATALOG_ASSET = "catalog.json";
+    private static final int REQUEST_BACKUP_EXPORT = 9301;
+    private static final int REQUEST_BACKUP_IMPORT = 9302;
+    private static final int BACKUP_MAX_BYTES = 50 * 1024 * 1024;
+    private boolean backupBusy;
     private static final long AUTO_REFRESH_INTERVAL_MS = 4L * 60L * 60L * 1000L;
     private TextView status, checkedAt, productTitle, productPrice, stockSummary;
     private ProgressBar loadingSpinner;
@@ -178,7 +182,7 @@ public class MainActivity extends Activity {
 
     @Override protected void onResume() {
         super.onResume(); activityResumed=true;
-        if (autoRefreshToggle!=null&&autoRefreshToggle.isChecked()) scheduleAutomaticRefresh(0);
+        if (!backupBusy && autoRefreshToggle!=null&&autoRefreshToggle.isChecked()) scheduleAutomaticRefresh(0);
     }
 
     @Override protected void onNewIntent(Intent intent){super.onNewIntent(intent);setIntent(intent);openProductFromIntent(intent);}
@@ -215,6 +219,10 @@ public class MainActivity extends Activity {
         autoRefreshInfo=new TextView(this);autoRefreshInfo.setTextSize(9);autoRefreshInfo.setTextColor(Color.GRAY);root.addView(autoRefreshInfo,params(dp(1)));
         notificationSettings=new Button(this);notificationSettings.setText("Benachrichtigungen einstellen");root.addView(notificationSettings,params(dp(4)));
         historyButton=new Button(this);historyButton.setText("7-Tage-Statistik & Änderungsverlauf");root.addView(historyButton,params(dp(3)));
+        Button exportBackup=new Button(this);exportBackup.setText("Backup herunterladen · Migros + Coop");
+        exportBackup.setOnClickListener(v->chooseBackupExport());root.addView(exportBackup,params(dp(4)));
+        Button importBackup=new Button(this);importBackup.setText("Backup hochladen / wiederherstellen");
+        importBackup.setOnClickListener(v->chooseBackupImport());root.addView(importBackup,params(dp(3)));
         mapButton=new Button(this);mapButton.setText("Filialkarte öffnen");root.addView(mapButton,params(dp(3)));
         stockSummary=new TextView(this); stockSummary.setTextSize(11); stockSummary.setTextColor(Color.rgb(60,56,72)); root.addView(stockSummary,params(dp(8)));
         LinearLayout filters=new LinearLayout(this); filters.setGravity(Gravity.CENTER_VERTICAL);
@@ -626,19 +634,16 @@ public class MainActivity extends Activity {
         for(int i=0;i<queryBranches.length();i++){JSONObject b=queryBranches.optJSONObject(i);if(b==null)continue;JSONObject r=rows==null?null:rows.get(b.optString("id"));if(r==null)continue;String state=r.optString("status");if(state.equals("estimated_in_stock")){quantity+=Math.max(0,r.optInt("quantity",0));available++;}else if(state.equals("in_stock"))available++;else if(state.equals("out_of_stock"))out++;}
         try{JSONObject point=new JSONObject();point.put("product_id",productId);point.put("scope",currentScopeKey());point.put("at",System.currentTimeMillis());point.put("quantity",quantity);point.put("available",available);point.put("out",out);stockSnapshots.put(point);pruneHistory();}catch(Exception ignored){}
     }
-    private void pruneHistory(){
-        long cutoff=System.currentTimeMillis()-7L*24L*60L*60L*1000L;JSONArray events=new JSONArray(),points=new JSONArray();
-        for(int i=0;i<stockEvents.length();i++){JSONObject e=stockEvents.optJSONObject(i);if(e!=null&&e.optLong("at")>=cutoff)events.put(e);}
-        for(int i=0;i<stockSnapshots.length();i++){JSONObject e=stockSnapshots.optJSONObject(i);if(e!=null&&e.optLong("at")>=cutoff)points.put(e);}
-        stockEvents=events;stockSnapshots=points;
-    }
+    // Keep the complete local measurement history for backup/export. The chart and
+    // seven-day activity view apply their date filters only while displaying data.
+    private void pruneHistory() { }
     private void showStockHistory(){
         pruneHistory();LinearLayout box=new LinearLayout(this);box.setOrientation(LinearLayout.VERTICAL);box.setPadding(dp(16),dp(8),dp(16),dp(8));
         TextView heading=new TextView(this);heading.setText("Geschätzter Gesamtbestand · ausgewählte Filialen");heading.setTextSize(12);heading.setTypeface(null,1);box.addView(heading);
         HistoryChart chart=new HistoryChart();box.addView(chart,new LinearLayout.LayoutParams(-1,dp(190)));
         TextView eventsTitle=new TextView(this);eventsTitle.setText("Bestandsänderungen der letzten 7 Tage");eventsTitle.setTextSize(12);eventsTitle.setTypeface(null,1);eventsTitle.setPadding(0,dp(8),0,dp(4));box.addView(eventsTitle);
         LinearLayout events=new LinearLayout(this);events.setOrientation(LinearLayout.VERTICAL);ScrollView scroll=new ScrollView(this);scroll.addView(events);box.addView(scroll,new LinearLayout.LayoutParams(-1,dp(250)));
-        java.util.Set<String> visibleBranches=selectedBranchIds();ArrayList<JSONObject> sorted=new ArrayList<>();String pid=currentProductId();for(int i=0;i<stockEvents.length();i++){JSONObject e=stockEvents.optJSONObject(i);if(e!=null&&pid.equals(e.optString("product_id"))&&visibleBranches.contains(e.optString("branch_id")))sorted.add(e);}
+        java.util.Set<String> visibleBranches=selectedBranchIds();ArrayList<JSONObject> sorted=new ArrayList<>();String pid=currentProductId();for(int i=0;i<stockEvents.length();i++){JSONObject e=stockEvents.optJSONObject(i);if(e!=null&&e.optLong("at")>=System.currentTimeMillis()-7L*24L*60L*60L*1000L&&pid.equals(e.optString("product_id"))&&visibleBranches.contains(e.optString("branch_id")))sorted.add(e);}
         Collections.sort(sorted,(a,b)->Long.compare(b.optLong("at"),a.optLong("at")));
         if(sorted.isEmpty()){TextView empty=new TextView(this);empty.setText("Noch keine Bestandsänderungen erfasst.");empty.setTextSize(11);events.addView(empty);}
         for(JSONObject e:sorted){int delta=e.optInt("delta");TextView line=new TextView(this);line.setText(DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT).format(new Date(e.optLong("at")))+" · "+e.optString("branch_name")+"\n"+e.optInt("previous")+" → "+e.optInt("current")+" Stück ("+(delta>=0?"+":"")+delta+" Stück)");line.setTextSize(11);line.setPadding(0,dp(5),0,dp(5));line.setTextColor(delta>=0?Color.rgb(23,105,210):Color.rgb(180,70,78));events.addView(line);}
@@ -659,7 +664,7 @@ public class MainActivity extends Activity {
     private void finishBusy(){queryRunning=false;getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);loadingSpinner.setVisibility(View.GONE);refresh.setEnabled(queryBranches.length()>0);updateRegionUi();updateBranchScopeUi();}
     private java.util.Set<String> selectedBranchIds(){java.util.HashSet<String> ids=new java.util.HashSet<>();for(int i=0;i<queryBranches.length();i++){JSONObject b=queryBranches.optJSONObject(i);if(b!=null)ids.add(b.optString("id"));}return ids;}
     private void scheduleAutomaticRefresh(long delayOverride){autoRefreshHandler.removeCallbacks(autoRefreshRunnable);if(!activityResumed||autoRefreshToggle==null||!autoRefreshToggle.isChecked())return;long anchor=getPreferences(MODE_PRIVATE).getLong("auto_refresh_anchor_ms",0);long delay=delayOverride>0?delayOverride:(anchor==0?0:Math.max(0,anchor+AUTO_REFRESH_INTERVAL_MS-System.currentTimeMillis()));autoRefreshHandler.postDelayed(autoRefreshRunnable,delay);updateAutoRefreshInfo();}
-    private void checkAutomaticRefresh(){if(!activityResumed||autoRefreshToggle==null||!autoRefreshToggle.isChecked())return;if(queryRunning){scheduleAutomaticRefresh(60_000);return;}long anchor=getPreferences(MODE_PRIVATE).getLong("auto_refresh_anchor_ms",0);if(anchor==0||System.currentTimeMillis()-anchor>=AUTO_REFRESH_INTERVAL_MS){status.setText("Automatische Live-Aktualisierung läuft …");beginCheck(true);}else scheduleAutomaticRefresh(0);}
+    private void checkAutomaticRefresh(){if(backupBusy||!activityResumed||autoRefreshToggle==null||!autoRefreshToggle.isChecked())return;if(queryRunning){scheduleAutomaticRefresh(60_000);return;}long anchor=getPreferences(MODE_PRIVATE).getLong("auto_refresh_anchor_ms",0);if(anchor==0||System.currentTimeMillis()-anchor>=AUTO_REFRESH_INTERVAL_MS){status.setText("Automatische Live-Aktualisierung läuft …");beginCheck(true);}else scheduleAutomaticRefresh(0);}
     private void updateAutoRefreshInfo(){if(autoRefreshInfo==null)return;if(autoRefreshToggle==null||!autoRefreshToggle.isChecked()){autoRefreshInfo.setText("Automatische Aktualisierung ausgeschaltet.");return;}long anchor=getPreferences(MODE_PRIVATE).getLong("auto_refresh_anchor_ms",0);if(anchor==0){autoRefreshInfo.setText("Erste automatische Prüfung startet beim Öffnen der App. App geöffnet lassen.");return;}long next=anchor+AUTO_REFRESH_INTERVAL_MS;autoRefreshInfo.setText("Nächste Prüfung ab "+DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(next))+" · läuft bei geöffneter App; nach Rückkehr wird eine fällige Prüfung gestartet.");}
     private String currentProductId(){JSONObject p=products.optJSONObject(selectedProductIndex);return p==null?"":p.optString("id");}
     private String productName(String id){for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p.optString("id").equals(id))return p.optString("name");}return id;}
@@ -706,6 +711,87 @@ public class MainActivity extends Activity {
     private int stockQuantity(Map<String,JSONObject> rows,JSONObject branch){JSONObject row=rows==null?null:rows.get(branch.optString("id"));return row!=null&&row.optString("status").equals("estimated_in_stock")?row.optInt("quantity",0):0;}
     private double catalogPrice(String id){for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p.optString("id").equals(id))return p.optDouble("price_chf",0);}return 0;}
     private void loadImage(String imageUrl){productImage.setImageDrawable(null);if(imageUrl==null||imageUrl.isEmpty())return;new Thread(()->{try{Bitmap bitmap=BitmapFactory.decodeStream(new URL(imageUrl).openStream());runOnUiThread(()->productImage.setImageBitmap(bitmap));}catch(Exception ignored){}}).start();}
+    private android.content.SharedPreferences coopPreferences() {
+        return getSharedPreferences("coop_finder",MODE_PRIVATE);
+    }
+    private void chooseBackupExport(){
+        if(queryRunning||backupBusy){
+            new AlertDialog.Builder(this).setMessage("Bitte zuerst die laufende Abfrage oder Sicherung abschliessen.").setPositiveButton("OK",null).show();return;
+        }
+        backupBusy=true;autoRefreshHandler.removeCallbacks(autoRefreshRunnable);
+        Intent intent=new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/json");
+        String stamp=new java.text.SimpleDateFormat("yyyy-MM-dd_HH-mm",java.util.Locale.ROOT).format(new Date());
+        intent.putExtra(Intent.EXTRA_TITLE,"pokemon-card-finder-backup-"+stamp+".json");
+        try{startActivityForResult(intent,REQUEST_BACKUP_EXPORT);}
+        catch(Exception ex){backupBusy=false;showBackupError("Dateiauswahl nicht verfügbar: "+ex.getMessage());}
+    }
+    private void chooseBackupImport(){
+        if(queryRunning||backupBusy){
+            new AlertDialog.Builder(this).setMessage("Bitte zuerst die laufende Abfrage oder Sicherung abschliessen.").setPositiveButton("OK",null).show();return;
+        }
+        new AlertDialog.Builder(this).setTitle("Historische Daten wiederherstellen")
+            .setMessage("Wähle eine zuvor exportierte JSON-Datei. Gespeicherte Bestands- und Verlaufsdaten von Migros und Coop werden zusammengeführt. Gleiche Messpunkte werden nicht doppelt importiert.")
+            .setNegativeButton("Abbrechen",null).setPositiveButton("Backup auswählen",(d,w)->{
+                backupBusy=true;autoRefreshHandler.removeCallbacks(autoRefreshRunnable);
+                Intent intent=new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);intent.setType("application/json");
+                try{startActivityForResult(intent,REQUEST_BACKUP_IMPORT);}
+                catch(Exception ex){backupBusy=false;showBackupError("Dateiauswahl nicht verfügbar: "+ex.getMessage());}
+            }).show();
+    }
+    @Override protected void onActivityResult(int requestCode,int resultCode,Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
+        if(requestCode!=REQUEST_BACKUP_EXPORT&&requestCode!=REQUEST_BACKUP_IMPORT)return;
+        if(resultCode!=RESULT_OK||data==null||data.getData()==null){
+            backupBusy=false;scheduleAutomaticRefresh(0);return;
+        }
+        final android.net.Uri destination=data.getData();
+        final boolean export=requestCode==REQUEST_BACKUP_EXPORT;
+        new Thread(()->{
+            try{
+                String message;
+                if(export){
+                    String backup=BackupManager.exportJson(getPreferences(MODE_PRIVATE),coopPreferences());
+                    try(java.io.OutputStream stream=getContentResolver().openOutputStream(destination,"w")){
+                        if(stream==null)throw new java.io.IOException("Die Zieldatei konnte nicht geöffnet werden.");
+                        byte[] bytes=backup.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+                        stream.write(bytes);stream.flush();
+                        message="Backup gespeichert ("+bytes.length/1024+" KB). Migros und Coop sind enthalten.";
+                    }
+                }else{
+                    java.io.ByteArrayOutputStream buffer=new java.io.ByteArrayOutputStream();
+                    try(java.io.InputStream stream=getContentResolver().openInputStream(destination)){
+                        if(stream==null)throw new java.io.IOException("Datei nicht lesbar.");
+                        byte[] chunk=new byte[8192];int count,total=0;
+                        while((count=stream.read(chunk))!=-1){
+                            total+=count;if(total>BACKUP_MAX_BYTES)throw new java.io.IOException("Backup grösser als 50 MB.");
+                            buffer.write(chunk,0,count);
+                        }
+                    }
+                    message=BackupManager.importJson(new String(buffer.toByteArray(),java.nio.charset.StandardCharsets.UTF_8),
+                        getPreferences(MODE_PRIVATE),coopPreferences());
+                }
+                final String result=message;
+                runOnUiThread(()->{
+                    backupBusy=false;
+                    if(export)scheduleAutomaticRefresh(0);
+                    new AlertDialog.Builder(this).setTitle(export?"Backup heruntergeladen":"Backup wiederhergestellt")
+                        .setMessage(result+(export?"\n\nBewahre die JSON-Datei auch ausserhalb der App auf.":"\n\nDie App lädt die übernommenen Daten jetzt neu."))
+                        .setPositiveButton("OK",(d,w)->{if(!export)recreate();}).show();
+                });
+            }catch(Exception ex){
+                runOnUiThread(()->{backupBusy=false;showBackupError(ex.getMessage());scheduleAutomaticRefresh(0);});
+            }
+        }).start();
+    }
+    private void showBackupError(String message){
+        new AlertDialog.Builder(this).setTitle("Backup fehlgeschlagen")
+            .setMessage(message==null?"Die Datei konnte nicht verarbeitet werden.":message)
+            .setPositiveButton("OK",null).show();
+    }
+
     private void saveLocal(){try{JSONObject all=new JSONObject();for(String id:recordsByProduct.keySet())all.put(id,new JSONObject(recordsByProduct.get(id)));JSONObject times=new JSONObject(checkedByProduct);JSONObject prices=new JSONObject(livePricesByProduct);getPreferences(MODE_PRIVATE).edit().putString("all_stock_json",all.toString()).putString("all_checked_json",times.toString()).putString("live_prices_json",prices.toString()).putString("stock_snapshots_json",stockSnapshots.toString()).putString("stock_events_json",stockEvents.toString()).apply();}catch(Exception ignored){}}
     private void loadSavedRecords(){try{JSONObject all=new JSONObject(getPreferences(MODE_PRIVATE).getString("all_stock_json","{}"));JSONArray keys=all.names();if(keys!=null)for(int i=0;i<keys.length();i++){String productId=keys.getString(i);JSONObject productRows=all.getJSONObject(productId);Map<String,JSONObject> rows=new LinkedHashMap<>();JSONArray branchKeys=productRows.names();if(branchKeys!=null)for(int j=0;j<branchKeys.length();j++){String branchId=branchKeys.getString(j);rows.put(branchId,productRows.getJSONObject(branchId));}recordsByProduct.put(productId,rows);}JSONObject times=new JSONObject(getPreferences(MODE_PRIVATE).getString("all_checked_json","{}"));JSONArray tkeys=times.names();if(tkeys!=null)for(int i=0;i<tkeys.length();i++){String id=tkeys.getString(i);checkedByProduct.put(id,times.getString(id));}JSONObject prices=new JSONObject(getPreferences(MODE_PRIVATE).getString("live_prices_json","{}"));JSONArray pkeys=prices.names();if(pkeys!=null)for(int i=0;i<pkeys.length();i++){String id=pkeys.getString(i);livePricesByProduct.put(id,prices.getJSONObject(id));}stockSnapshots=new JSONArray(getPreferences(MODE_PRIVATE).getString("stock_snapshots_json","[]"));stockEvents=new JSONArray(getPreferences(MODE_PRIVATE).getString("stock_events_json","[]"));pruneHistory();}catch(Exception ignored){}}
     private String readAsset(String name)throws Exception{BufferedReader reader=new BufferedReader(new InputStreamReader(getAssets().open(name),"UTF-8"));StringBuilder text=new StringBuilder();String line;while((line=reader.readLine())!=null)text.append(line);reader.close();return text.toString();}

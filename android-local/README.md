@@ -1,3 +1,9 @@
+## Backup und Wiederherstellung (ab dem nächsten Android-Build)
+
+Unterhalb von **„7-Tage-Statistik & Änderungsverlauf“** befinden sich **„Backup herunterladen · Migros + Coop“** und **„Backup hochladen / wiederherstellen“**. Der Android-Dateidialog exportiert eine lokale JSON-Datei, die beide Händler enthält. Gesichert werden alle App-Einstellungen und lokalen Datensätze einschliesslich Produkt-/Filialbestände, Zeitstempel, Preise, Messpunkte, Änderungsereignisse, entdeckte Artikel, eigene Regionen und Filialauswahl. Der Import prüft Format und Werte vor dem Speichern, führt vorhandene Bestands- und Verlaufsdaten zusammen und vermeidet doppelte Messpunkte. Für beide Händler bleiben neuere bereits vorhandene Filialdaten vorrangig. Die 7-Tage-Grafik und die 7-Tage-Liste zeigen weiter nur die jüngsten sieben Tage; ältere erfasste Migros-Messungen werden ab dieser Version nicht mehr automatisch gelöscht und bleiben im Backup.
+
+**Wichtig:** Vor dem Entfernen einer alten APK die neue Version als Android-Update mit unveränderter Signatur installieren und zuerst ein Backup exportieren. Daten, die bereits durch Deinstallation der vorherigen APK gelöscht wurden, können nicht nachträglich gesichert werden. Die Funktion benötigt keinen Server und sendet keine Backup-Daten an GitHub. Nach einem Import werden die Daten in der App neu geladen.
+
 ## Coop-Erweiterung (ab dem nächsten Android-Build nach v1.2.57)
 
 Die Migros-Hauptansicht enthält jetzt eine Taste **„Coop Pokémon-Karten und Filialverfügbarkeit“**. Diese öffnet den unabhängigen `CoopActivity`-Bereich. Dort sind drei mit Coop-Produktlinks belegte Pokémon-Artikel vorerfasst. Weitere Produkte lassen sich über die (inoffizielle und nicht garantierte) öffentliche Coop-App-Schnittstelle suchen oder mit Artikelnummer und Link hinzufügen.
