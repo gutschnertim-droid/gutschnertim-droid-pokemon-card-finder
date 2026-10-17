@@ -195,6 +195,7 @@ public class MainActivity extends Activity {
         TextView title=new TextView(this); title.setText("Pokémon Card Finder"); title.setTextSize(22); title.setTextColor(Color.rgb(35,32,48)); title.setTypeface(null,1); root.addView(title);
         TextView versionBadge=new TextView(this); versionBadge.setText("App-Version: v"+appVersionName()); versionBadge.setTextSize(11); versionBadge.setTextColor(Color.rgb(78,76,100)); root.addView(versionBadge,params(dp(2)));
         subtitle=new TextView(this); subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Filialen in den gewählten Regionen"); subtitle.setTextSize(12); subtitle.setTextColor(Color.DKGRAY); root.addView(subtitle,params(dp(4)));
+        Button coopButton=new Button(this); coopButton.setText("Coop Pokémon-Karten und Filialverfügbarkeit"); coopButton.setTextSize(12); coopButton.setOnClickListener(v->startActivity(new Intent(this,CoopActivity.class))); root.addView(coopButton,params(dp(5)));
         regionPicker=new Button(this); regionPicker.setTextSize(11); root.addView(regionPicker,params(dp(4))); updateRegionUi();
         branchScopePicker=new Button(this);branchScopePicker.setTextSize(11);root.addView(branchScopePicker,params(dp(4)));updateBranchScopeUi();
         productPicker=new Spinner(this); root.addView(productPicker,params(dp(5)));
