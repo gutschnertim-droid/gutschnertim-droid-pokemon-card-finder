@@ -5,3 +5,10 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# Never commit Android signing keys or GitHub Actions secret values.
+*.p12
+*.jks
+*.keystore
+*ANDROID_KEYSTORE_BASE64*.txt
+*ANDROID_KEYSTORE_PASSWORD*.txt
