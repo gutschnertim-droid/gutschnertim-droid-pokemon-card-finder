@@ -10,6 +10,19 @@ Jeder erfolgreiche GitHub-Actions-APK-Build erhält automatisch eine steigende N
 
 Der Startkatalog enthält nun zusätzlich den Pokémon Checklane Blister (Migros 744649500000) und den Premium Checklane Blister (748680400000). Diese Artikel haben noch keinen geprüften Live-Filialbestand. Für künftig fehlende Produkte gibt es den Button **„Fehlendes Pokémon-Produkt hinzufügen“**, wo ein Migros-Produktlink oder eine 12-stellige Artikelnummer und optional ein Name eingetragen werden können. Die automatische Produkterkennung auf Migros wurde um weitere Kartenprodukttypen erweitert.
 
+## Neu erfasste Produkte (17.10.2026)
+
+Zum bereits vorhandenen Katalog wurden vier zusätzliche Produkte mit geprüfter Migros-Artikelnummer ergänzt:
+
+- Three Pack: `746646500000`
+- Collectors Album: `748639000000`
+- Spring Summer Fall ex Tin: `748417100000`
+- ex Box: `748414000000`
+
+Zusammen mit den bisherigen neun Artikeln enthält der Startkatalog jetzt **13 eindeutig nummerierte Produkte**. Bereits lokal erkannte Produkte werden über dieselbe Artikelnummer abgeglichen und nicht ein zweites Mal eingefügt. Ein GitHub-Actions-Test verweigert den APK-Build, falls der Katalog doppelte IDs oder falsche Produktlinks enthält. Die Bestände der neuen Produkte sind bis zur Live-Abfrage **ungeprüft**, nicht „nicht auf Lager“.
+
+**Battle Deck** bleibt vorerst ausgenommen: Ein allgemeiner Migros-Ratgeber erklärt Battle Decks, aber für ein konkretes Migros-Filialprodukt mit dieser Bezeichnung konnte keine zugehörige Artikelnummer verifiziert werden. Keine erfundene Produktnummer aufnehmen.
+
 ## Updates und Signaturschlüssel
 
 Damit Android eine neue APK als Update annimmt und die lokalen App-Daten behält, müssen alle APKs mit demselben privaten Signaturschlüssel signiert sein. Für GitHub Actions sind dafür die Repository-Secrets `ANDROID_KEYSTORE_BASE64` (Base64 des privaten PKCS12-Keystores) und `ANDROID_KEYSTORE_PASSWORD` einzurichten. Der Keystore darf nicht ins Repository eingecheckt werden. Ohne diese Secrets baut der Workflow weiterhin eine Debug-APK; diese kann wegen der wechselnden Runner-Signatur eine Neuinstallation erfordern. Nach Einrichtung baut der Workflow eine stabile Release-APK. Beim Wechsel von einer bereits installierten APK mit anderer Signatur ist einmalig eine Neuinstallation nötig; danach sind Updates mit Erhalt der lokalen Daten möglich.

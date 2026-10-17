@@ -26,6 +26,22 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+      - name: Validate unique Migros product IDs
+        run: |
+          python - <<'PY'
+          import json
+          import re
+          from pathlib import Path
+          catalog = json.loads(Path("android-local/app/src/main/assets/catalog.json").read_text(encoding="utf-8"))
+          items = catalog["products"]
+          ids = [str(item["id"]).strip() for item in items]
+          assert all(re.fullmatch(r"\d{12}", item_id) for item_id in ids), "Invalid Migros product ID"
+          assert len(ids) == len(set(ids)), "Duplicate Migros product IDs in catalog"
+          assert all(item.get("product_url") == "https://www.migros.ch/de/product/" + item_id
+                     for item, item_id in zip(items, ids)), "Product link/ID mismatch"
+          assert catalog["store_catalog_count"] == len(items), "Catalog count mismatch"
+          print(f"Validated {len(ids)} distinct Migros product IDs")
+          PY
       - name: Assign increasing version number
         run: |
           echo "APP_VERSION=1.2.${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"

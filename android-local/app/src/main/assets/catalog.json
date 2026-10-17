@@ -8,10 +8,10 @@
   "source_url": "https://www.migros.ch/de/brand/pokemon",
   "category_source_url": "https://www.migros.ch/en/category/games-hobbies-gifting/games-puzzles/board-card-games/trading-card-games",
   "capture_method": "Migros public catalog, store assortment selected, region Neuchatel-Freiburg; online assortment selected and postcode 1700 Fribourg",
-  "store_catalog_count": 9,
+  "store_catalog_count": 13,
   "online_catalog_count": 0,
   "online_result_text": "Wir konnten im Online-Sortiment keine Produkte finden.",
-  "scope_note": "Der ursprüngliche Bestands-Snapshot vom 11.10.2026 wurde für sieben Produkte geprüft; zwei zusätzliche Checklane-Artikel wurden am 17.10.2026 in der Migros-Produktansicht gefunden. Für neue Artikel sind Filialbestände noch ungeprüft und müssen auf dem Gerät abgefragt werden.",
+  "scope_note": "Der ursprüngliche Filialbestands-Snapshot vom 11.10.2026 wurde nur für die ursprünglichen sieben Produkte geprüft. Zusätzliche Migros-Produkte im App-Katalog besitzen noch keinen geprüften Filialbestand; sie müssen zuerst auf dem Gerät abgefragt werden. Pro Migros-Artikelnummer ist nur ein Eintrag zugelassen.",
   "products": [
     {
       "id": "746658000000",
@@ -113,6 +113,50 @@
       "in_store_assortment": true,
       "online_listed_for_1700": false,
       "branch_stock_checked": true
+    },
+    {
+      "id": "746646500000",
+      "name": "Pokémon Three Pack · assortiert",
+      "price_chf": 17.95,
+      "unit": "3 Stück",
+      "image_url": "",
+      "product_url": "https://www.migros.ch/de/product/746646500000",
+      "in_store_assortment": true,
+      "branch_stock_checked": false,
+      "catalog_verified_on": "2026-10-17"
+    },
+    {
+      "id": "748639000000",
+      "name": "Pokémon Collectors Album · assortiert",
+      "price_chf": 7.95,
+      "unit": "1 Stück",
+      "image_url": "",
+      "product_url": "https://www.migros.ch/de/product/748639000000",
+      "in_store_assortment": true,
+      "branch_stock_checked": false,
+      "catalog_verified_on": "2026-10-17"
+    },
+    {
+      "id": "748417100000",
+      "name": "Pokémon Spring Summer Fall ex Tin · assortiert",
+      "price_chf": 29.95,
+      "unit": "1 Stück",
+      "image_url": "",
+      "product_url": "https://www.migros.ch/de/product/748417100000",
+      "in_store_assortment": true,
+      "branch_stock_checked": false,
+      "catalog_verified_on": "2026-10-17"
+    },
+    {
+      "id": "748414000000",
+      "name": "Pokémon ex Box · assortiert",
+      "price_chf": 29.95,
+      "unit": "1 Stück",
+      "image_url": "",
+      "product_url": "https://www.migros.ch/de/product/748414000000",
+      "in_store_assortment": true,
+      "branch_stock_checked": false,
+      "catalog_verified_on": "2026-10-17"
     }
   ]
 }
