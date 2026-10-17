@@ -12,7 +12,7 @@ concurrency:
 permissions:
   contents: write
 jobs:
-  build-debug-apk:
+  build-signed-apk:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -49,26 +49,53 @@ jobs:
       - name: Prepare stable signing key
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        shell: bash
         run: |
-          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
-            echo "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/pokemon-card-finder.p12"
-            echo "ANDROID_KEYSTORE_PATH=$RUNNER_TEMP/pokemon-card-finder.p12" >> "$GITHUB_ENV"
+          set -euo pipefail
+          if [[ -z "${ANDROID_KEYSTORE_BASE64:-}" || -z "${ANDROID_KEYSTORE_PASSWORD:-}" ]]; then
+            echo "::error::Stable signing secrets are missing. Set ANDROID_KEYSTORE_BASE64 and ANDROID_KEYSTORE_PASSWORD in Settings > Secrets and variables > Actions. No APK will be published."
+            exit 1
           fi
-      - name: Build installable APK
+          keystore="$RUNNER_TEMP/pokemon-card-finder.p12"
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$keystore"
+          chmod 600 "$keystore"
+          expected="4F:AA:C0:EA:65:3F:83:E6:DE:EA:D3:65:B9:EB:BD:2B:BD:D0:87:41:B1:AA:49:24:95:52:D1:12:BC:39:86:47"
+          actual="$(keytool -list -v -alias pcf-update -storetype PKCS12 -keystore "$keystore" -storepass:env ANDROID_KEYSTORE_PASSWORD | awk -F 'SHA256: ' '/SHA256:/ { print $2; exit }')"
+          if [[ "$actual" != "$expected" ]]; then
+            echo "::error::Signing certificate mismatch. Do not rotate the app's signing key accidentally."
+            exit 1
+          fi
+          echo "ANDROID_KEYSTORE_PATH=$keystore" >> "$GITHUB_ENV"
+          echo "Verified persistent signing certificate: $actual"
+      - name: Build signed release APK
         working-directory: android-local
         env:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        shell: bash
         run: |
-          if [ -n "$ANDROID_KEYSTORE_PATH" ]; then
-            gradle --no-daemon :app:assembleRelease -PpcfVersionName="$APP_VERSION" -PpcfVersionCode="$APP_VERSION_CODE"
-            mkdir -p app/build/outputs/apk/download
-            cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/download/app-debug.apk
-          else
-            gradle --no-daemon :app:assembleDebug -PpcfVersionName="$APP_VERSION" -PpcfVersionCode="$APP_VERSION_CODE"
-            mkdir -p app/build/outputs/apk/download
-            cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/download/app-debug.apk
-            echo "::warning::Stable signing is not configured. This APK may require reinstalling."
+          set -euo pipefail
+          test -s "$ANDROID_KEYSTORE_PATH"
+          gradle --no-daemon :app:assembleRelease -PpcfVersionName="$APP_VERSION" -PpcfVersionCode="$APP_VERSION_CODE"
+          mkdir -p app/build/outputs/apk/download
+          # Keep the existing stable download URL even though this is a signed release build.
+          cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/download/app-debug.apk
+      - name: Verify APK signing certificate
+        shell: bash
+        run: |
+          set -euo pipefail
+          sdk="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}}"
+          apksigner="$(find "$sdk/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
+          if [[ -z "$apksigner" ]]; then echo "::error::apksigner not found"; exit 1; fi
+          apk="android-local/app/build/outputs/apk/download/app-debug.apk"
+          signer_output="$("$apksigner" verify --print-certs "$apk")"
+          digest="$(printf '%s\n' "$signer_output" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p' | head -n 1)"
+          expected="4faac0ea653f83e6deead365b9ebbd2bbdd08741b1aa49249552d112bc398647"
+          if [[ "$digest" != "$expected" ]]; then
+            echo "::error::APK is signed with an unexpected certificate. Refusing to publish."
+            exit 1
           fi
+          echo "APK signing verified: SHA-256 $digest"
       - name: Package APK for phone download
         run: |
           zip -j android-local/app/build/outputs/apk/download/app-debug.zip android-local/app/build/outputs/apk/download/app-debug.apk
