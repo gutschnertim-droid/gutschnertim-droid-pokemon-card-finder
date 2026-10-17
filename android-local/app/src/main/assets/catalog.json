@@ -8,17 +8,111 @@
   "source_url": "https://www.migros.ch/de/brand/pokemon",
   "category_source_url": "https://www.migros.ch/en/category/games-hobbies-gifting/games-puzzles/board-card-games/trading-card-games",
   "capture_method": "Migros public catalog, store assortment selected, region Neuchatel-Freiburg; online assortment selected and postcode 1700 Fribourg",
-  "store_catalog_count": 7,
+  "store_catalog_count": 9,
   "online_catalog_count": 0,
   "online_result_text": "Wir konnten im Online-Sortiment keine Produkte finden.",
-  "scope_note": "This is the catalog result for the selected Neuchatel-Freiburg region / postal code 1700, not a nationwide claim. Branch stock is a Migros estimate captured once from the public product availability dialogs; it is not refreshed by the downloadable app.",
+  "scope_note": "Der ursprüngliche Bestands-Snapshot vom 11.10.2026 wurde für sieben Produkte geprüft; zwei zusätzliche Checklane-Artikel wurden am 17.10.2026 in der Migros-Produktansicht gefunden. Für neue Artikel sind Filialbestände noch ungeprüft und müssen auf dem Gerät abgefragt werden.",
   "products": [
-    {"id":"746658000000","name":"Pokémon Booster Blister · assortiert","price_chf":4.95,"unit":"10 Stück","image_url":"https://image.migros.ch/d/mo-custom/v-w-175-h-150/o-af-1-t.clr-fff/9e1a9f3843b616d6aa79325baa9d0092696e4fed/pokemon-booster-blister-assorted.jpg","product_url":"https://www.migros.ch/de/product/746658000000","in_store_assortment":true,"online_listed_for_1700":false,"branch_stock_checked":true},
-    {"id":"748680500000","name":"Pokémon 4-Pocket Portfolios · assortiert","price_chf":13.95,"unit":"1 Stück","image_url":"https://image.migros.ch/d/mo-custom/v-w-175-h-150/o-af-1-t.clr-fff/ed8641eae278d593236bea14750a6312b16868/pokemon-4-pocket-portfolios-assorted.jpg","product_url":"https://www.migros.ch/de/product/748680500000","in_store_assortment":true,"online_listed_for_1700":false,"branch_stock_checked":true},
-    {"id":"748972100000","name":"Pokémon Deck Protector Sleeves · assortiert","price_chf":11.95,"unit":"65 Stück","image_url":"https://image.migros.ch/d/mo-custom/v-w-175-h-150/o-af-1-t.clr-fff/230d044059120e3f246268ebb047b86831ae1a2e/pokemon-deck-protector-sleeves-assorted.jpg","product_url":"https://www.migros.ch/de/product/748972100000","in_store_assortment":true,"online_listed_for_1700":false,"branch_stock_checked":true},
-    {"id":"748680700000","name":"Pokémon Deck Boxen · assortiert","price_chf":4.20,"unit":"1 Stück","image_url":"https://image.migros.ch/d/mo-custom/v-w-175-h-150/o-af-1-t.clr-fff/31c19f1e77cb9b40465de4ee17d6b9f8583e8cd2/pokemon-deck-boxes-assorted.jpg","product_url":"https://www.migros.ch/de/product/748680700000","in_store_assortment":true,"online_listed_for_1700":false,"branch_stock_checked":true},
-    {"id":"749706600000","name":"Pokémon Mini Tin · assortiert","price_chf":12.95,"unit":"20 Stück","image_url":"https://image.migros.ch/d/mo-custom/v-w-175-h-150/o-af-1-t.clr-fff/2e09954856aa2c819d472201e6e6efc9d09a722b/pokemon-mini-tin-assorted.jpg","product_url":"https://www.migros.ch/de/product/749706600000","in_store_assortment":true,"online_listed_for_1700":false,"branch_stock_checked":true},
-    {"id":"740700300000","name":"Pokémon EN 30th Anniversary Tech Sticker Collection","price_chf":20.95,"unit":"1 Stück","image_url":"https://image.migros.ch/d/mo-custom/v-w-175-h-150/o-af-1-t.clr-fff/c6bf38932c03f91ae054bdd54598c9f55ae45899/pokemon-pokemon-en-30th-anniversary-tech-sticker-collection.jpg","product_url":"https://www.migros.ch/de/product/740700300000","in_store_assortment":true,"online_listed_for_1700":false,"branch_stock_checked":true},
-    {"id":"740700500000","name":"Pokémon EN 30th Anniversary Poster C","price_chf":25.95,"unit":"1 Stück","image_url":"https://image.migros.ch/d/mo-custom/v-w-175-h-150/o-af-1-t.clr-fff/3564a331c3dea4afde536a906f264157d9a4982e/pokemon-pokemon-en-30th-anniversary-poster-c.jpg","product_url":"https://www.migros.ch/de/product/740700500000","in_store_assortment":true,"online_listed_for_1700":false,"branch_stock_checked":true}
+    {
+      "id": "746658000000",
+      "name": "Pokémon Booster Blister · assortiert",
+      "price_chf": 4.95,
+      "unit": "10 Stück",
+      "image_url": "https://image.migros.ch/d/mo-custom/v-w-175-h-150/o-af-1-t.clr-fff/9e1a9f3843b616d6aa79325baa9d0092696e4fed/pokemon-booster-blister-assorted.jpg",
+      "product_url": "https://www.migros.ch/de/product/746658000000",
+      "in_store_assortment": true,
+      "online_listed_for_1700": false,
+      "branch_stock_checked": true
+    },
+    {
+      "id": "744649500000",
+      "name": "Pokémon Checklane Blister · assortiert",
+      "price_chf": 6.95,
+      "unit": "10 Stück",
+      "image_url": "https://image.migros.ch/d/2017-large/58c6220f1b60942a72e764c1ade0aa36d7e3ae61.png",
+      "product_url": "https://www.migros.ch/de/product/744649500000",
+      "in_store_assortment": true,
+      "online_listed_for_1700": false,
+      "branch_stock_checked": false,
+      "catalog_verified_on": "2026-10-17"
+    },
+    {
+      "id": "748680400000",
+      "name": "Pokémon Premium Checklane Blister · assortiert",
+      "price_chf": 8.95,
+      "unit": "10 Stück",
+      "image_url": "https://image.migros.ch/d/2017-large/9bc47b8506332a9ac1055a5aabf35681e67d32c9.png",
+      "product_url": "https://www.migros.ch/de/product/748680400000",
+      "in_store_assortment": true,
+      "online_listed_for_1700": false,
+      "branch_stock_checked": false,
+      "catalog_verified_on": "2026-10-17"
+    },
+    {
+      "id": "748680500000",
+      "name": "Pokémon 4-Pocket Portfolios · assortiert",
+      "price_chf": 13.95,
+      "unit": "1 Stück",
+      "image_url": "https://image.migros.ch/d/mo-custom/v-w-175-h-150/o-af-1-t.clr-fff/ed8641eae278d593236bea14750a6312b16868/pokemon-4-pocket-portfolios-assorted.jpg",
+      "product_url": "https://www.migros.ch/de/product/748680500000",
+      "in_store_assortment": true,
+      "online_listed_for_1700": false,
+      "branch_stock_checked": true
+    },
+    {
+      "id": "748972100000",
+      "name": "Pokémon Deck Protector Sleeves · assortiert",
+      "price_chf": 11.95,
+      "unit": "65 Stück",
+      "image_url": "https://image.migros.ch/d/mo-custom/v-w-175-h-150/o-af-1-t.clr-fff/230d044059120e3f246268ebb047b86831ae1a2e/pokemon-deck-protector-sleeves-assorted.jpg",
+      "product_url": "https://www.migros.ch/de/product/748972100000",
+      "in_store_assortment": true,
+      "online_listed_for_1700": false,
+      "branch_stock_checked": true
+    },
+    {
+      "id": "748680700000",
+      "name": "Pokémon Deck Boxen · assortiert",
+      "price_chf": 4.2,
+      "unit": "1 Stück",
+      "image_url": "https://image.migros.ch/d/mo-custom/v-w-175-h-150/o-af-1-t.clr-fff/31c19f1e77cb9b40465de4ee17d6b9f8583e8cd2/pokemon-deck-boxes-assorted.jpg",
+      "product_url": "https://www.migros.ch/de/product/748680700000",
+      "in_store_assortment": true,
+      "online_listed_for_1700": false,
+      "branch_stock_checked": true
+    },
+    {
+      "id": "749706600000",
+      "name": "Pokémon Mini Tin · assortiert",
+      "price_chf": 12.95,
+      "unit": "20 Stück",
+      "image_url": "https://image.migros.ch/d/mo-custom/v-w-175-h-150/o-af-1-t.clr-fff/2e09954856aa2c819d472201e6e6efc9d09a722b/pokemon-mini-tin-assorted.jpg",
+      "product_url": "https://www.migros.ch/de/product/749706600000",
+      "in_store_assortment": true,
+      "online_listed_for_1700": false,
+      "branch_stock_checked": true
+    },
+    {
+      "id": "740700300000",
+      "name": "Pokémon EN 30th Anniversary Tech Sticker Collection",
+      "price_chf": 20.95,
+      "unit": "1 Stück",
+      "image_url": "https://image.migros.ch/d/mo-custom/v-w-175-h-150/o-af-1-t.clr-fff/c6bf38932c03f91ae054bdd54598c9f55ae45899/pokemon-pokemon-en-30th-anniversary-tech-sticker-collection.jpg",
+      "product_url": "https://www.migros.ch/de/product/740700300000",
+      "in_store_assortment": true,
+      "online_listed_for_1700": false,
+      "branch_stock_checked": true
+    },
+    {
+      "id": "740700500000",
+      "name": "Pokémon EN 30th Anniversary Poster C",
+      "price_chf": 25.95,
+      "unit": "1 Stück",
+      "image_url": "https://image.migros.ch/d/mo-custom/v-w-175-h-150/o-af-1-t.clr-fff/3564a331c3dea4afde536a906f264157d9a4982e/pokemon-pokemon-en-30th-anniversary-poster-c.jpg",
+      "product_url": "https://www.migros.ch/de/product/740700500000",
+      "in_store_assortment": true,
+      "online_listed_for_1700": false,
+      "branch_stock_checked": true
+    }
   ]
 }

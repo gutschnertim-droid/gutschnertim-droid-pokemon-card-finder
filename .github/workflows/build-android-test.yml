@@ -26,6 +26,10 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
+      - name: Assign increasing version number
+        run: |
+          echo "APP_VERSION=1.2.${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
+          echo "APP_VERSION_CODE=$((12000 + GITHUB_RUN_NUMBER))" >> "$GITHUB_ENV"
       - name: Prepare stable signing key
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
@@ -40,17 +44,20 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
         run: |
           if [ -n "$ANDROID_KEYSTORE_PATH" ]; then
-            gradle --no-daemon :app:assembleRelease
+            gradle --no-daemon :app:assembleRelease -PpcfVersionName="$APP_VERSION" -PpcfVersionCode="$APP_VERSION_CODE"
             mkdir -p app/build/outputs/apk/download
             cp app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/download/app-debug.apk
           else
-            gradle --no-daemon :app:assembleDebug
+            gradle --no-daemon :app:assembleDebug -PpcfVersionName="$APP_VERSION" -PpcfVersionCode="$APP_VERSION_CODE"
             mkdir -p app/build/outputs/apk/download
             cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/download/app-debug.apk
             echo "::warning::Stable signing is not configured. This APK may require reinstalling."
           fi
       - name: Package APK for phone download
-        run: zip -j android-local/app/build/outputs/apk/download/app-debug.zip android-local/app/build/outputs/apk/download/app-debug.apk
+        run: |
+          zip -j android-local/app/build/outputs/apk/download/app-debug.zip android-local/app/build/outputs/apk/download/app-debug.apk
+          cp android-local/app/build/outputs/apk/download/app-debug.apk "android-local/app/build/outputs/apk/download/pokemon-card-finder-v${APP_VERSION}.apk"
+          cp android-local/app/build/outputs/apk/download/app-debug.zip "android-local/app/build/outputs/apk/download/pokemon-card-finder-v${APP_VERSION}.zip"
       - uses: actions/upload-artifact@v4
         with:
           name: pokemon-card-finder-android-test
@@ -69,9 +76,24 @@ jobs:
           if ! gh release view "$release_tag" >/dev/null 2>&1; then
             gh release create "$release_tag" "$apk_path" "$zip_path" \
               --target "$GITHUB_SHA" \
-              --title "Pokémon Card Finder – Android Test" \
-              --notes "Automatisch gebaute Android-Testversion. Der Direktlink wird bei jedem erfolgreichen Build aktualisiert." \
+              --title "Pokémon Card Finder – neueste v${APP_VERSION}" \
+              --notes "Neueste Testversion: v${APP_VERSION}. Jede neue APK hat eine höhere Versionsnummer." \
               --prerelease
           else
             gh release upload "$release_tag" "$apk_path" "$zip_path" --clobber
+            gh release edit "$release_tag" \
+              --title "Pokémon Card Finder – neueste v${APP_VERSION}" \
+              --notes "Neueste Testversion: v${APP_VERSION}. Jede neue APK hat eine höhere Versionsnummer."
+          fi
+          version_tag="v${APP_VERSION}"
+          apk_versioned="android-local/app/build/outputs/apk/download/pokemon-card-finder-v${APP_VERSION}.apk"
+          zip_versioned="android-local/app/build/outputs/apk/download/pokemon-card-finder-v${APP_VERSION}.zip"
+          if gh release view "$version_tag" >/dev/null 2>&1; then
+            gh release upload "$version_tag" "$apk_versioned" "$zip_versioned" --clobber
+          else
+            gh release create "$version_tag" "$apk_versioned" "$zip_versioned" \
+              --target "$GITHUB_SHA" \
+              --title "Pokémon Card Finder v${APP_VERSION}" \
+              --notes "Nummerierter Android-Testbuild v${APP_VERSION}. Die Filialauswahl befindet sich oberhalb der Pokémon-Produkte." \
+              --prerelease
           fi

@@ -63,6 +63,7 @@ public class MainActivity extends Activity {
     private Button notificationSettings;
     private Button regionPicker;
     private Button branchScopePicker;
+    private Button addProductButton;
     private JSONArray queryBranches = new JSONArray();
     private WebView radiusMapWebView;
     private boolean radiusMapReady;
@@ -142,6 +143,7 @@ public class MainActivity extends Activity {
         refresh.setOnClickListener(v -> beginCheck(false));
         regionPicker.setOnClickListener(v -> showRegionPicker());
         branchScopePicker.setOnClickListener(v -> showBranchScopeDialog());
+        addProductButton.setOnClickListener(v -> showAddProductDialog());
         notificationSettings.setOnClickListener(v -> showNotificationSettings());
         historyButton.setOnClickListener(v -> showStockHistory());
         mapButton.setOnClickListener(v -> showMap());
@@ -191,10 +193,12 @@ public class MainActivity extends Activity {
         getWindow().setStatusBarColor(Color.rgb(248,248,252)); getWindow().setNavigationBarColor(Color.rgb(248,248,252));
         root=new LinearLayout(this); root.setOrientation(LinearLayout.VERTICAL); root.setPadding(dp(16),dp(18),dp(16),dp(12)); root.setBackgroundColor(Color.rgb(248,248,252));
         TextView title=new TextView(this); title.setText("Pokémon Card Finder"); title.setTextSize(22); title.setTextColor(Color.rgb(35,32,48)); title.setTypeface(null,1); root.addView(title);
+        TextView versionBadge=new TextView(this); versionBadge.setText("App-Version: v"+appVersionName()); versionBadge.setTextSize(11); versionBadge.setTextColor(Color.rgb(78,76,100)); root.addView(versionBadge,params(dp(2)));
         subtitle=new TextView(this); subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Filialen in den gewählten Regionen"); subtitle.setTextSize(12); subtitle.setTextColor(Color.DKGRAY); root.addView(subtitle,params(dp(4)));
         regionPicker=new Button(this); regionPicker.setTextSize(11); root.addView(regionPicker,params(dp(4))); updateRegionUi();
         branchScopePicker=new Button(this);branchScopePicker.setTextSize(11);root.addView(branchScopePicker,params(dp(4)));updateBranchScopeUi();
-        productPicker=new Spinner(this); root.addView(productPicker,params(dp(8)));
+        productPicker=new Spinner(this); root.addView(productPicker,params(dp(5)));
+        addProductButton=new Button(this); addProductButton.setText("Fehlendes Pokémon-Produkt hinzufügen"); addProductButton.setTextSize(11); root.addView(addProductButton,params(dp(5)));
         LinearLayout card=new LinearLayout(this); card.setGravity(Gravity.CENTER_VERTICAL); card.setBackgroundColor(Color.WHITE); card.setPadding(dp(10),dp(8),dp(10),dp(8));
         productImage=new ImageView(this); productImage.setScaleType(ImageView.ScaleType.FIT_CENTER); card.addView(productImage,new LinearLayout.LayoutParams(dp(88),dp(78)));
         LinearLayout details=new LinearLayout(this); details.setOrientation(LinearLayout.VERTICAL); LinearLayout.LayoutParams detailParams=new LinearLayout.LayoutParams(0,-2,1); detailParams.leftMargin=dp(10); card.addView(details,detailParams);
@@ -235,6 +239,31 @@ public class MainActivity extends Activity {
         webView.loadUrl(DISCOVERY_URLS[discoveryPageIndex]);
     }
 
+    private String appVersionName(){
+        try{return getPackageManager().getPackageInfo(getPackageName(),0).versionName;}
+        catch(PackageManager.NameNotFoundException ex){return "unbekannt";}
+    }
+
+    private void showAddProductDialog(){
+        if(queryRunning)return;
+        LinearLayout inputs=new LinearLayout(this);inputs.setOrientation(LinearLayout.VERTICAL);inputs.setPadding(dp(20),dp(8),dp(20),dp(4));
+        EditText link=new EditText(this);link.setSingleLine(true);link.setTextSize(13);link.setHint("Migros-Link oder 12-stellige Artikelnummer");inputs.addView(link);
+        EditText name=new EditText(this);name.setSingleLine(true);name.setTextSize(13);name.setHint("Artikelname (optional)");inputs.addView(name);
+        AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Pokémon-Produkt hinzufügen")
+            .setView(inputs).setNegativeButton("Abbrechen",null).setPositiveButton("Hinzufügen",null).create();
+        dialog.setOnShowListener(v->dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(button->{
+            String entered=link.getText().toString().trim();
+            String id=entered.matches("\\d{8,14}")?entered:null;
+            if(id==null){java.util.regex.Matcher matcher=java.util.regex.Pattern.compile("(?i)^https?://(?:www\\.)?migros\\.ch/(?:de|fr|it|en)/product/(\\d{8,14})(?:[/?#].*)?$").matcher(entered);if(matcher.matches())id=matcher.group(1);}
+            if(id==null){link.setError("Bitte einen gültigen Migros-Produktlink oder eine Artikelnummer eingeben.");return;}
+            for(int i=0;i<products.length();i++)if(id.equals(products.optJSONObject(i).optString("id"))){selectedProductIndex=i;productPicker.setSelection(i);dialog.dismiss();status.setText("Artikel ist bereits im Katalog.");return;}
+            String productName=name.getText().toString().trim();if(productName.isEmpty())productName="Pokémon-Artikel "+id;
+            try{JSONObject p=new JSONObject();p.put("id",id);p.put("name",productName);p.put("product_url","https://www.migros.ch/de/product/"+id);p.put("price_chf",0);p.put("image_url","");p.put("in_store_assortment",true);p.put("branch_stock_checked",false);p.put("discovered",true);products.put(p);saveDiscoveredProducts();selectedProductIndex=products.length()-1;updateProductPicker();productPicker.setSelection(selectedProductIndex);dialog.dismiss();status.setText("Artikel hinzugefügt. Wähle ihn bei der nächsten Filialabfrage aus.");}
+            catch(Exception ex){status.setText("Artikel konnte nicht gespeichert werden.");}
+        }));
+        dialog.show();
+    }
+
     private void showProductSelectionDialog(){
         ArrayList<String> ids=new ArrayList<>(), names=new ArrayList<>();
         for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p!=null){ids.add(p.optString("id"));names.add(p.optString("name"));}}
@@ -271,7 +300,7 @@ public class MainActivity extends Activity {
     }
 
     private void scanProductCatalog(){
-        String script="(async()=>{const norm=s=>(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase();for(let n=0;n<10;n++){window.scrollTo(0,document.body.scrollHeight);await new Promise(r=>setTimeout(r,250))}window.scrollTo(0,0);const rows=[];const seen=new Set();for(const a of document.querySelectorAll('a[href*=\"/de/product/\"]')){const m=a.href.match(/\\/de\\/product\\/(\\d{8,14})/);if(!m||seen.has(m[1]))continue;seen.add(m[1]);let card=a;for(let i=0;i<4&&card.parentElement;i++){if((card.innerText||'').length>180)break;card=card.parentElement}const img=a.querySelector('img')||card.querySelector('img');const name=(a.innerText||a.getAttribute('aria-label')||a.title||'').trim()||(img?.alt||'').trim()||(card.innerText||'').trim().split('\\n').filter(Boolean)[0]||'';const text=norm(name+' '+(card.innerText||''));if(!/pokemon/.test(text))continue;if(!/(booster|sammelkart|trading card|\\btcg\\b|karten|deck|sleeve|portfolio|\\btin\\b|blister|trainer|elite trainer|\\betb\\b|display)/.test(text))continue;const image=img?.currentSrc||img?.src||'';const priceMatch=(card.innerText||'').match(/(?:CHF|Fr\\.)\\s*([0-9]+[.,][0-9]{2})/i);const onlineOnly=/nur online|only online|online only/i.test(card.innerText||'');rows.push({id:m[1],name:name||('Pokémon Kartenartikel '+m[1]),image_url:image,product_url:'https://www.migros.ch/de/product/'+m[1],price_chf:priceMatch?Number(priceMatch[1].replace(',','.')):0,in_store_assortment:!onlineOnly,online_only:onlineOnly,discovered:true})}window.FinderBridge.discovered(JSON.stringify(rows))})()";
+        String script="(async()=>{const norm=s=>(s||'').normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase();for(let n=0;n<10;n++){window.scrollTo(0,document.body.scrollHeight);await new Promise(r=>setTimeout(r,250))}window.scrollTo(0,0);const rows=[];const seen=new Set();for(const a of document.querySelectorAll('a[href*=\"/product/\"]')){const m=a.href.match(/\\/(?:de|fr|it|en)\\/product\\/(\\d{8,14})/);if(!m||seen.has(m[1]))continue;seen.add(m[1]);let card=a;for(let i=0;i<4&&card.parentElement;i++){if((card.innerText||'').length>180)break;card=card.parentElement}const img=a.querySelector('img')||card.querySelector('img');const name=(a.innerText||a.getAttribute('aria-label')||a.title||'').trim()||(img?.alt||'').trim()||(card.innerText||'').trim().split('\\n').filter(Boolean)[0]||'';const text=norm(name+' '+(card.innerText||''));if(!/pokemon/.test(text))continue;if(!/(booster|sammelkart|trading card|\\btcg\\b|karten|deck|sleeve|portfolio|\\btin\\b|blister|trainer|elite trainer|\\betb\\b|display|checklane|collection|kollektion|poster|sticker|box|bundle|album|three pack|premium|ex tin)/.test(text))continue;const image=img?.currentSrc||img?.src||'';const priceMatch=(card.innerText||'').match(/(?:CHF|Fr\\.)\\s*([0-9]+[.,][0-9]{2})/i);const onlineOnly=/nur online|only online|online only/i.test(card.innerText||'');rows.push({id:m[1],name:name||('Pokémon Kartenartikel '+m[1]),image_url:image,product_url:'https://www.migros.ch/de/product/'+m[1],price_chf:priceMatch?Number(priceMatch[1].replace(',','.')):0,in_store_assortment:!onlineOnly,online_only:onlineOnly,discovered:true})}window.FinderBridge.discovered(JSON.stringify(rows))})()";
         webView.evaluateJavascript(script,null);
     }
 
@@ -355,7 +384,7 @@ public class MainActivity extends Activity {
         if(branchScopePicker==null)return;
         String label=getPreferences(MODE_PRIVATE).getString("query_branch_scope_label","");
         String description=label.isEmpty()?(queryBranches.length()==branches.length()?"alle":"Auswahl"):label;
-        branchScopePicker.setText("Abfrage-Filialen: "+description+" · "+queryBranches.length()+" / "+branches.length());
+        branchScopePicker.setText("Filialen auswählen / Radiuskarte: "+description+" · "+queryBranches.length()+" / "+branches.length());
         branchScopePicker.setEnabled(!queryRunning);
     }
     private String selectedRegionDescription(){

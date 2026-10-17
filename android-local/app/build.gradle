@@ -10,8 +10,9 @@ android {
         applicationId 'ch.pokemoncardfinder.local'
         minSdk 24
         targetSdk 35
-        versionCode 11
-        versionName '1.1-branch-scope'
+        // GitHub Actions passes a monotonically increasing build number for each published APK.
+        versionCode (project.findProperty('pcfVersionCode') ?: '12000').toString().toInteger()
+        versionName (project.findProperty('pcfVersionName') ?: '1.2.0').toString()
     }
 
     def stableKeystorePath = System.getenv('ANDROID_KEYSTORE_PATH')
