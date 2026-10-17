@@ -32,3 +32,17 @@ Pokémon Card Finder sammelt öffentlich zugängliche Produkt- und Filialverfüg
 ## Nächste Schritte
 
 Siehe [ROADMAP.md](ROADMAP.md) und [TODO.md](TODO.md).
+
+## Historische Android-Daten sichern und migrieren
+
+Ab dem nächsten erfolgreich **dauerhaft signierten** Android-Build bietet die native App auf der Migros-Hauptseite zwei Tasten: **„Backup herunterladen · Migros + Coop“** und **„Backup hochladen / wiederherstellen“**. Export/Import nutzen JSON über den Android-Dateidialog. Der Import erhält bestehende Messpunkte und führt sie mit dem Backup zusammen; neue Messpunkte werden nicht länger nach sieben Tagen gelöscht (die sichtbare Grafik bleibt bei sieben Tagen).
+
+**Sonderfall: Erstumstieg von v1.2.61 oder früher.** Diese alten APKs haben temporäre Debug-Signaturen; sie können nicht als Update mit dem neuen festen Schlüssel überschrieben werden. Alte Daten **vor jeder Deinstallation** sichern! In der alten APK gibt es noch keinen Export-Button. Die alten Debug-APKs sind jedoch debuggable; über Android Platform Tools (ADB) und USB-Debugging lassen sich die lokalen App-Daten meist ohne Root exportieren. Auf einem Computer mit `adb` und Python 3 bei angeschlossenem/entsperrtem Android-Gerät im Projektordner ausführen:
+
+```bash
+python3 scripts/migrate_legacy_android_prefs.py --adb
+```
+
+Die lokale Datei `pokemon-card-finder-legacy-backup.json` sicher aufbewahren und aufs Smartphone kopieren. Erst danach die bisherige APK entfernen, die neue **erfolgreich dauerhaft signierte** Version installieren und über **„Backup hochladen / wiederherstellen“** die Datei importieren. Der ADB-Zugriff funktioniert nur bei der alten debuggable APK und aktiviertem USB-Debugging; ohne einen Export dieser alten App-Daten sind sie nach der Deinstallation in der Regel nicht wiederherstellbar.
+
+Neue signierte APKs werden erst veröffentlicht, wenn die beiden GitHub-Secrets aus [SIGNING_SETUP.md](android-local/SIGNING_SETUP.md) eingerichtet sind. Der Build prüft den Java-Code bereits vor dem Signieren; bei fehlenden Schlüsseln bleibt die vorherige Release-APK unverändert.
