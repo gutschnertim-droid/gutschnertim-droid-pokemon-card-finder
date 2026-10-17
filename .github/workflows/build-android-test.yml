@@ -46,6 +46,9 @@ jobs:
         run: |
           echo "APP_VERSION=1.2.${GITHUB_RUN_NUMBER}" >> "$GITHUB_ENV"
           echo "APP_VERSION_CODE=$((12000 + GITHUB_RUN_NUMBER))" >> "$GITHUB_ENV"
+      - name: Verify Android Java compilation (independent of signing)
+        working-directory: android-local
+        run: gradle --no-daemon :app:compileDebugJavaWithJavac -PpcfVersionName="$APP_VERSION" -PpcfVersionCode="$APP_VERSION_CODE"
       - name: Prepare stable signing key
         env:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}

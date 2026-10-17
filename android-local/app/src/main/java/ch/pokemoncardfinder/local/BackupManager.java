@@ -122,8 +122,8 @@ public final class BackupManager {
             if(!(older instanceof String)||!(newer instanceof String)){
                 if("last_checked".equals(key) && older instanceof Number && newer instanceof Number)
                     result.put(key,Math.max(((Number)older).longValue(),((Number)newer).longValue()));
-                else if(!result.containsKey(key))result.put(key,older);
-                // Retain current settings unless they are absent. Imported history is handled below.
+                else if(!key.equals("auto_refresh_anchor_ms"))result.put(key,older);
+                // Restore backed-up preferences, but do not replace currently retained histories.
                 continue;
             }
             String previous=(String)older, present=(String)newer;
