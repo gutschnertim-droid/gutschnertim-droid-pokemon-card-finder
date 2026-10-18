@@ -56,6 +56,14 @@ public final class BackgroundCoopWorker extends Worker {
             Set<String> selectedIds = new LinkedHashSet<>();
             if (!selected.isEmpty()) selectedIds.addAll(Arrays.asList(selected.split(",")));
             if (selectedIds.isEmpty() && products.optJSONObject(0) != null) selectedIds.add(products.optJSONObject(0).optString("id"));
+            int newProductsIncluded = 0;
+            long now = System.currentTimeMillis();
+            for (int i = 0; i < products.length(); i++) {
+                JSONObject candidate = products.optJSONObject(i);
+                if (candidate != null && !candidate.optBoolean("online_only", false)
+                        && candidate.optLong("new_until_ms", 0) > now
+                        && selectedIds.add(candidate.optString("id"))) newProductsIncluded++;
+            }
 
             LinkedHashSet<String> allowedStores = new LinkedHashSet<>();
             boolean restricted = prefs.getBoolean("manual_selection", false);
@@ -90,7 +98,9 @@ public final class BackgroundCoopWorker extends Worker {
                 checkedProducts++;
             }
             if (checkedProducts == 0) throw new IllegalStateException("Kein ausgewähltes Coop-Produkt konnte geprüft werden.");
-            prefs.edit().putString("background_refresh_state", "Coop-Hintergrundprüfung: " + checkedProducts + " Produkte.").commit();
+            String state = "Coop-Hintergrundprüfung: " + checkedProducts + " Produkte.";
+            if (newProductsIncluded > 0) state += " Davon " + newProductsIncluded + " neue Artikel.";
+            prefs.edit().putString("background_refresh_state", state).commit();
             return Result.success();
         } catch (Exception error) {
             prefs.edit().putString("background_refresh_state", "Coop-Hintergrundprüfung fehlgeschlagen; alte Bestände bleiben erhalten.").commit();

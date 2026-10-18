@@ -73,19 +73,30 @@ public final class BackgroundMigrosWorker extends Worker {
                 return Result.success();
             }
 
-            ArrayList<String> missing = new ArrayList<>();
+            ArrayList<String> waitingProducts = new ArrayList<>();
+            JSONArray mappedProducts = new JSONArray();
             for (int i = 0; i < selectedProducts.length(); i++) {
                 JSONObject p = selectedProducts.optJSONObject(i);
-                if (p == null || !productIds.has(p.optString("id"))) missing.add("Produktkennung");
+                if (p == null || p.optBoolean("online_only", false)) continue;
+                String productId = p.optString("id");
+                if (!productIds.optString(productId, "").isEmpty()) mappedProducts.put(p);
+                else waitingProducts.add(p.optString("name", productId));
             }
+            ArrayList<String> missingBranches = new ArrayList<>();
             for (int i = 0; i < selectedBranches.length(); i++) {
                 JSONObject b = selectedBranches.optJSONObject(i);
-                if (b == null || !branchIds.has(b.optString("id"))) missing.add("Filialkennung");
+                if (b == null || !branchIds.has(b.optString("id"))) missingBranches.add(b == null ? "Filiale" : b.optString("name", b.optString("id")));
             }
-            if (!missing.isEmpty()) {
-                setState(prefs, "Noch nicht alle Migros-Kennungen erfasst. Öffne die App und führe eine normale Abfrage aus.", false);
+            if (!missingBranches.isEmpty()) {
+                setState(prefs, "Noch nicht alle ausgewählten Migros-Filialkennungen erfasst. Öffne die App und führe eine normale Filialabfrage aus.", false);
                 return Result.success();
             }
+            if (mappedProducts.length() == 0) {
+                String detail = waitingProducts.isEmpty() ? "" : " Artikel warten auf eine erste normale App-Abfrage.";
+                setState(prefs, "Noch keine geeigneten Produktkennungen für die Hintergrundabfrage vorhanden." + detail, false);
+                return Result.success();
+            }
+            selectedProducts = mappedProducts;
 
             String token = fetchGuestToken();
             if (token == null || token.isEmpty()) {
@@ -153,7 +164,9 @@ public final class BackgroundMigrosWorker extends Worker {
                 return Result.retry();
             }
             prefs.edit().putLong("auto_refresh_anchor_ms", System.currentTimeMillis()).commit();
-            setState(prefs, "Hintergrundprüfung gespeichert: " + saved + " Filialbestände.", true);
+            String state = "Hintergrundprüfung gespeichert: " + saved + " Filialbestände.";
+            if (!waitingProducts.isEmpty()) state += " Artikel warten auf ihre erste normale App-Abfrage (" + waitingProducts.size() + ").";
+            setState(prefs, state, true);
             return Result.success();
         } catch (Exception ex) {
             setState(prefs, "Hintergrundprüfung fehlgeschlagen; gespeicherte Bestände blieben erhalten.", false);
@@ -182,9 +195,14 @@ public final class BackgroundMigrosWorker extends Worker {
         Set<String> ids = new HashSet<>();
         if (!selected.isEmpty()) for (String id : selected.split(",")) if (!id.trim().isEmpty()) ids.add(id.trim());
         JSONArray result = new JSONArray();
+        long now = System.currentTimeMillis();
         for (int i = 0; i < products.length(); i++) {
             JSONObject p = products.optJSONObject(i);
-            if (p != null && (ids.isEmpty() ? i == 0 : ids.contains(p.optString("id")))) result.put(p);
+            if (p == null) continue;
+            boolean selectedByUser = ids.isEmpty() ? i == 0 : ids.contains(p.optString("id"));
+            boolean recentlyNew = !p.optBoolean("online_only", false)
+                    && p.optLong("new_until_ms", 0) > now;
+            if (selectedByUser || recentlyNew) result.put(p);
         }
         return result;
     }

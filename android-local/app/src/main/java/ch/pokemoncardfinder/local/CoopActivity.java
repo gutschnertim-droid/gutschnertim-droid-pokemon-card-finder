@@ -47,6 +47,7 @@ public class CoopActivity extends Activity {
     private static final String API = "https://www.coop.ch/rest/v2/coopathome";
     private static final String COOP_CITY_CATEGORY = "https://www.coop-city.ch/de/pokemon/c/BRAND_pokemon";
     private static final long AUTO_REFRESH_INTERVAL_MS = 90L * 60L * 1000L;
+    private static final long NEW_PRODUCT_WINDOW_MS = 7L * 24L * 60L * 60L * 1000L;
     private static final String[][] START_PRODUCTS = {
         {"5757239","Pokémon Booster Scarlet & Violet","https://www.coop.ch/de/baby-kind/spielwaren/figuren/pokemon-booster--zufalls-pack-scarlet-violet/p/5757239"},
         {"5757281","Pokémon E Three Pack","https://www.coop.ch/de/baby-kind/spielwaren/gesellschaftsspiele/kartenspiele/pokemon-e-three-pack/p/5757281"},
@@ -208,8 +209,11 @@ public class CoopActivity extends Activity {
             }catch(Exception ignored){}
             return;
         }
+        try{if(!p.has("new_until_ms"))p.put("new_until_ms",System.currentTimeMillis()+NEW_PRODUCT_WINDOW_MS);}catch(Exception ignored){}
         products.add(p);
     }
+    private boolean isNewProduct(JSONObject p){return p!=null&&p.optLong("new_until_ms",0)>System.currentTimeMillis();}
+    private String productLabel(JSONObject p){return p.optString("name")+" · "+p.optString("id")+(isNewProduct(p)?" · NEU":"");}
     private void saveProducts(){
         JSONArray result=new JSONArray();for(JSONObject p:products)result.put(p);
         prefs.edit().putString("products",result.toString()).apply();
@@ -251,7 +255,7 @@ public class CoopActivity extends Activity {
             box.setPadding(dp(10),dp(4),dp(10),dp(4));
             ImageView image=new ImageView(CoopActivity.this);image.setScaleType(ImageView.ScaleType.FIT_CENTER);
             image.setBackgroundColor(Color.rgb(242,242,247));box.addView(image,new LinearLayout.LayoutParams(dp(48),dp(48)));
-            TextView label=txt(product.optString("name")+" · "+product.optString("id"),14);label.setMaxLines(2);
+            TextView label=txt(productLabel(product),14);label.setMaxLines(2);
             LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(0,-2,1);lp.leftMargin=dp(12);box.addView(label,lp);
             loadProductImage(image,product.optString("image_url"));box.setMinimumHeight(height);return box;
         }
@@ -389,7 +393,7 @@ public class CoopActivity extends Activity {
             ImageView image=new ImageView(this);image.setScaleType(ImageView.ScaleType.FIT_CENTER);
             image.setBackgroundColor(Color.rgb(242,242,247));row.addView(image,new LinearLayout.LayoutParams(dp(52),dp(52)));
             loadProductImage(image,product.optString("image_url"));
-            TextView name=txt(product.optString("name")+" · "+product.optString("id"),14);name.setMaxLines(2);
+            TextView name=txt(productLabel(product),14);name.setMaxLines(2);
             LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(0,-2,1);lp.leftMargin=dp(8);row.addView(name,lp);
             choices.addView(row);
         }

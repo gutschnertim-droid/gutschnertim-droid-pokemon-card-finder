@@ -320,13 +320,39 @@ public class MainActivity extends Activity {
     }
 
     private void startSelectedProductChecks(){
-        productQueue.clear();String saved=getPreferences(MODE_PRIVATE).getString("checked_product_ids","");
-        java.util.HashSet<String> wanted=new java.util.HashSet<>();if(!saved.isEmpty())wanted.addAll(java.util.Arrays.asList(saved.split(",")));else if(products.length()>0)wanted.add(products.optJSONObject(Math.max(0,Math.min(selectedProductIndex,products.length()-1))).optString("id"));
-        for(int i=0;i<products.length();i++)if(wanted.contains(products.optJSONObject(i).optString("id")))productQueue.add(i);
-        if(saved.isEmpty()&&!productQueue.isEmpty())getPreferences(MODE_PRIVATE).edit().putString("checked_product_ids",products.optJSONObject(productQueue.get(0)).optString("id")).apply();
+        productQueue.clear();
+        String saved=getPreferences(MODE_PRIVATE).getString("checked_product_ids","");
+        java.util.HashSet<String> wanted=new java.util.HashSet<>();
+        if(!saved.isEmpty()) wanted.addAll(java.util.Arrays.asList(saved.split(",")));
+        else if(products.length()>0) wanted.add(products.optJSONObject(Math.max(0,Math.min(selectedProductIndex,products.length()-1))).optString("id"));
+
+        // Keep the user's normal product filter first, then add only products still marked NEW.
+        for(int i=0;i<products.length();i++){
+            JSONObject p=products.optJSONObject(i);
+            if(p!=null&&wanted.contains(p.optString("id"))) productQueue.add(i);
+        }
+        long now=System.currentTimeMillis();
+        int newlyAddedCount=0;
+        for(int i=0;i<products.length();i++){
+            JSONObject p=products.optJSONObject(i);
+            if(p!=null&&!wanted.contains(p.optString("id"))&&!p.optBoolean("online_only",false)
+                    &&p.optLong("new_until_ms",0)>now){
+                productQueue.add(i);
+                newlyAddedCount++;
+            }
+        }
+        if(saved.isEmpty()&&!productQueue.isEmpty())
+            getPreferences(MODE_PRIVATE).edit().putString("checked_product_ids",products.optJSONObject(productQueue.get(0)).optString("id")).apply();
         if(productQueue.isEmpty()){finishError("Keine Produkte zur Abfrage ausgewählt");return;}
-        productQueueCursor=0;activeProductIndex=productQueue.get(0);selectedProductIndex=activeProductIndex;productPicker.setSelection(selectedProductIndex);renderProduct();
-        status.setText("Prüfe "+productQueue.size()+" ausgewählte Produkte in "+queryBranches.length()+" Filialen …");loadProductPage();
+        productQueueCursor=0;
+        activeProductIndex=productQueue.get(0);
+        selectedProductIndex=activeProductIndex;
+        productPicker.setSelection(selectedProductIndex);
+        renderProduct();
+        int selectedCount=productQueue.size()-newlyAddedCount;
+        String newLabel=newlyAddedCount==0?"":" plus "+newlyAddedCount+" neue Artikel";
+        status.setText("Prüfe "+selectedCount+" ausgewählte Produkte"+newLabel+" in "+queryBranches.length()+" Filialen …");
+        loadProductPage();
     }
 
     private void scanProductCatalog(){
