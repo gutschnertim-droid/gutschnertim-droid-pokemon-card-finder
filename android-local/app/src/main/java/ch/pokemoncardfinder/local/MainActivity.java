@@ -353,7 +353,8 @@ public class MainActivity extends Activity {
 
     private class ProductImageSpinnerAdapter extends ArrayAdapter<JSONObject> {
         ProductImageSpinnerAdapter() {
-            super(MainActivity.this, android.R.layout.simple_spinner_item, productItems());
+            super(MainActivity.this, android.R.layout.simple_spinner_item, new ArrayList<JSONObject>());
+            for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p!=null)add(p);}
             setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         }
         private ArrayList<JSONObject> productItems() {
