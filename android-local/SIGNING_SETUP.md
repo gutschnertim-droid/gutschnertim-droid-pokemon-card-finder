@@ -2,10 +2,10 @@
 
 ## Status
 
-Die App besitzt nun ein vorbereitetes, dauerhaftes PKCS12-Signaturschlüsselpaar. Der private Schlüssel gehört ausschliesslich dem Entwickler und **darf niemals ins öffentliche Repository**. Der Fingerabdruck des öffentlichen Zertifikats ist fest im Build-Workflow hinterlegt:
+Für die App wurde ein neues, dauerhaftes PKCS12-Signaturschlüsselpaar eingerichtet. Der private Schlüssel gehört ausschliesslich dem Entwickler und **darf niemals ins öffentliche Repository**. Der Fingerabdruck des öffentlichen Zertifikats ist fest im Build-Workflow hinterlegt:
 
 ```
-4F:AA:C0:EA:65:3F:83:E6:DE:EA:D3:65:B9:EB:BD:2B:BD:D0:87:41:B1:AA:49:24:95:52:D1:12:BC:39:86:47
+48:29:26:07:1D:A9:D7:A1:A0:73:64:E2:1E:52:F5:F6:30:51:51:67:98:80:E0:67:E4:63:6B:DA:28:E4:AC:C4
 ```
 
 Schlüsselalias: `pcf-update`; Dateityp: `PKCS12`; GitHub-Actions-Workflow: `.github/workflows/build-android-test.yml`.
@@ -29,9 +29,9 @@ Das Skript kontrolliert den Zertifikatsfingerabdruck und lädt die Secrets direk
 
 ## Wichtige Einschränkung beim ersten Wechsel
 
-Die bisherigen APKs bis einschliesslich v1.2.61 wurden im GitHub-Runner als Debug-Builds mit **temporärem Signaturschlüssel** gebaut. Deren privaten Debug-Schlüssel besitzen wir nicht. Deshalb kann Android die alte App nicht in-place zu einer mit dem neuen Schlüssel signierten App aktualisieren. **Beim ersten Wechsel ist eine Neuinstallation nötig. Dabei können lokal gespeicherte Daten verloren gehen.** Die alte App nicht löschen, solange daraus noch Daten gebraucht werden.
+Die bisher veröffentlichten APKs bis einschliesslich v1.2.61 wurden mit einem anderen Signaturschlüssel gebaut. Android kann sie daher nicht direkt mit dieser dauerhaft signierten Version aktualisieren. **Für den ersten Wechsel ist eine Neuinstallation nötig; dabei können bisher lokal gespeicherte Daten verloren gehen.**
 
-Ab der ersten erfolgreich mit diesem dauerhaften Zertifikat signierten Version können spätere Builds mit demselben `applicationId`, einem höheren `versionCode` und demselben Schlüssel regulär als Update installiert werden. Sie dürfen die App dann bei einem Update nicht vorher deinstallieren, sonst gehen die App-Daten weiterhin verloren.
+Ab der ersten erfolgreich mit diesem Zertifikat signierten APK können spätere Versionen mit demselben `applicationId`, einem höheren `versionCode` und demselben Schlüssel regulär als Update installiert werden. Dann bleiben die App-Daten erhalten, solange die App nicht vorher deinstalliert wird.
 
 Der neue GitHub-Workflow **verweigert einen APK-Build**, wenn Secrets fehlen, Zertifikat oder APK nicht dem festgelegten Fingerabdruck entsprechen oder die Signaturprüfung fehlschlägt. Die bisherige veröffentlichte APK bleibt online, bis ein vollständig geprüfter neuer Build veröffentlicht wird.
 
