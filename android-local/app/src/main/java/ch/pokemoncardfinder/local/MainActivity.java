@@ -605,7 +605,16 @@ public class MainActivity extends Activity {
     }
 
     private void loadDiscoveredProducts(){
-        try{JSONArray saved=new JSONArray(getPreferences(MODE_PRIVATE).getString("discovered_products_json","[]"));java.util.HashSet<String> ids=new java.util.HashSet<>();for(int i=0;i<products.length();i++)ids.add(products.optJSONObject(i).optString("id"));for(int i=0;i<saved.length();i++){JSONObject p=saved.optJSONObject(i);if(p!=null&&!ids.contains(p.optString("id"))){products.put(p);ids.add(p.optString("id"));}}}catch(Exception ignored){}
+        try{
+            JSONArray saved=new JSONArray(getPreferences(MODE_PRIVATE).getString("discovered_products_json","[]"));
+            java.util.HashMap<String,JSONObject> current=new java.util.HashMap<>();
+            for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p!=null)current.put(p.optString("id"),p);}
+            for(int i=0;i<saved.length();i++){
+                JSONObject p=saved.optJSONObject(i);if(p==null)continue;String id=p.optString("id");JSONObject existing=current.get(id);
+                if(existing==null){products.put(p);current.put(id,p);}
+                else if(p.optLong("new_until_ms",0)>existing.optLong("new_until_ms",0)){existing.put("new_until_ms",p.optLong("new_until_ms"));}
+            }
+        }catch(Exception ignored){}
     }
     private void restoreBranchCoordinates(){try{JSONObject saved=new JSONObject(getPreferences(MODE_PRIVATE).getString("branch_coordinate_cache","{}"));JSONArray ids=saved.names();if(ids==null)return;for(int i=0;i<ids.length();i++){String id=ids.getString(i);JSONArray coords=saved.getJSONArray(id);for(int j=0;j<allBranches.length();j++){JSONObject b=allBranches.optJSONObject(j);if(b!=null&&id.equals(b.optString("id"))){b.put("coordinates",coords);break;}}}}catch(Exception ignored){}}
 
