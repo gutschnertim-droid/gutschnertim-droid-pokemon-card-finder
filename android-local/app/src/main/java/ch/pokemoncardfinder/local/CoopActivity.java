@@ -372,12 +372,14 @@ public class CoopActivity extends Activity {
         LinearLayout choices=new LinearLayout(this);choices.setOrientation(LinearLayout.VERTICAL);
         CheckBox all=new CheckBox(this);all.setText("Alle Produkte auswählen");all.setChecked(picked.size()==products.size());choices.addView(all);
         ArrayList<CheckBox> checks=new ArrayList<>();
+        boolean[] syncing={false};
         for(JSONObject product:products){
             LinearLayout row=new LinearLayout(this);row.setGravity(android.view.Gravity.CENTER_VERTICAL);
             CheckBox check=new CheckBox(this);check.setChecked(picked.contains(product.optString("id")));checks.add(check);
             check.setOnCheckedChangeListener((button,on)->{
+                if(syncing[0])return;
                 String id=product.optString("id");if(on)picked.add(id);else picked.remove(id);
-                all.setChecked(picked.size()==products.size());
+                syncing[0]=true;all.setChecked(picked.size()==products.size());syncing[0]=false;
             });
             row.addView(check);
             ImageView image=new ImageView(this);image.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -388,9 +390,11 @@ public class CoopActivity extends Activity {
             choices.addView(row);
         }
         all.setOnCheckedChangeListener((button,on)->{
-            picked.clear();
+            if(syncing[0])return;
+            syncing[0]=true;picked.clear();
             if(on)for(JSONObject product:products)picked.add(product.optString("id"));
             for(int i=0;i<checks.size();i++)checks.get(i).setChecked(on);
+            syncing[0]=false;
         });
         ScrollView scroll=new ScrollView(this);scroll.setFillViewport(false);scroll.addView(choices);
         new AlertDialog.Builder(this).setTitle("Coop-Produkte für die Abfrage")
