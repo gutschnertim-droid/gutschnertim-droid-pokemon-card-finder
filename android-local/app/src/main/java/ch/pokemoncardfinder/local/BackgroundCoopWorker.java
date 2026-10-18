@@ -35,6 +35,10 @@ public final class BackgroundCoopWorker extends Worker {
     @Override public Result doWork() {
         SharedPreferences prefs = app.getSharedPreferences("coop_finder", Context.MODE_PRIVATE);
         if (!prefs.getBoolean("auto", false)) return Result.success();
+        if (!BackgroundRefreshScheduler.isAllowedRefreshTime()) {
+            prefs.edit().putString("background_refresh_state", "Pausiert: automatische Abfragen laufen nur Mo–Sa zwischen 08:00 und 21:00 Uhr.").commit();
+            return Result.success();
+        }
         try {
             double lat = Double.longBitsToDouble(prefs.getLong("lat", Double.doubleToRawLongBits(46.948)));
             double lon = Double.longBitsToDouble(prefs.getLong("lon", Double.doubleToRawLongBits(7.447)));

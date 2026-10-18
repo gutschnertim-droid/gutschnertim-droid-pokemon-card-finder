@@ -51,6 +51,10 @@ public final class BackgroundMigrosWorker extends Worker {
             setState(prefs, "Automatische Aktualisierung ausgeschaltet.", false);
             return Result.success();
         }
+        if (!BackgroundRefreshScheduler.isAllowedRefreshTime()) {
+            setState(prefs, "Pausiert: automatische Abfragen laufen nur Mo–Sa zwischen 08:00 und 21:00 Uhr.", false);
+            return Result.success();
+        }
         try {
             JSONArray allProducts = readProducts(prefs);
             JSONArray allBranches = new JSONObject(readAsset("branches.json")).optJSONArray("branches");

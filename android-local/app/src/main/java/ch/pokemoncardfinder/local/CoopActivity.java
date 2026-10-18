@@ -46,7 +46,7 @@ import java.util.Map;
 public class CoopActivity extends Activity {
     private static final String API = "https://www.coop.ch/rest/v2/coopathome";
     private static final String COOP_CITY_CATEGORY = "https://www.coop-city.ch/de/pokemon/c/BRAND_pokemon";
-    private static final long FOUR_HOURS = 4L * 3600L * 1000L;
+    private static final long AUTO_REFRESH_INTERVAL_MS = 90L * 60L * 1000L;
     private static final String[][] START_PRODUCTS = {
         {"5757239","Pokémon Booster Scarlet & Violet","https://www.coop.ch/de/baby-kind/spielwaren/figuren/pokemon-booster--zufalls-pack-scarlet-violet/p/5757239"},
         {"5757281","Pokémon E Three Pack","https://www.coop.ch/de/baby-kind/spielwaren/gesellschaftsspiele/kartenspiele/pokemon-e-three-pack/p/5757281"},
@@ -83,7 +83,8 @@ public class CoopActivity extends Activity {
         @Override public void run(){
             if(visible && !working && prefs.getBoolean("auto",false) &&
                     prefs.getLong("last_checked",0)>0 &&
-                    System.currentTimeMillis()-prefs.getLong("last_checked",0)>=FOUR_HOURS)
+                    System.currentTimeMillis()-prefs.getLong("last_checked",0)>=AUTO_REFRESH_INTERVAL_MS &&
+                    BackgroundRefreshScheduler.isAllowedRefreshTime())
                 check(savedSelection());
             if(visible)handler.postDelayed(this,60_000);
         }
@@ -156,11 +157,11 @@ public class CoopActivity extends Activity {
             @Override public void onNothingSelected(android.widget.AdapterView<?> a){}
         });
         runButton=new Button(this);runButton.setText("Ausgewählte Coop-Produkte prüfen");runButton.setOnClickListener(v->pickProducts());root.addView(runButton);
-        Button auto=new Button(this);auto.setText("Alle 4 Std. automatisch: "+(prefs.getBoolean("auto",false)?"EIN":"AUS"));
+        Button auto=new Button(this);auto.setText("Alle 1.5 Std. (08–21, Mo–Sa): "+(prefs.getBoolean("auto",false)?"EIN":"AUS"));
         BackgroundRefreshScheduler.syncCoop(this,prefs.getBoolean("auto",false));
         auto.setOnClickListener(v->{boolean x=!prefs.getBoolean("auto",false);prefs.edit().putBoolean("auto",x).apply();
             BackgroundRefreshScheduler.syncCoop(CoopActivity.this,x);
-            auto.setText("Alle 4 Std. automatisch: "+(x?"EIN":"AUS"));});
+            auto.setText("Alle 1.5 Std. (08–21, Mo–Sa): "+(x?"EIN":"AUS"));});
         root.addView(auto);
         message=txt("Coop wurde noch nicht live abgefragt.",12);root.addView(message);
         summary=txt("",12);root.addView(summary);
