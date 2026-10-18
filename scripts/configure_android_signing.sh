@@ -20,7 +20,7 @@ gh auth status >/dev/null
 export ANDROID_KEYSTORE_PASSWORD
 ANDROID_KEYSTORE_PASSWORD="$(tr -d '\r\n' < "$PASSWORD_FILE")"
 fingerprint="$(keytool -list -v -alias pcf-update -storetype PKCS12 -keystore "$KEYSTORE" -storepass:env ANDROID_KEYSTORE_PASSWORD | awk -F 'SHA256: ' '/SHA256:/ { print $2; exit }')"
-expected="4F:AA:C0:EA:65:3F:83:E6:DE:EA:D3:65:B9:EB:BD:2B:BD:D0:87:41:B1:AA:49:24:95:52:D1:12:BC:39:86:47"
+expected="48:29:26:07:1D:A9:D7:A1:A0:73:64:E2:1E:52:F5:F6:30:51:51:67:98:80:E0:67:E4:63:6B:DA:28:E4:AC:C4"
 if [[ "$fingerprint" != "$expected" ]]; then
   echo "Keystore fingerprint does not match the pinned application signing identity." >&2
   exit 1
