@@ -73,6 +73,8 @@ public class MainActivity extends Activity {
     private boolean radiusMapReady;
     private double radiusCenterLat=46.8182, radiusCenterLon=8.2275;
     private int queryRadiusKm=5;
+    // Distinguish consecutive map dialogs so late background callbacks stay safe.
+    private volatile int radiusMapSession=0;
     private Button historyButton;
     private Button mapButton;
     private int discoveryPageIndex;
@@ -202,6 +204,12 @@ public class MainActivity extends Activity {
         Button coopButton=new Button(this); coopButton.setText("Coop Pokémon-Karten und Filialverfügbarkeit"); coopButton.setTextSize(12); coopButton.setOnClickListener(v->startActivity(new Intent(this,CoopActivity.class))); root.addView(coopButton,params(dp(5)));
         regionPicker=new Button(this); regionPicker.setTextSize(11); root.addView(regionPicker,params(dp(4))); updateRegionUi();
         branchScopePicker=new Button(this);branchScopePicker.setTextSize(11);root.addView(branchScopePicker,params(dp(4)));updateBranchScopeUi();
+        Button quickRadiusMap=new Button(this);
+        quickRadiusMap.setText("🗺 Radiuskarte öffnen · Filialen im Umkreis wählen");
+        quickRadiusMap.setTextSize(14);
+        quickRadiusMap.setTypeface(null,android.graphics.Typeface.BOLD);
+        quickRadiusMap.setOnClickListener(v->prepareRadiusMap());
+        root.addView(quickRadiusMap,params(dp(5)));
         productPicker=new Spinner(this); root.addView(productPicker,params(dp(5)));
         addProductButton=new Button(this); addProductButton.setText("Fehlendes Pokémon-Produkt hinzufügen"); addProductButton.setTextSize(11); root.addView(addProductButton,params(dp(5)));
         LinearLayout card=new LinearLayout(this); card.setGravity(Gravity.CENTER_VERTICAL); card.setBackgroundColor(Color.WHITE); card.setPadding(dp(10),dp(8),dp(10),dp(8));
@@ -453,33 +461,27 @@ public class MainActivity extends Activity {
     }
 
     private void prepareRadiusMap(){
-        android.app.ProgressDialog progress=new android.app.ProgressDialog(this);progress.setMessage("Filialstandorte werden für die Karte gesucht …");progress.setCancelable(false);progress.show();
-        new Thread(()->{
-            int done=0;
-            try{
-                android.location.Geocoder geocoder=new android.location.Geocoder(this,new java.util.Locale("de","CH"));
-                for(int i=0;i<branches.length();i++){
-                    JSONObject b=branches.optJSONObject(i);if(b==null)continue;JSONArray coords=b.optJSONArray("coordinates");
-                    if(coords==null||coords.length()<2){
-                        try{java.util.List<android.location.Address> found=geocoder.getFromLocationName(b.optString("address")+", Schweiz",1);
-                            if(found!=null&&!found.isEmpty()&&found.get(0).hasLatitude()&&found.get(0).hasLongitude())cacheBranchCoordinates(b.optString("id"),found.get(0).getLatitude(),found.get(0).getLongitude());
-                        }catch(Exception ignored){}
-                    }
-                    done++;if(done%5==0){final int count=done;runOnUiThread(()->progress.setMessage("Filialstandorte werden gesucht … "+count+" / "+branches.length()));}
-                }
-            }catch(Exception ignored){}
-            runOnUiThread(()->{progress.dismiss();showRadiusMapDialog();});
-        }).start();
+        if(queryRunning){status.setText("Bitte zuerst die laufende Bestandsabfrage abschliessen.");return;}
+        if(branches.length()==0){status.setText("Bitte zuerst einen Kanton oder eine Region wählen.");return;}
+        // Opening the map should never wait for geocoding hundreds of branches.
+        showRadiusMapDialog();
     }
 
     private void showRadiusMapDialog(){
         int[] radii={2,3,5,10,15,20,30,50};ArrayList<String> radiusLabels=new ArrayList<>();for(int radius:radii)radiusLabels.add(radius+" km");
         LinearLayout box=new LinearLayout(this);box.setOrientation(LinearLayout.VERTICAL);
-        TextView hint=new TextView(this);hint.setPadding(dp(12),dp(8),dp(12),dp(8));hint.setText("Tippe auf die Karte, um den Mittelpunkt zu setzen. Der Kreis zeigt den Abfrageradius.");box.addView(hint);
+        TextView hint=new TextView(this);hint.setPadding(dp(12),dp(8),dp(12),dp(8));hint.setText("Tippe auf die Karte, um den Mittelpunkt zu setzen. Wähle den Radius. Es werden ausschliesslich Filialen mit bekanntem Standort im Kreis abgefragt.");box.addView(hint);
+        TextView coordinateInfo=new TextView(this);coordinateInfo.setTextSize(11);coordinateInfo.setPadding(dp(12),0,dp(12),dp(5));
+        box.addView(coordinateInfo);
+        updateRadiusCoordinateInfo(coordinateInfo,false);
         Spinner radiusPicker=new Spinner(this);radiusPicker.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,radiusLabels));box.addView(radiusPicker);
         queryRadiusKm=getPreferences(MODE_PRIVATE).getInt("branch_scope_radius",5);for(int i=0;i<radii.length;i++)if(radii[i]==queryRadiusKm)radiusPicker.setSelection(i);
         radiusMapWebView=new WebView(this);radiusMapReady=false;radiusMapWebView.getSettings().setJavaScriptEnabled(true);radiusMapWebView.addJavascriptInterface(new RadiusMapBridge(),"RadiusBridge");box.addView(radiusMapWebView,new LinearLayout.LayoutParams(-1,dp(440)));
-        double[] center=defaultRadiusMapCenter();radiusCenterLat=center[0];radiusCenterLon=center[1];
+        double[] center=defaultRadiusMapCenter();
+        String savedCentre=getPreferences(MODE_PRIVATE).getString("branch_scope_center","");
+        try{String[] parts=savedCentre.split(",");if(parts.length==2){double y=Double.parseDouble(parts[0]),x=Double.parseDouble(parts[1]);if(y>45&&y<48&&x>5&&x<11)center=new double[]{y,x};}}catch(Exception ignored){}
+        radiusCenterLat=center[0];radiusCenterLon=center[1];
+        final int session=++radiusMapSession;
         String html="<!doctype html><html><head><meta name='viewport' content='width=device-width,initial-scale=1'><link rel='stylesheet' href='https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'><style>html,body,#map{height:100%;margin:0}</style><script src='https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'></script></head><body><div id='map'></div><script>let map=L.map('map').setView(["+radiusCenterLat+","+radiusCenterLon+"],10);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:19,attribution:'© OpenStreetMap'}).addTo(map);let circle=null,centerMarker=null,km="+queryRadiusKm+";const setCenter=(lat,lon)=>{if(circle)map.removeLayer(circle);if(centerMarker)map.removeLayer(centerMarker);centerMarker=L.marker([lat,lon]).addTo(map);circle=L.circle([lat,lon],{radius:km*1000,color:'#1769d2',fillOpacity:.12}).addTo(map);window.RadiusBridge.center(JSON.stringify({lat:lat,lon:lon}))};window.setRadius=(value)=>{km=Number(value);if(centerMarker){let p=centerMarker.getLatLng();setCenter(p.lat,p.lng)}};map.on('click',e=>setCenter(e.latlng.lat,e.latlng.lng));setCenter("+radiusCenterLat+","+radiusCenterLon+");window.addStores=(rows)=>rows.forEach(s=>L.circleMarker([s.lat,s.lon],{radius:5,color:'#6750a4'}).bindPopup(s.name+'<br>'+s.address).addTo(map));</script></body></html>";
         radiusMapWebView.setWebViewClient(new WebViewClient(){@Override public void onPageFinished(WebView view,String url){radiusMapReady=true;JSONArray markers=new JSONArray();for(int i=0;i<branches.length();i++){JSONObject b=branches.optJSONObject(i);JSONArray c=b==null?null:b.optJSONArray("coordinates");if(c!=null&&c.length()>=2){JSONObject marker=new JSONObject();try{marker.put("name",b.optString("name"));marker.put("address",b.optString("address"));marker.put("lat",c.optDouble(0));marker.put("lon",c.optDouble(1));markers.put(marker);}catch(Exception ignored){}}}view.evaluateJavascript("window.addStores("+markers.toString()+")",null);}});
         radiusMapWebView.loadDataWithBaseURL("https://www.openstreetmap.org/",html,"text/html","UTF-8",null);
@@ -487,14 +489,76 @@ public class MainActivity extends Activity {
         AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Abfrage im Umkreis").setView(box).setNegativeButton("Abbrechen",null).setPositiveButton("Filialen übernehmen",null).create();
         dialog.setOnShowListener(v->dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(btn->{
             ArrayList<String> selected=new ArrayList<>();int unknown=0;
-            for(int i=0;i<branches.length();i++){JSONObject b=branches.optJSONObject(i);if(b==null)continue;JSONArray c=b.optJSONArray("coordinates");if(c==null||c.length()<2){selected.add(b.optString("id"));unknown++;}else if(distanceKm(radiusCenterLat,radiusCenterLon,c.optDouble(0),c.optDouble(1))<=queryRadiusKm)selected.add(b.optString("id"));}
-            if(selected.isEmpty()){status.setText("Keine Filialen im Umkreis gefunden.");return;}
+            for(int i=0;i<branches.length();i++){JSONObject b=branches.optJSONObject(i);if(b==null)continue;JSONArray c=b.optJSONArray("coordinates");if(c==null||c.length()<2){unknown++;continue;}if(distanceKm(radiusCenterLat,radiusCenterLon,c.optDouble(0),c.optDouble(1))<=queryRadiusKm)selected.add(b.optString("id"));}
+            if(selected.isEmpty()){new AlertDialog.Builder(this).setMessage("Im gewählten Umkreis sind noch keine Filialen mit bestätigten Koordinaten erfasst. Warte, bis weitere Filialstandorte geladen sind, oder vergrössere den Radius.").setPositiveButton("OK",null).show();return;}
             String saved=selected.size()==branches.length()?"":android.text.TextUtils.join(",",selected);
             String label="Radius "+queryRadiusKm+" km";getPreferences(MODE_PRIVATE).edit().putString("query_branch_ids",saved).putString("query_branch_scope_label",label).putString("branch_scope_center",radiusCenterLat+","+radiusCenterLon).putInt("branch_scope_radius",queryRadiusKm).apply();
-            applyBranchScope();dialog.dismiss();status.setText(queryBranches.length()+" Filialen im Umkreis "+queryRadiusKm+" km ausgewählt"+(unknown>0?" · "+unknown+" ohne Koordinaten sicherheitshalber eingeschlossen":"")+".");
+            applyBranchScope();dialog.dismiss();status.setText(queryBranches.length()+" Filialen im Umkreis "+queryRadiusKm+" km ausgewählt"+(unknown>0?" · Achtung: "+unknown+" Filialen ohne bekannte Koordinaten wurden NICHT berücksichtigt.":"."));
         }));
-        radiusMapWebView.setWebViewClient(new WebViewClient(){@Override public void onPageFinished(WebView view,String url){radiusMapReady=true;JSONArray markers=new JSONArray();for(int i=0;i<branches.length();i++){JSONObject b=branches.optJSONObject(i);JSONArray c=b==null?null:b.optJSONArray("coordinates");if(c!=null&&c.length()>=2){JSONObject marker=new JSONObject();try{marker.put("name",b.optString("name"));marker.put("address",b.optString("address"));marker.put("lat",c.optDouble(0));marker.put("lon",c.optDouble(1));markers.put(marker);}catch(Exception ignored){}}}view.evaluateJavascript("window.addStores("+markers.toString()+")",null);}});
+        dialog.setOnDismissListener(d->radiusMapSession++);
+        dialog.show();
+        geocodeMissingRadiusBranches(session,coordinateInfo);
     }
+    private void updateRadiusCoordinateInfo(TextView label,boolean working){
+        int located=0;
+        for(int i=0;i<branches.length();i++){
+            JSONObject b=branches.optJSONObject(i);
+            JSONArray coords=b==null?null:b.optJSONArray("coordinates");
+            if(coords!=null&&coords.length()>=2)located++;
+        }
+        int missing=branches.length()-located;
+        label.setText(located+" / "+branches.length()+" Filialstandorte kartiert"
+            +(working&&missing>0?" · weitere Standorte werden im Hintergrund gesucht …":"")
+            +(missing>0?"\n"+missing+" Standorte noch ohne Koordinaten; diese können erst nach Standortermittlung für den Radius berücksichtigt werden.":""));
+    }
+
+    private void geocodeMissingRadiusBranches(int session,TextView indicator){
+        ArrayList<JSONObject> pending=new ArrayList<>();
+        for(int i=0;i<branches.length();i++){
+            JSONObject b=branches.optJSONObject(i);
+            JSONArray coords=b==null?null:b.optJSONArray("coordinates");
+            if(b!=null&&(coords==null||coords.length()<2))pending.add(b);
+        }
+        if(pending.isEmpty()){updateRadiusCoordinateInfo(indicator,false);return;}
+        if(!android.location.Geocoder.isPresent()){
+            indicator.setText("Keine Standortsuche verfügbar. Nur Filialen mit bekannten Koordinaten werden berücksichtigt.");return;
+        }
+        updateRadiusCoordinateInfo(indicator,true);
+        final int limit=Math.min(80,pending.size());
+        new Thread(()->{
+            android.location.Geocoder geocoder=new android.location.Geocoder(this,java.util.Locale.forLanguageTag("de-CH"));
+            for(int i=0;i<limit;i++){
+                if(radiusMapSession!=session)return;
+                JSONObject b=pending.get(i);
+                String address=b.optString("address");
+                if(address.isEmpty())continue;
+                try{
+                    java.util.List<android.location.Address> found=geocoder.getFromLocationName(address+", Schweiz",1);
+                    if(found==null||found.isEmpty()||!found.get(0).hasLatitude()||!found.get(0).hasLongitude())continue;
+                    double lat=found.get(0).getLatitude(),lon=found.get(0).getLongitude();
+                    if(lat<45||lat>48||lon<5||lon>11)continue;
+                    runOnUiThread(()->{
+                        if(radiusMapSession!=session)return;
+                        cacheBranchCoordinates(b.optString("id"),lat,lon);
+                        try{
+                            JSONObject pin=new JSONObject().put("name",b.optString("name"))
+                                .put("address",b.optString("address")).put("lat",lat).put("lon",lon);
+                            if(radiusMapReady&&radiusMapWebView!=null)
+                                radiusMapWebView.evaluateJavascript("window.addStores(["+pin.toString()+"])",null);
+                        }catch(Exception ignored){}
+                        updateRadiusCoordinateInfo(indicator,true);
+                    });
+                }catch(Exception ignored){}
+            }
+            runOnUiThread(()->{
+                if(radiusMapSession!=session)return;
+                updateRadiusCoordinateInfo(indicator,false);
+                if(pending.size()>limit)
+                    indicator.append("\nFür weitere Standorte zuerst einen Kanton wählen und die Karte erneut öffnen.");
+            });
+        }).start();
+    }
+
     private double[] defaultRadiusMapCenter(){double lat=0,lon=0;int n=0;for(int i=0;i<branches.length();i++){JSONObject b=branches.optJSONObject(i);JSONArray c=b==null?null:b.optJSONArray("coordinates");if(c!=null&&c.length()>=2){lat+=c.optDouble(0);lon+=c.optDouble(1);n++;}}return n>0?new double[]{lat/n,lon/n}:new double[]{46.8,8.2};}
     private double distanceKm(double lat1,double lon1,double lat2,double lon2){double dLat=Math.toRadians(lat2-lat1),dLon=Math.toRadians(lon2-lon1);double a=Math.sin(dLat/2)*Math.sin(dLat/2)+Math.cos(Math.toRadians(lat1))*Math.cos(Math.toRadians(lat2))*Math.sin(dLon/2)*Math.sin(dLon/2);return 6371.0*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));}
     private class RadiusMapBridge{@JavascriptInterface public void center(String json){runOnUiThread(()->{try{JSONObject p=new JSONObject(json);radiusCenterLat=p.getDouble("lat");radiusCenterLon=p.getDouble("lon");}catch(Exception ignored){}});}}
