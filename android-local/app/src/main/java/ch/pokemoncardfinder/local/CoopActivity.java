@@ -6,6 +6,8 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +19,7 @@ import android.webkit.WebViewClient;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -41,6 +44,7 @@ import java.util.Map;
  */
 public class CoopActivity extends Activity {
     private static final String API = "https://www.coop.ch/rest/v2/coopathome";
+    private static final String COOP_CITY_CATEGORY = "https://www.coop-city.ch/de/pokemon/c/BRAND_pokemon";
     private static final long FOUR_HOURS = 4L * 3600L * 1000L;
     private static final String[][] START_PRODUCTS = {
         {"5757239","Pokémon Booster Scarlet & Violet","https://www.coop.ch/de/baby-kind/spielwaren/figuren/pokemon-booster--zufalls-pack-scarlet-violet/p/5757239"},
@@ -68,7 +72,10 @@ public class CoopActivity extends Activity {
     private TextView message, summary, countLabel;
     private Button runButton;
     private LinearLayout list;
-    private boolean working, visible, manualSelection;
+    private boolean working, visible, manualSelection, scanningCoopCity;
+    private int apiDiscoveryMatches;
+    private String apiDiscoveryError="";
+    private WebView discoveryWebView;
     private int area, radius;
     private double latitude, longitude;
     private final Runnable autoCheck = new Runnable() {
@@ -155,6 +162,27 @@ public class CoopActivity extends Activity {
         message=txt("Coop wurde noch nicht live abgefragt.",12);root.addView(message);
         summary=txt("",12);root.addView(summary);
         list=new LinearLayout(this);list.setOrientation(LinearLayout.VERTICAL);root.addView(list);
+        discoveryWebView=new WebView(this);discoveryWebView.getSettings().setJavaScriptEnabled(true);
+        discoveryWebView.setWebViewClient(new WebViewClient(){
+            @Override public void onPageFinished(WebView view,String url){
+                if(!scanningCoopCity||url==null||!url.startsWith(COOP_CITY_CATEGORY))return;
+                view.postDelayed(()->view.evaluateJavascript(
+                    "(function(){var out=[];var seen={};document.querySelectorAll('a[href*=\\\"/p/\\\"]').forEach(function(a){var h=a.href||'';var m=h.match(/\\/p\\/(\\d+)/);if(!m||seen[m[1]])return;var card=a.closest('article')||a.closest('[class*=product]')||a.parentElement.parentElement;var text=((card&&card.innerText)||a.innerText||'').replace(/\\s+/g,' ').trim();if(!/pok[eé]mon/i.test(text))return;var img=card&&card.querySelector('img');var name=(a.innerText||text).replace(/\\s+/g,' ').trim();out.push({id:m[1],name:name,url:h,image_url:img?(img.currentSrc||img.src||''):''});seen[m[1]]=true;});return JSON.stringify(out);})()",
+                    value->{try{
+                        Object decoded=new org.json.JSONTokener(value).nextValue();
+                        JSONArray rows=new JSONArray(decoded instanceof String?(String)decoded:"[]");
+                        int added=0;
+                        for(int i=0;i<rows.length();i++){
+                            JSONObject raw=rows.optJSONObject(i);if(raw==null)continue;
+                            JSONObject p=new JSONObject().put("id",raw.optString("id")).put("name",raw.optString("name"))
+                                .put("url",raw.optString("url")).put("image_url",absoluteCoopImage(raw.optString("image_url")));
+                            if(p.optString("id").matches("\\d{4,12}")&&!p.optString("name").isEmpty()){mergeProduct(p);added++;}
+                        }
+                        finishCoopCityScan(added,null);
+                    }catch(Exception e){finishCoopCityScan(0,e.getMessage());}}),1200);
+            }
+        });
+        root.addView(discoveryWebView,new LinearLayout.LayoutParams(1,1));
         ScrollView scroll=new ScrollView(this);scroll.setFillViewport(true);scroll.addView(root);setContentView(scroll);
     }
     private void saveCentre(){
@@ -171,6 +199,7 @@ public class CoopActivity extends Activity {
             try{
                 if(!p.optString("name").isEmpty())old.put("name",p.optString("name"));
                 if(!p.optString("url").isEmpty())old.put("url",p.optString("url"));
+                if(!p.optString("image_url").isEmpty())old.put("image_url",p.optString("image_url"));
                 if(p.has("price"))old.put("price",p.optDouble("price"));
             }catch(Exception ignored){}
             return;
@@ -181,12 +210,53 @@ public class CoopActivity extends Activity {
         JSONArray result=new JSONArray();for(JSONObject p:products)result.put(p);
         prefs.edit().putString("products",result.toString()).apply();
     }
+    private String productImageUrl(JSONObject raw){
+        String[] direct={"image_url","imageUrl","image","picture","thumbnail"};
+        for(String key:direct){String value=raw.optString(key,"");if(value.startsWith("http")||value.startsWith("//")||value.startsWith("/"))return absoluteCoopImage(value);}
+        JSONArray images=raw.optJSONArray("images");
+        if(images!=null)for(int i=0;i<images.length();i++){
+            JSONObject item=images.optJSONObject(i);if(item==null)continue;
+            String value=item.optString("url",item.optString("src",item.optString("image","")));
+            if(!value.isEmpty())return absoluteCoopImage(value);
+        }
+        JSONObject image=raw.optJSONObject("image");
+        if(image!=null){String value=image.optString("url",image.optString("src",""));if(!value.isEmpty())return absoluteCoopImage(value);}
+        return "";
+    }
+    private String absoluteCoopImage(String value){
+        if(value.startsWith("//"))return "https:"+value;
+        if(value.startsWith("/"))return "https://www.coop.ch"+value;
+        return value;
+    }
+    private void loadProductImage(ImageView target,String imageUrl){
+        if(target==null)return;target.setTag(imageUrl);target.setImageDrawable(null);
+        if(imageUrl==null||imageUrl.isEmpty())return;
+        new Thread(()->{try(java.io.InputStream stream=new URL(imageUrl).openStream()){
+            Bitmap bitmap=BitmapFactory.decodeStream(stream);if(bitmap!=null)runOnUiThread(()->{
+                if(imageUrl.equals(target.getTag()))target.setImageBitmap(bitmap);
+            });
+        }catch(Exception ignored){}}).start();
+    }
+    private class CoopProductSpinnerAdapter extends ArrayAdapter<JSONObject>{
+        CoopProductSpinnerAdapter(){super(CoopActivity.this,android.R.layout.simple_spinner_item,products);setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);}
+        @Override public View getView(int position,View recycled,android.view.ViewGroup parent){return row(position,dp(54));}
+        @Override public View getDropDownView(int position,View recycled,android.view.ViewGroup parent){return row(position,dp(64));}
+        private View row(int position,int height){
+            JSONObject product=getItem(position);LinearLayout box=new LinearLayout(CoopActivity.this);
+            box.setOrientation(LinearLayout.HORIZONTAL);box.setGravity(android.view.Gravity.CENTER_VERTICAL);
+            box.setPadding(dp(10),dp(4),dp(10),dp(4));
+            ImageView image=new ImageView(CoopActivity.this);image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            image.setBackgroundColor(Color.rgb(242,242,247));box.addView(image,new LinearLayout.LayoutParams(dp(48),dp(48)));
+            TextView label=txt(product.optString("name")+" · "+product.optString("id"),14);label.setMaxLines(2);
+            LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(0,-2,1);lp.leftMargin=dp(12);box.addView(label,lp);
+            loadProductImage(image,product.optString("image_url"));box.setMinimumHeight(height);return box;
+        }
+    }
+
     private void refreshProducts(){
         if(productSpinner==null)return;
         int selected=productSpinner.getSelectedItemPosition();
-        ArrayList<String> names=new ArrayList<>();
-        for(JSONObject p:products)names.add(p.optString("name")+" · "+p.optString("id"));
-        productSpinner.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,names));
+        productSpinner.setAdapter(new CoopProductSpinnerAdapter());
         if(selected>=0&&selected<products.size())productSpinner.setSelection(selected);
     }
     private JSONObject product(JSONObject raw){
@@ -196,6 +266,7 @@ public class CoopActivity extends Activity {
             String path=raw.optString("categoryPathForTracking");
             if(!path.isEmpty())p.put("url","https://www.coop.ch/de/"+path.replaceAll("^/+|/+$","")+"/p/"+id);
             JSONObject price=raw.optJSONObject("price");if(price!=null&&price.has("value"))p.put("price",price.optDouble("value"));
+            String image=productImageUrl(raw);if(!image.isEmpty())p.put("image_url",image);
             return p;
         }catch(Exception e){return null;}
     }
@@ -244,11 +315,29 @@ public class CoopActivity extends Activity {
                     }
                 }
                 int total=matched;
-                runOnUiThread(()->{saveProducts();refreshProducts();render();setWorking(false,
-                    "Coop-Katalogsuche abgeschlossen: "+total+" passende Treffer, "+products.size()+" eindeutige Produkte gespeichert.");});
-            }catch(Exception e){runOnUiThread(()->{saveProducts();refreshProducts();render();setWorking(false,
-                "Coop-Produktsuche unterbrochen: "+e.getMessage()+". Vorhandene Produkte bleiben gespeichert.");});}
+                runOnUiThread(()->{
+                    apiDiscoveryMatches=total;scanningCoopCity=true;
+                    message.setText("Prüfe zusätzlich die Coop-City-Pokémon-Kategorieseite …");
+                    discoveryWebView.loadUrl(COOP_CITY_CATEGORY);
+                    handler.postDelayed(()->{if(scanningCoopCity)finishCoopCityScan(0,"Zeitüberschreitung");},25000);
+                });
+            }catch(Exception e){
+                int total=matched;String apiError=e.getMessage();
+                runOnUiThread(()->{
+                    apiDiscoveryMatches=total;apiDiscoveryError=apiError==null?"":apiError;
+                    scanningCoopCity=true;message.setText("Coop-API eingeschränkt; prüfe zusätzlich die Coop-City-Kategorieseite …");
+                    discoveryWebView.loadUrl(COOP_CITY_CATEGORY);
+                    handler.postDelayed(()->{if(scanningCoopCity)finishCoopCityScan(0,"Zeitüberschreitung");},25000);
+                });
+            }
         }).start();
+    }
+    private void finishCoopCityScan(int cityMatches,String error){
+        if(!scanningCoopCity)return;scanningCoopCity=false;saveProducts();refreshProducts();render();
+        String suffix=error==null?"":(" · Coop City: "+error);
+        String apiNote=apiDiscoveryError.isEmpty()?"":" · Coop-API: "+apiDiscoveryError;
+        setWorking(false,"Coop-Suche abgeschlossen: "+apiDiscoveryMatches+" API-Treffer und "+cityMatches+
+            " Artikel von Coop City verarbeitet; "+products.size()+" eindeutige Produkte gespeichert."+apiNote+suffix);
     }
     private void addProduct(){
         EditText input=new EditText(this);input.setSingleLine(true);input.setHint("Coop-Link /p/5757239 oder 5757239");
