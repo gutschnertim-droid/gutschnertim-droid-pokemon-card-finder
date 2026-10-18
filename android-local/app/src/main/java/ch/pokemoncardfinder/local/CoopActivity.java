@@ -297,7 +297,7 @@ public class CoopActivity extends Activity {
         }finally{conn.disconnect();}
     }
     private void discoverProducts(){
-        if(working)return;setWorking(true,"Coop-Produktsuche läuft …");
+        if(working)return;apiDiscoveryError="";setWorking(true,"Coop-Produktsuche läuft …");
         new Thread(()->{
             int matched=0;
             try{
@@ -369,17 +369,32 @@ public class CoopActivity extends Activity {
     private void pickProducts(){
         if(working)return;
         LinkedHashSet<String> picked=savedSelection();
-        String[] names=new String[products.size()];boolean[] selected=new boolean[products.size()];
-        for(int i=0;i<products.size();i++){
-            names[i]=products.get(i).optString("name");selected[i]=picked.contains(products.get(i).optString("id"));
+        LinearLayout choices=new LinearLayout(this);choices.setOrientation(LinearLayout.VERTICAL);
+        CheckBox all=new CheckBox(this);all.setText("Alle Produkte auswählen");all.setChecked(picked.size()==products.size());choices.addView(all);
+        ArrayList<CheckBox> checks=new ArrayList<>();
+        for(JSONObject product:products){
+            LinearLayout row=new LinearLayout(this);row.setGravity(android.view.Gravity.CENTER_VERTICAL);
+            CheckBox check=new CheckBox(this);check.setChecked(picked.contains(product.optString("id")));checks.add(check);
+            check.setOnCheckedChangeListener((button,on)->{
+                String id=product.optString("id");if(on)picked.add(id);else picked.remove(id);
+                all.setChecked(picked.size()==products.size());
+            });
+            row.addView(check);
+            ImageView image=new ImageView(this);image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            image.setBackgroundColor(Color.rgb(242,242,247));row.addView(image,new LinearLayout.LayoutParams(dp(52),dp(52)));
+            loadProductImage(image,product.optString("image_url"));
+            TextView name=txt(product.optString("name")+" · "+product.optString("id"),14);name.setMaxLines(2);
+            LinearLayout.LayoutParams lp=new LinearLayout.LayoutParams(0,-2,1);lp.leftMargin=dp(8);row.addView(name,lp);
+            choices.addView(row);
         }
+        all.setOnCheckedChangeListener((button,on)->{
+            picked.clear();
+            if(on)for(JSONObject product:products)picked.add(product.optString("id"));
+            for(int i=0;i<checks.size();i++)checks.get(i).setChecked(on);
+        });
+        ScrollView scroll=new ScrollView(this);scroll.setFillViewport(false);scroll.addView(choices);
         new AlertDialog.Builder(this).setTitle("Coop-Produkte für die Abfrage")
-            .setMultiChoiceItems(names,selected,(dlg,index,on)->{
-                String id=products.get(index).optString("id");if(on)picked.add(id);else picked.remove(id);
-            })
-            .setNeutralButton("Alle auswählen",(dlg,which)->{
-                picked.clear();for(JSONObject p:products)picked.add(p.optString("id"));check(picked);
-            }).setNegativeButton("Abbrechen",null)
+            .setView(scroll).setNegativeButton("Abbrechen",null)
             .setPositiveButton("Abfragen",(dlg,which)->{
                 if(picked.isEmpty()){message.setText("Mindestens ein Produkt auswählen.");return;}check(picked);
             }).show();
