@@ -127,6 +127,7 @@ public class MainActivity extends Activity {
         restoreSelectedRegions();
         applyRegionFilter();
         loadDiscoveredProducts();
+        loadProductImageCache();
         buildScreen();
         webView = new WebView(this);
         webView.getSettings().setJavaScriptEnabled(true);
@@ -336,9 +337,20 @@ public class MainActivity extends Activity {
     private void mergeDiscoveredProducts(JSONArray found){
         java.util.HashSet<String> existing=new java.util.HashSet<>();
         for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p!=null)existing.add(p.optString("id"));}
-        long newUntil=System.currentTimeMillis()+NEW_PRODUCT_BADGE_MS;for(int i=0;i<found.length();i++){JSONObject candidate=found.optJSONObject(i);if(candidate==null)continue;String id=candidate.optString("id");if(id.isEmpty()||existing.contains(id))continue;try{candidate.put("new_until_ms",newUntil);}catch(Exception ignored){}products.put(candidate);existing.add(id);}
+        long newUntil=System.currentTimeMillis()+NEW_PRODUCT_BADGE_MS;
+        for(int i=0;i<found.length();i++){
+            JSONObject candidate=found.optJSONObject(i);if(candidate==null)continue;String id=candidate.optString("id");if(id.isEmpty())continue;
+            if(existing.contains(id)){String image=candidate.optString("image_url");if(!image.isEmpty())cacheProductImage(id,image);continue;}
+            try{candidate.put("new_until_ms",newUntil);}catch(Exception ignored){}products.put(candidate);existing.add(id);
+        }
         saveDiscoveredProducts();
         updateProductPicker();
+    }
+    private void loadProductImageCache(){
+        try{JSONObject cache=new JSONObject(getPreferences(MODE_PRIVATE).getString("product_image_cache_json","{}"));for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p==null||!p.optString("image_url").isEmpty())continue;String image=cache.optString(p.optString("id"),"");if(!image.isEmpty())p.put("image_url",image);}}catch(Exception ignored){}
+    }
+    private void cacheProductImage(String productId,String imageUrl){
+        try{for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p!=null&&productId.equals(p.optString("id"))){if(p.optString("image_url").isEmpty())p.put("image_url",imageUrl);break;}}JSONObject cache=new JSONObject(getPreferences(MODE_PRIVATE).getString("product_image_cache_json","{}"));cache.put(productId,imageUrl);getPreferences(MODE_PRIVATE).edit().putString("product_image_cache_json",cache.toString()).apply();}catch(Exception ignored){}
     }
 
     private void updateProductPicker(){
@@ -790,7 +802,7 @@ public class MainActivity extends Activity {
     private int stockQuantity(Map<String,JSONObject> rows,JSONObject branch){JSONObject row=rows==null?null:rows.get(branch.optString("id"));return row!=null&&row.optString("status").equals("estimated_in_stock")?row.optInt("quantity",0):0;}
     private double catalogPrice(String id){for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p.optString("id").equals(id))return p.optDouble("price_chf",0);}return 0;}
     private void loadImage(String imageUrl){loadImage(productImage,imageUrl);}
-    private void loadImage(ImageView target,String imageUrl){if(target==null)return;target.setTag(imageUrl);target.setImageDrawable(null);if(imageUrl==null||imageUrl.isEmpty())return;new Thread(()->{try{Bitmap bitmap=BitmapFactory.decodeStream(new URL(imageUrl).openStream());if(bitmap!=null)runOnUiThread(()->{if(imageUrl.equals(target.getTag()))target.setImageBitmap(bitmap);});}catch(Exception ignored){}}).start();}
+    private void loadImage(ImageView target,String imageUrl){if(target==null)return;target.setTag(imageUrl);target.setImageDrawable(null);if(imageUrl==null||imageUrl.isEmpty())return;new Thread(()->{try(java.io.InputStream stream=new URL(imageUrl).openStream()){Bitmap bitmap=BitmapFactory.decodeStream(stream);if(bitmap!=null)runOnUiThread(()->{if(imageUrl.equals(target.getTag()))target.setImageBitmap(bitmap);});}catch(Exception ignored){}}).start();}
     private android.content.SharedPreferences coopPreferences() {
         return getSharedPreferences("coop_finder",MODE_PRIVATE);
     }
