@@ -63,7 +63,7 @@ jobs:
           keystore="$RUNNER_TEMP/pokemon-card-finder.p12"
           printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 --decode > "$keystore"
           chmod 600 "$keystore"
-          expected="4F:AA:C0:EA:65:3F:83:E6:DE:EA:D3:65:B9:EB:BD:2B:BD:D0:87:41:B1:AA:49:24:95:52:D1:12:BC:39:86:47"
+          expected="48:29:26:07:1D:A9:D7:A1:A0:73:64:E2:1E:52:F5:F6:30:51:51:67:98:80:E0:67:E4:63:6B:DA:28:E4:AC:C4"
           actual="$(keytool -list -v -alias pcf-update -storetype PKCS12 -keystore "$keystore" -storepass:env ANDROID_KEYSTORE_PASSWORD | awk -F 'SHA256: ' '/SHA256:/ { print $2; exit }')"
           if [[ "$actual" != "$expected" ]]; then
             echo "::error::Signing certificate mismatch. Do not rotate the app's signing key accidentally."
@@ -93,7 +93,7 @@ jobs:
           apk="android-local/app/build/outputs/apk/download/app-debug.apk"
           signer_output="$("$apksigner" verify --print-certs "$apk")"
           digest="$(printf '%s\n' "$signer_output" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p' | head -n 1)"
-          expected="4faac0ea653f83e6deead365b9ebbd2bbdd08741b1aa49249552d112bc398647"
+          expected="482926071da9d7a1a07364e21e52f5f6305151679880e067e4636bda28e4acc4"
           if [[ "$digest" != "$expected" ]]; then
             echo "::error::APK is signed with an unexpected certificate. Refusing to publish."
             exit 1
