@@ -112,7 +112,7 @@ public class CoopActivity extends Activity {
         refreshProducts();
         render();
     }
-    @Override protected void onResume(){super.onResume();visible=true;handler.postDelayed(autoCheck,1000);}
+    @Override protected void onResume(){super.onResume();visible=true;BackgroundRefreshScheduler.syncCoop(this,prefs.getBoolean("auto",false));handler.postDelayed(autoCheck,1000);}
     @Override protected void onPause(){visible=false;handler.removeCallbacks(autoCheck);super.onPause();}
     private int dp(int n){return (int)(getResources().getDisplayMetrics().density*n+.5f);}
     private TextView txt(String value,int size){TextView t=new TextView(this);t.setText(value);t.setTextSize(size);t.setTextColor(Color.DKGRAY);return t;}
@@ -156,9 +156,11 @@ public class CoopActivity extends Activity {
             @Override public void onNothingSelected(android.widget.AdapterView<?> a){}
         });
         runButton=new Button(this);runButton.setText("Ausgewählte Coop-Produkte prüfen");runButton.setOnClickListener(v->pickProducts());root.addView(runButton);
-        Button auto=new Button(this);auto.setText("Alle 4 Std. bei geöffneter App: "+(prefs.getBoolean("auto",false)?"EIN":"AUS"));
+        Button auto=new Button(this);auto.setText("Alle 4 Std. automatisch: "+(prefs.getBoolean("auto",false)?"EIN":"AUS"));
+        BackgroundRefreshScheduler.syncCoop(this,prefs.getBoolean("auto",false));
         auto.setOnClickListener(v->{boolean x=!prefs.getBoolean("auto",false);prefs.edit().putBoolean("auto",x).apply();
-            auto.setText("Alle 4 Std. bei geöffneter App: "+(x?"EIN":"AUS"));});
+            BackgroundRefreshScheduler.syncCoop(CoopActivity.this,x);
+            auto.setText("Alle 4 Std. automatisch: "+(x?"EIN":"AUS"));});
         root.addView(auto);
         message=txt("Coop wurde noch nicht live abgefragt.",12);root.addView(message);
         summary=txt("",12);root.addView(summary);
