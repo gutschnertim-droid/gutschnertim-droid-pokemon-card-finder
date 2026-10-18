@@ -246,6 +246,7 @@ public class MainActivity extends Activity {
     }
 
     private void beginCheck(boolean automatic) {
+        applyBranchScope();
         if(queryBranches.length()==0){status.setText("Bitte mindestens eine Region und mindestens eine Abfrage-Filiale auswählen.");return;}
         if(queryRunning)return;
         automaticCheck=automatic;
@@ -741,18 +742,18 @@ public class MainActivity extends Activity {
         String query=branchSearch==null?"":branchSearch.getText().toString().trim().toLowerCase(java.util.Locale.ROOT);
         String filter=stockFilterPicker==null||stockFilterPicker.getSelectedItem()==null?"Alle":stockFilterPicker.getSelectedItem().toString();
         int available=0,outOfStock=0,unclear=0,unchecked=0,onlineOnly=0; List<JSONObject> visible=new ArrayList<>();
-        for(int i=0;i<branches.length();i++){
-            JSONObject b=branches.optJSONObject(i); if(b==null)continue;
+        for(int i=0;i<queryBranches.length();i++){
+            JSONObject b=queryBranches.optJSONObject(i); if(b==null)continue;
             JSONObject row=rows==null?null:rows.get(b.optString("id")); String state=row==null?"unchecked":row.optString("status","unknown");
             if(state.equals("in_stock")||state.equals("estimated_in_stock"))available++;else if(state.equals("out_of_stock"))outOfStock++;else if(state.equals("unknown"))unclear++;else if(state.equals("online_only"))onlineOnly++;else unchecked++;
             String searchable=(b.optString("name")+" "+b.optString("address")).toLowerCase(java.util.Locale.ROOT);
             if(!searchable.contains(query)||!matchesFilter(filter,state))continue;
             visible.add(b);
         }
-        if(stockSummary!=null)stockSummary.setText("Verfügbar: "+available+" · Nicht auf Lager: "+outOfStock+" · Nur online: "+onlineOnly+" · Unklar: "+unclear+" · Offen: "+unchecked);
+        if(stockSummary!=null)stockSummary.setText("Abfrage-Auswahl · Verfügbar: "+available+" · Nicht auf Lager: "+outOfStock+" · Nur online: "+onlineOnly+" · Unklar: "+unclear+" · Offen: "+unchecked);
         if(filter.equals("Höchster Bestand"))Collections.sort(visible,(a,b)->Integer.compare(stockQuantity(rows,b),stockQuantity(rows,a)));
         resultList.removeAllViews();
-        if(visible.isEmpty()){TextView empty=new TextView(this);empty.setText("Keine Filiale passt zu Suche und Filter.");empty.setTextSize(12);empty.setPadding(dp(8),dp(12),dp(8),dp(12));resultList.addView(empty);return;}
+        if(visible.isEmpty()){TextView empty=new TextView(this);empty.setText("Keine ausgewählte Abfrage-Filiale passt zu Suche und Filter.");empty.setTextSize(12);empty.setPadding(dp(8),dp(12),dp(8),dp(12));resultList.addView(empty);return;}
         for(JSONObject branch:visible){String id=branch.optString("id");JSONObject row=rows==null?null:rows.get(id);String state=row==null?"unchecked":row.optString("status","unknown");LinearLayout item=new LinearLayout(this);item.setOrientation(LinearLayout.HORIZONTAL);item.setGravity(Gravity.CENTER_VERTICAL);item.setBackgroundColor(Color.WHITE);item.setPadding(dp(10),dp(8),dp(10),dp(8));LinearLayout.LayoutParams itemParams=params(dp(5));resultList.addView(item,itemParams);
             View dot=new View(this);GradientDrawable circle=new GradientDrawable();circle.setShape(GradientDrawable.OVAL);circle.setColor(statusColor(state));dot.setBackground(circle);item.addView(dot,new LinearLayout.LayoutParams(dp(12),dp(12)));
             LinearLayout textColumn=new LinearLayout(this);textColumn.setOrientation(LinearLayout.VERTICAL);LinearLayout.LayoutParams textParams=new LinearLayout.LayoutParams(0,-2,1);textParams.leftMargin=dp(10);item.addView(textColumn,textParams);
