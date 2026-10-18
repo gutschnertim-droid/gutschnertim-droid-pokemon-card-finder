@@ -61,6 +61,7 @@ public class MainActivity extends Activity {
     private static final int BACKUP_MAX_BYTES = 50 * 1024 * 1024;
     private boolean backupBusy;
     private static final long AUTO_REFRESH_INTERVAL_MS = 4L * 60L * 60L * 1000L;
+    private static final long NEW_PRODUCT_BADGE_MS = 7L * 24L * 60L * 60L * 1000L;
     private TextView status, checkedAt, productTitle, productPrice, stockSummary;
     private ProgressBar loadingSpinner;
     private Button refresh;
@@ -86,6 +87,7 @@ public class MainActivity extends Activity {
     private TextView autoRefreshInfo;
     private TextView subtitle;
     private ImageView productImage;
+    private ImageView progressProductImage;
     private LinearLayout resultList;
     private WebView webView;
     private LinearLayout root;
@@ -162,7 +164,7 @@ public class MainActivity extends Activity {
             updateAutoRefreshInfo();
         });
         ArrayList<String> names = new ArrayList<>();
-        for (int i=0;i<products.length();i++) names.add(products.optJSONObject(i).optString("name"));
+        for (int i=0;i<products.length();i++) names.add(productDisplayName(products.optJSONObject(i)));
         productPicker.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, names));
         productPicker.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
             @Override public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
@@ -222,6 +224,7 @@ public class MainActivity extends Activity {
         refresh=new Button(this); refresh.setText("Ausgewählte Filialen abfragen ("+queryBranches.length()+")"); refresh.setEnabled(queryBranches.length()>0); root.addView(refresh,params(dp(8)));
         LinearLayout progressLine=new LinearLayout(this); progressLine.setGravity(Gravity.CENTER_VERTICAL);
         loadingSpinner=new ProgressBar(this); loadingSpinner.setIndeterminate(true); loadingSpinner.setVisibility(View.GONE); progressLine.addView(loadingSpinner,new LinearLayout.LayoutParams(dp(22),dp(22)));
+        progressProductImage=new ImageView(this);progressProductImage.setScaleType(ImageView.ScaleType.FIT_CENTER);progressProductImage.setBackgroundColor(Color.rgb(238,238,244));progressProductImage.setVisibility(View.GONE);LinearLayout.LayoutParams progressImageParams=new LinearLayout.LayoutParams(dp(44),dp(44));progressImageParams.leftMargin=dp(8);progressLine.addView(progressProductImage,progressImageParams);
         status=new TextView(this); status.setText("Noch keine vollständige Live-Abfrage."); status.setTextSize(12); status.setTextColor(Color.DKGRAY); LinearLayout.LayoutParams sp=new LinearLayout.LayoutParams(0,-2,1);sp.leftMargin=dp(8);progressLine.addView(status,sp);root.addView(progressLine,params(dp(8)));
         checkedAt=new TextView(this); checkedAt.setText("Die Migros-Abfragen und gespeicherten Ergebnisse bleiben auf diesem Gerät."); checkedAt.setTextSize(10); checkedAt.setTextColor(Color.GRAY); root.addView(checkedAt,params(dp(3)));
         autoRefreshToggle=new Switch(this);autoRefreshToggle.setText("Automatisch alle 4 Stunden aktualisieren");autoRefreshToggle.setTextSize(11);root.addView(autoRefreshToggle,params(dp(2)));
@@ -284,21 +287,28 @@ public class MainActivity extends Activity {
     }
 
     private void showProductSelectionDialog(){
-        ArrayList<String> ids=new ArrayList<>(), names=new ArrayList<>();
-        for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p!=null){ids.add(p.optString("id"));names.add(p.optString("name"));}}
-        if(ids.isEmpty()){finishError("Keine Pokémon-Produkte im Katalog gefunden");return;}
+        ArrayList<String> ids=new ArrayList<>();
+        if(products.length()==0){finishError("Keine Pokémon-Produkte im Katalog gefunden");return;}
+        for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p!=null)ids.add(p.optString("id"));}
         String saved=getPreferences(MODE_PRIVATE).getString("checked_product_ids","");
         java.util.LinkedHashSet<String> draft=new java.util.LinkedHashSet<>();
         if(saved.isEmpty()){int initial=Math.max(0,Math.min(selectedProductIndex,ids.size()-1));draft.add(ids.get(initial));}else for(String id:saved.split(","))if(ids.contains(id))draft.add(id);
-        CharSequence[] labels=new CharSequence[names.size()+1];boolean[] checked=new boolean[labels.length];
-        labels[0]="Alle Produkte";checked[0]=draft.size()==ids.size();
-        for(int i=0;i<ids.size();i++){labels[i+1]=names.get(i);checked[i+1]=draft.contains(ids.get(i));}
-        AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Produkte für die Abfrage auswählen")
-            .setMultiChoiceItems(labels,checked,(d,which,isChecked)->{
-                if(which==0){draft.clear();if(isChecked)draft.addAll(ids);}else{String id=ids.get(which-1);if(isChecked)draft.add(id);else draft.remove(id);}
-                android.widget.ListView list=((AlertDialog)d).getListView();list.setItemChecked(0,draft.size()==ids.size());
-                for(int i=0;i<ids.size();i++)list.setItemChecked(i+1,draft.contains(ids.get(i)));
-            }).setNegativeButton("Abbrechen",(d,w)->finishBusy()).setPositiveButton("Abfragen",null).create();
+
+        LinearLayout content=new LinearLayout(this);content.setOrientation(LinearLayout.VERTICAL);content.setPadding(dp(12),dp(4),dp(12),dp(4));
+        CheckBox all=new CheckBox(this);all.setText("Alle Produkte");all.setTextSize(13);all.setChecked(draft.size()==ids.size());content.addView(all);
+        ScrollView scroll=new ScrollView(this);LinearLayout rows=new LinearLayout(this);rows.setOrientation(LinearLayout.VERTICAL);scroll.addView(rows);content.addView(scroll,new LinearLayout.LayoutParams(-1,dp(420)));
+        ArrayList<CheckBox> boxes=new ArrayList<>();boolean[] syncing={false};
+        for(int i=0;i<ids.size();i++){
+            JSONObject p=products.optJSONObject(i);if(p==null)continue;
+            LinearLayout row=new LinearLayout(this);row.setGravity(Gravity.CENTER_VERTICAL);row.setMinimumHeight(dp(60));row.setPadding(dp(4),dp(4),dp(4),dp(4));
+            ImageView thumb=new ImageView(this);thumb.setScaleType(ImageView.ScaleType.FIT_CENTER);thumb.setBackgroundColor(Color.rgb(238,238,244));thumb.setContentDescription("Produktbild "+p.optString("name"));LinearLayout.LayoutParams imageParams=new LinearLayout.LayoutParams(dp(48),dp(48));imageParams.rightMargin=dp(8);row.addView(thumb,imageParams);loadImage(thumb,p.optString("image_url"));
+            CheckBox cb=new CheckBox(this);cb.setText(productDisplayName(p));cb.setTextSize(12);cb.setTag(ids.get(i));cb.setChecked(draft.contains(ids.get(i)));row.addView(cb,new LinearLayout.LayoutParams(0,-2,1));boxes.add(cb);
+            cb.setOnCheckedChangeListener((button,checked)->{if(syncing[0])return;String id=String.valueOf(button.getTag());if(checked)draft.add(id);else draft.remove(id);syncing[0]=true;all.setChecked(draft.size()==ids.size());syncing[0]=false;});
+            row.setOnClickListener(v->cb.setChecked(!cb.isChecked()));rows.addView(row);
+        }
+        all.setOnCheckedChangeListener((button,checked)->{if(syncing[0])return;syncing[0]=true;draft.clear();for(CheckBox cb:boxes){cb.setChecked(checked);String id=String.valueOf(cb.getTag());if(checked)draft.add(id);}syncing[0]=false;});
+        AlertDialog dialog=new AlertDialog.Builder(this).setTitle("Produkte für die Abfrage auswählen").setView(content)
+            .setNegativeButton("Abbrechen",(d,w)->finishBusy()).setPositiveButton("Abfragen",null).create();
         dialog.setOnCancelListener(d->finishBusy());
         dialog.setOnShowListener(v->dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(btn->{
             if(draft.isEmpty()){status.setText("Wähle mindestens ein Produkt aus.");return;}
@@ -326,13 +336,13 @@ public class MainActivity extends Activity {
     private void mergeDiscoveredProducts(JSONArray found){
         java.util.HashSet<String> existing=new java.util.HashSet<>();
         for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p!=null)existing.add(p.optString("id"));}
-        for(int i=0;i<found.length();i++){JSONObject candidate=found.optJSONObject(i);if(candidate==null)continue;String id=candidate.optString("id");if(id.isEmpty()||existing.contains(id))continue;products.put(candidate);existing.add(id);}
+        long newUntil=System.currentTimeMillis()+NEW_PRODUCT_BADGE_MS;for(int i=0;i<found.length();i++){JSONObject candidate=found.optJSONObject(i);if(candidate==null)continue;String id=candidate.optString("id");if(id.isEmpty()||existing.contains(id))continue;try{candidate.put("new_until_ms",newUntil);}catch(Exception ignored){}products.put(candidate);existing.add(id);}
         saveDiscoveredProducts();
         updateProductPicker();
     }
 
     private void updateProductPicker(){
-        if(productPicker==null)return;ArrayList<String> names=new ArrayList<>();for(int i=0;i<products.length();i++)names.add(products.optJSONObject(i).optString("name"));
+        if(productPicker==null)return;ArrayList<String> names=new ArrayList<>();for(int i=0;i<products.length();i++)names.add(productDisplayName(products.optJSONObject(i)));
         productPicker.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,names));
         if(subtitle!=null)subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Filialen in den gewählten Regionen");
         if(selectedProductIndex<names.size())productPicker.setSelection(selectedProductIndex);
@@ -599,7 +609,7 @@ public class MainActivity extends Activity {
 
     private void loadProductPage(){
         JSONObject p=products.optJSONObject(activeProductIndex); if(p==null){finishError("Produktkatalog ist ungültig.");return;}
-        String id=p.optString("id");status.setText("Artikel "+(productQueueCursor+1)+"/"+productQueue.size()+": "+p.optString("name"));waitingForPage=true;
+        String id=p.optString("id");status.setText("Artikel "+(productQueueCursor+1)+"/"+productQueue.size()+": "+productDisplayName(p));if(progressProductImage!=null){progressProductImage.setVisibility(View.VISIBLE);loadImage(progressProductImage,p.optString("image_url"));}waitingForPage=true;
         webView.loadUrl("https://www.migros.ch/de/product/"+id);
     }
 
@@ -728,16 +738,18 @@ public class MainActivity extends Activity {
     private void handleProductFailure(String productId,String error){failedProductChecks.add(productName(productId)+": "+error);productQueueCursor++;if(productQueueCursor<productQueue.size()){activeProductIndex=productQueue.get(productQueueCursor);status.setText("Produkt konnte nicht geprüft werden; fahre mit der nächsten Abfrage fort …");loadProductPage();}else finishAll();}
     private void finishAll(){int total=0,unknown=0;for(Map<String,JSONObject> rows:recordsByProduct.values())for(String regionBranchId:selectedBranchIds())if(rows.containsKey(regionBranchId)){total++;if(rows.get(regionBranchId).optString("status").equals("unknown"))unknown++;}String failures=failedProductChecks.isEmpty()?"":" · Nicht geprüft: "+android.text.TextUtils.join("; ",failedProductChecks);status.setText("Abfrage fertig · "+total+" von "+(productQueue.size()*queryBranches.length())+" ausgewählten Artikel-Filial-Datensätzen · "+unknown+" ohne lesbaren Status"+failures);checkedAt.setText("Zuletzt geprüft: "+now()+" · Ergebnisse lokal gespeichert");finishBusy();renderProduct();updateAutoRefreshInfo();scheduleAutomaticRefresh(0);}
     private void finishError(String message){status.setText(message+". Bisherige Ergebnisse bleiben lokal gespeichert.");finishBusy();updateAutoRefreshInfo();scheduleAutomaticRefresh(0);}
-    private void finishBusy(){queryRunning=false;getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);loadingSpinner.setVisibility(View.GONE);refresh.setEnabled(queryBranches.length()>0);updateRegionUi();updateBranchScopeUi();}
+    private void finishBusy(){queryRunning=false;getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);loadingSpinner.setVisibility(View.GONE);if(progressProductImage!=null)progressProductImage.setVisibility(View.GONE);refresh.setEnabled(queryBranches.length()>0);updateRegionUi();updateBranchScopeUi();}
     private java.util.Set<String> selectedBranchIds(){java.util.HashSet<String> ids=new java.util.HashSet<>();for(int i=0;i<queryBranches.length();i++){JSONObject b=queryBranches.optJSONObject(i);if(b!=null)ids.add(b.optString("id"));}return ids;}
     private void scheduleAutomaticRefresh(long delayOverride){autoRefreshHandler.removeCallbacks(autoRefreshRunnable);if(!activityResumed||autoRefreshToggle==null||!autoRefreshToggle.isChecked())return;long anchor=getPreferences(MODE_PRIVATE).getLong("auto_refresh_anchor_ms",0);long delay=delayOverride>0?delayOverride:(anchor==0?0:Math.max(0,anchor+AUTO_REFRESH_INTERVAL_MS-System.currentTimeMillis()));autoRefreshHandler.postDelayed(autoRefreshRunnable,delay);updateAutoRefreshInfo();}
     private void checkAutomaticRefresh(){if(backupBusy||!activityResumed||autoRefreshToggle==null||!autoRefreshToggle.isChecked())return;if(queryRunning){scheduleAutomaticRefresh(60_000);return;}long anchor=getPreferences(MODE_PRIVATE).getLong("auto_refresh_anchor_ms",0);if(anchor==0||System.currentTimeMillis()-anchor>=AUTO_REFRESH_INTERVAL_MS){status.setText("Automatische Live-Aktualisierung läuft …");beginCheck(true);}else scheduleAutomaticRefresh(0);}
     private void updateAutoRefreshInfo(){if(autoRefreshInfo==null)return;if(autoRefreshToggle==null||!autoRefreshToggle.isChecked()){autoRefreshInfo.setText("Automatische Aktualisierung ausgeschaltet.");return;}long anchor=getPreferences(MODE_PRIVATE).getLong("auto_refresh_anchor_ms",0);if(anchor==0){autoRefreshInfo.setText("Erste automatische Prüfung startet beim Öffnen der App. App geöffnet lassen.");return;}long next=anchor+AUTO_REFRESH_INTERVAL_MS;autoRefreshInfo.setText("Nächste Prüfung ab "+DateFormat.getTimeInstance(DateFormat.SHORT).format(new Date(next))+" · läuft bei geöffneter App; nach Rückkehr wird eine fällige Prüfung gestartet.");}
     private String currentProductId(){JSONObject p=products.optJSONObject(selectedProductIndex);return p==null?"":p.optString("id");}
     private String productName(String id){for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p.optString("id").equals(id))return p.optString("name");}return id;}
+    private boolean isNewProduct(JSONObject p){return p!=null&&p.optLong("new_until_ms",0)>System.currentTimeMillis();}
+    private String productDisplayName(JSONObject p){if(p==null)return "";String name=p.optString("name");return isNewProduct(p)?name+" · NEU":name;}
     private String now(){return DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT).format(new Date());}
 
-    private void renderProduct(){if(products==null||products.length()==0||productTitle==null)return;JSONObject p=products.optJSONObject(selectedProductIndex);if(p==null)return;String id=p.optString("id");productTitle.setText(p.optString("name"));JSONObject live=livePricesByProduct.get(id);double shown=live==null?p.optDouble("price_chf",0):live.optDouble("price",p.optDouble("price_chf",0));String priceText=String.format(java.util.Locale.GERMANY,"CHF %.2f",shown);productPrice.setTextColor(Color.rgb(96,72,220));if(live==null)priceText+=" · Katalogpreis";else{String change=live.optString("change");if(change.equals("down")){priceText+="  ↓ Preis gesunken";productPrice.setTextColor(Color.rgb(36,148,72));}else if(change.equals("up")){priceText+="  ↑ Preis gestiegen";productPrice.setTextColor(Color.rgb(175,105,0));}else priceText+=" · Live geprüft";if(live.optBoolean("promotion"))priceText+=" · Aktion (vorher "+String.format(java.util.Locale.GERMANY,"CHF %.2f",live.optDouble("original_price"))+")";else if(change.equals("down"))priceText+=" · mögliche Rabattaktion";}productPrice.setText(priceText);loadImage(p.optString("image_url"));renderRecords();String checked=checkedByProduct.get(id);if(checked!=null)checkedAt.setText("Dieser Artikel zuletzt geprüft: "+checked+" · lokal gespeichert");}
+    private void renderProduct(){if(products==null||products.length()==0||productTitle==null)return;JSONObject p=products.optJSONObject(selectedProductIndex);if(p==null)return;String id=p.optString("id");productTitle.setText(productDisplayName(p));JSONObject live=livePricesByProduct.get(id);double shown=live==null?p.optDouble("price_chf",0):live.optDouble("price",p.optDouble("price_chf",0));String priceText=String.format(java.util.Locale.GERMANY,"CHF %.2f",shown);productPrice.setTextColor(Color.rgb(96,72,220));if(live==null)priceText+=" · Katalogpreis";else{String change=live.optString("change");if(change.equals("down")){priceText+="  ↓ Preis gesunken";productPrice.setTextColor(Color.rgb(36,148,72));}else if(change.equals("up")){priceText+="  ↑ Preis gestiegen";productPrice.setTextColor(Color.rgb(175,105,0));}else priceText+=" · Live geprüft";if(live.optBoolean("promotion"))priceText+=" · Aktion (vorher "+String.format(java.util.Locale.GERMANY,"CHF %.2f",live.optDouble("original_price"))+")";else if(change.equals("down"))priceText+=" · mögliche Rabattaktion";}productPrice.setText(priceText);loadImage(p.optString("image_url"));renderRecords();String checked=checkedByProduct.get(id);if(checked!=null)checkedAt.setText("Dieser Artikel zuletzt geprüft: "+checked+" · lokal gespeichert");}
     private void renderRecords(){
         if(resultList==null)return;
         Map<String,JSONObject> rows=recordsByProduct.get(currentProductId());
@@ -777,7 +789,8 @@ public class MainActivity extends Activity {
     private int statusColor(String state){if(state.equals("in_stock")||state.equals("estimated_in_stock"))return Color.rgb(36,148,72);if(state.equals("out_of_stock"))return Color.rgb(130,132,140);if(state.equals("unknown"))return Color.rgb(218,143,25);if(state.equals("online_only"))return Color.rgb(96,72,220);return Color.rgb(185,188,195);}
     private int stockQuantity(Map<String,JSONObject> rows,JSONObject branch){JSONObject row=rows==null?null:rows.get(branch.optString("id"));return row!=null&&row.optString("status").equals("estimated_in_stock")?row.optInt("quantity",0):0;}
     private double catalogPrice(String id){for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p.optString("id").equals(id))return p.optDouble("price_chf",0);}return 0;}
-    private void loadImage(String imageUrl){productImage.setImageDrawable(null);if(imageUrl==null||imageUrl.isEmpty())return;new Thread(()->{try{Bitmap bitmap=BitmapFactory.decodeStream(new URL(imageUrl).openStream());runOnUiThread(()->productImage.setImageBitmap(bitmap));}catch(Exception ignored){}}).start();}
+    private void loadImage(String imageUrl){loadImage(productImage,imageUrl);}
+    private void loadImage(ImageView target,String imageUrl){if(target==null)return;target.setTag(imageUrl);target.setImageDrawable(null);if(imageUrl==null||imageUrl.isEmpty())return;new Thread(()->{try{Bitmap bitmap=BitmapFactory.decodeStream(new URL(imageUrl).openStream());if(bitmap!=null)runOnUiThread(()->{if(imageUrl.equals(target.getTag()))target.setImageBitmap(bitmap);});}catch(Exception ignored){}}).start();}
     private android.content.SharedPreferences coopPreferences() {
         return getSharedPreferences("coop_finder",MODE_PRIVATE);
     }
