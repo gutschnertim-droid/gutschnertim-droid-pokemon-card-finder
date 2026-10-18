@@ -164,9 +164,7 @@ public class MainActivity extends Activity {
             else scheduleAutomaticRefresh(0);
             updateAutoRefreshInfo();
         });
-        ArrayList<String> names = new ArrayList<>();
-        for (int i=0;i<products.length();i++) names.add(productDisplayName(products.optJSONObject(i)));
-        productPicker.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, names));
+        productPicker.setAdapter(new ProductImageSpinnerAdapter());
         productPicker.setOnItemSelectedListener(new android.widget.AdapterView.OnItemSelectedListener() {
             @Override public void onItemSelected(android.widget.AdapterView<?> parent, View view, int position, long id) {
                 selectedProductIndex=position; renderProduct();
@@ -353,11 +351,41 @@ public class MainActivity extends Activity {
         try{for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p!=null&&productId.equals(p.optString("id"))){if(p.optString("image_url").isEmpty())p.put("image_url",imageUrl);break;}}JSONObject cache=new JSONObject(getPreferences(MODE_PRIVATE).getString("product_image_cache_json","{}"));cache.put(productId,imageUrl);getPreferences(MODE_PRIVATE).edit().putString("product_image_cache_json",cache.toString()).apply();}catch(Exception ignored){}
     }
 
+    private class ProductImageSpinnerAdapter extends ArrayAdapter<JSONObject> {
+        ProductImageSpinnerAdapter() {
+            super(MainActivity.this, android.R.layout.simple_spinner_item, productItems());
+            setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        }
+        private ArrayList<JSONObject> productItems() {
+            ArrayList<JSONObject> items=new ArrayList<>();
+            for(int i=0;i<products.length();i++){JSONObject p=products.optJSONObject(i);if(p!=null)items.add(p);}
+            return items;
+        }
+        @Override public View getView(int position,View convertView,android.view.ViewGroup parent) {
+            return productRow(position,dp(54));
+        }
+        @Override public View getDropDownView(int position,View convertView,android.view.ViewGroup parent) {
+            return productRow(position,dp(64));
+        }
+        private View productRow(int position,int height) {
+            JSONObject product=getItem(position);
+            LinearLayout row=new LinearLayout(MainActivity.this);row.setOrientation(LinearLayout.HORIZONTAL);
+            row.setGravity(Gravity.CENTER_VERTICAL);row.setPadding(dp(10),dp(4),dp(10),dp(4));
+            ImageView image=new ImageView(MainActivity.this);image.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            image.setBackgroundColor(Color.rgb(242,242,247));row.addView(image,new LinearLayout.LayoutParams(dp(48),dp(48)));
+            TextView label=new TextView(MainActivity.this);label.setText(productDisplayName(product));label.setTextSize(14);
+            label.setTextColor(Color.rgb(35,32,48));label.setMaxLines(2);
+            LinearLayout.LayoutParams textParams=new LinearLayout.LayoutParams(0,-2,1);textParams.leftMargin=dp(12);row.addView(label,textParams);
+            if(product!=null)loadImage(image,product.optString("image_url"));
+            row.setMinimumHeight(height);return row;
+        }
+    }
+
     private void updateProductPicker(){
-        if(productPicker==null)return;ArrayList<String> names=new ArrayList<>();for(int i=0;i<products.length();i++)names.add(productDisplayName(products.optJSONObject(i)));
-        productPicker.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_dropdown_item,names));
+        if(productPicker==null)return;
+        productPicker.setAdapter(new ProductImageSpinnerAdapter());
         if(subtitle!=null)subtitle.setText(products.length()+" Pokémon-TCG-Artikel · "+branches.length()+" Filialen in den gewählten Regionen");
-        if(selectedProductIndex<names.size())productPicker.setSelection(selectedProductIndex);
+        if(selectedProductIndex<products.length())productPicker.setSelection(selectedProductIndex);
     }
 
     private void collectRegions(){
