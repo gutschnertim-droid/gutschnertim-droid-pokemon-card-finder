@@ -92,9 +92,7 @@ jobs:
           if [[ -z "$apksigner" ]]; then echo "::error::apksigner not found"; exit 1; fi
           apk="android-local/app/build/outputs/apk/download/app-debug.apk"
           signer_output="$("$apksigner" verify --print-certs "$apk")"
-          printf '%s\n' "$signer_output" | grep -i 'sha' || true
-          digest="$(printf '%s\n' "$signer_output" | sed -n 's/^Signer #1 certificate SHA-256 digest: //p' | head -n 1 | tr -d ':' | tr '[:upper:]' '[:lower:]')"
-          echo "Observed APK signer SHA-256: ${digest:-not-found}"
+          digest="$(printf '%s\n' "$signer_output" | sed -n 's/^.*certificate SHA-256 digest: //p' | head -n 1 | tr -d ':' | tr '[:upper:]' '[:lower:]')"
           expected="482926071da9d7a1a07364e21e52f5f6305151679880e067e4636bda28e4acc4"
           if [[ "$digest" != "$expected" ]]; then
             echo "::error::APK is signed with an unexpected certificate. Refusing to publish."
